@@ -1,5 +1,5 @@
 ---
-title: ''
+title: 'communicating-with-data-in-the-tidyverse'
 author: ''
 date: '2021-09-10'
 slug: ''
