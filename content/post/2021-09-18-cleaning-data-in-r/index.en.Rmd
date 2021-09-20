@@ -326,6 +326,81 @@ phone_correction %>%
 
 The customer support team is grateful for your work so far, but during their first day of calling participants, they ran into some phone numbers that were invalid. In this exercise, you'll remove any rows with invalid phone numbers so that these faulty numbers don't keep slowing the team down.
 
+Examine the invalid phone numbers by filtering for numbers whose length is not equal to 12.
+Remove the rows with invalid numbers by filtering for numbers with a length of exactly 12.
+
+```{r}
+# Check out the invalid numbers
+phone_correction %>%
+  filter(str_length(phone) != 12)
+
+# Remove rows with invalid numbers
+phone_correction %>%
+  filter(str_length(phone) == 12)
+```
+
+## 3-2 Date uniformity
+
+In this chapter, you work at an asset management company and you'll be working with the accounts dataset, which contains information about each customer, the amount in their account, and the date their account was opened. Your boss has asked you to calculate some summary statistics about the average value of each account and whether the age of the account is associated with a higher or lower account value. Before you can do this, you need to make sure that the accounts dataset you've been given doesn't contain any uniformity problems. In this exercise, you'll investigate the date_opened column and clean it up so that all the dates are in the same format.
+
+dplyr and lubridate are loaded and accounts is available.
+
+```{r}
+
+```
+
+## 3-3 Currency uniformity
+
+Now that your dates are in order, you'll need to correct any unit differences. When you first plot the data, you'll notice that there's a group of very high values, and a group of relatively lower values. The bank has two different offices - one in New York, and one in Tokyo, so you suspect that the accounts managed by the Tokyo office are in Japanese yen instead of U.S. dollars. Luckily, you have a data frame called account_offices that indicates which office manages each customer's account, so you can use this information to figure out which totals need to be converted from yen to dollars.
+
+The formula to convert yen to dollars is USD = JPY / 104.
+
+dplyr and ggplot2 are loaded and the accounts and account_offices data frames are available.
+
+```{r}
+
+```
+
+## 3-5 Validating totals
+
+In this lesson, you'll continue to work with the accounts data frame, but this time, you have a bit more information about each account. There are three different funds that account holders can store their money in. In this exercise, you'll validate whether the total amount in each account is equal to the sum of the amount in fund_A, fund_B, and fund_C. If there are any accounts that don't match up, you can look into them further to see what went wrong in the bookkeeping that led to inconsistencies.
+
+dplyr is loaded and accounts is available.
+
+```{r}
+
+```
+
+## 3-6 Validating age
+
+Now that you found some inconsistencies in the total amounts, you're suspicious that there may also be inconsistencies in the acct_agecolumn, and you want to see if these inconsistencies are related. Using the skills you learned from the video exercise, you'll need to validate the age of each account and see if rows with inconsistent acct_ages are the same ones that had inconsistent totals
+
+dplyr and lubridate are loaded, and accounts is available.
+
+```{r}
+
+```
+
+## 3-9 Visualizing missing data
+
+Dealing with missing data is one of the most common tasks in data science. There are a variety of types of missingness, as well as a variety of types of solutions to missing data.
+
+You just received a new version of the accounts data frame containing data on the amount held and amount invested for new and existing customers. However, there are rows with missing inv_amount values.
+
+You know for a fact that most customers below 25 do not have investment accounts yet, and suspect it could be driving the missingness. The dplyr and visdat packages have been loaded and accounts is available.
+
+```{r}
+
+```
+
+## 3-10 Treating missing data
+
+In this exercise, you're working with another version of the accounts data that contains missing values for both the cust_id and acct_amount columns.
+
+You want to figure out how many unique customers the bank has, as well as the average amount held by customers. You know that rows with missing cust_id don't really help you, and that on average, the acct_amount is usually 5 times the amount of inv_amount.
+
+In this exercise, you will drop rows of accounts with missing cust_ids, and impute missing values of inv_amount with some domain knowledge. dplyr and assertive are loaded and accounts is available.
+
 ```{r}
 
 ```
