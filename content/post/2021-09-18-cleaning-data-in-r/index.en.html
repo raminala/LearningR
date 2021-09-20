@@ -233,6 +233,17 @@ sfo_survey %&gt;%
 ## 1  982   LUFTHANSA            MUNICH       Hub
 ## 2 2063    AMERICAN      PHILADELPHIA   Large  
 ## 3  777 UNITED INTL SAN JOSE DEL CABO   Small</code></pre>
+<pre class="r"><code># Remove bad dest_size rows
+sfo_survey %&gt;% 
+  # Join with dest_sizes
+  semi_join(dest_sizes, by = &quot;dest_size&quot;) %&gt;%
+  # Count the number of each dest_size
+  count(dest_size)</code></pre>
+<pre><code>##   dest_size    n
+## 1       Hub 1756
+## 2     Large  143
+## 3    Medium  682
+## 4     Small  225</code></pre>
 </div>
 <div id="section" class="section level2">
 <h2>2-5</h2>
