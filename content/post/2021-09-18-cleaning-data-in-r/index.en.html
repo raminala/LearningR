@@ -411,4 +411,73 @@ phone_correction %&gt;%
 <div id="invalid-phone-numbers" class="section level2">
 <h2>2-11 Invalid phone numbers</h2>
 <p>The customer support team is grateful for your work so far, but during their first day of calling participants, they ran into some phone numbers that were invalid. In this exercise, you’ll remove any rows with invalid phone numbers so that these faulty numbers don’t keep slowing the team down.</p>
+<p>Examine the invalid phone numbers by filtering for numbers whose length is not equal to 12.
+Remove the rows with invalid numbers by filtering for numbers with a length of exactly 12.</p>
+<pre class="r"><code># Check out the invalid numbers
+phone_correction %&gt;%
+  filter(str_length(phone) != 12)</code></pre>
+<pre><code>## # A tibble: 744 x 4
+##       id airline          destination          phone         
+##    &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;                &lt;chr&gt;         
+##  1  3010 AMERICAN         MIAMI                (637) 782-6989
+##  2  2097 UNITED INTL      MEXICO CITY          (359) 803-9809
+##  3  1835 TURKISH AIRLINES ISTANBUL             (416) 788-2844
+##  4   105 UNITED           WASHINGTON DC-DULLES (729) 609-4819
+##  5  1973 CATHAY PACIFIC   HONG KONG            (201) 737-4409
+##  6  2385 UNITED INTL      SYDNEY               (137) 611-3694
+##  7   517 UNITED           FT. LAUDERDALE       (812) 869-6263
+##  8  2885 EVA AIR          TAIPEI               (194) 198-0504
+##  9  2128 FRONTIER         DENVER               (299) 137-6993
+## 10  2132 FRONTIER         DENVER               (739) 710-2966
+## # ... with 734 more rows</code></pre>
+<pre class="r"><code># Remove rows with invalid numbers
+phone_correction %&gt;%
+  filter(str_length(phone) == 12)</code></pre>
+<pre><code>## # A tibble: 2,065 x 4
+##       id airline          destination phone       
+##    &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;       &lt;chr&gt;       
+##  1  1842 TURKISH AIRLINES ISTANBUL    858 990 5153
+##  2  1844 TURKISH AIRLINES ISTANBUL    731-813-2043
+##  3  1840 TURKISH AIRLINES ISTANBUL    563-732-6802
+##  4  1837 TURKISH AIRLINES ISTANBUL    145 725 4021
+##  5  1833 TURKISH AIRLINES ISTANBUL    931 311 5801
+##  6  1838 TURKISH AIRLINES ISTANBUL    172 990 3485
+##  7  1845 TURKISH AIRLINES ISTANBUL    872 325 4341
+##  8  1846 TURKISH AIRLINES ISTANBUL    152 790 8238
+##  9  1831 TURKISH AIRLINES ISTANBUL    330 561 9257
+## 10  1848 TURKISH AIRLINES ISTANBUL    437 420 7546
+## # ... with 2,055 more rows</code></pre>
+</div>
+<div id="date-uniformity" class="section level2">
+<h2>3-2 Date uniformity</h2>
+<p>In this chapter, you work at an asset management company and you’ll be working with the accounts dataset, which contains information about each customer, the amount in their account, and the date their account was opened. Your boss has asked you to calculate some summary statistics about the average value of each account and whether the age of the account is associated with a higher or lower account value. Before you can do this, you need to make sure that the accounts dataset you’ve been given doesn’t contain any uniformity problems. In this exercise, you’ll investigate the date_opened column and clean it up so that all the dates are in the same format.</p>
+<p>dplyr and lubridate are loaded and accounts is available.</p>
+</div>
+<div id="currency-uniformity" class="section level2">
+<h2>3-3 Currency uniformity</h2>
+<p>Now that your dates are in order, you’ll need to correct any unit differences. When you first plot the data, you’ll notice that there’s a group of very high values, and a group of relatively lower values. The bank has two different offices - one in New York, and one in Tokyo, so you suspect that the accounts managed by the Tokyo office are in Japanese yen instead of U.S. dollars. Luckily, you have a data frame called account_offices that indicates which office manages each customer’s account, so you can use this information to figure out which totals need to be converted from yen to dollars.</p>
+<p>The formula to convert yen to dollars is USD = JPY / 104.</p>
+<p>dplyr and ggplot2 are loaded and the accounts and account_offices data frames are available.</p>
+</div>
+<div id="validating-totals" class="section level2">
+<h2>3-5 Validating totals</h2>
+<p>In this lesson, you’ll continue to work with the accounts data frame, but this time, you have a bit more information about each account. There are three different funds that account holders can store their money in. In this exercise, you’ll validate whether the total amount in each account is equal to the sum of the amount in fund_A, fund_B, and fund_C. If there are any accounts that don’t match up, you can look into them further to see what went wrong in the bookkeeping that led to inconsistencies.</p>
+<p>dplyr is loaded and accounts is available.</p>
+</div>
+<div id="validating-age" class="section level2">
+<h2>3-6 Validating age</h2>
+<p>Now that you found some inconsistencies in the total amounts, you’re suspicious that there may also be inconsistencies in the acct_agecolumn, and you want to see if these inconsistencies are related. Using the skills you learned from the video exercise, you’ll need to validate the age of each account and see if rows with inconsistent acct_ages are the same ones that had inconsistent totals</p>
+<p>dplyr and lubridate are loaded, and accounts is available.</p>
+</div>
+<div id="visualizing-missing-data" class="section level2">
+<h2>3-9 Visualizing missing data</h2>
+<p>Dealing with missing data is one of the most common tasks in data science. There are a variety of types of missingness, as well as a variety of types of solutions to missing data.</p>
+<p>You just received a new version of the accounts data frame containing data on the amount held and amount invested for new and existing customers. However, there are rows with missing inv_amount values.</p>
+<p>You know for a fact that most customers below 25 do not have investment accounts yet, and suspect it could be driving the missingness. The dplyr and visdat packages have been loaded and accounts is available.</p>
+</div>
+<div id="treating-missing-data" class="section level2">
+<h2>3-10 Treating missing data</h2>
+<p>In this exercise, you’re working with another version of the accounts data that contains missing values for both the cust_id and acct_amount columns.</p>
+<p>You want to figure out how many unique customers the bank has, as well as the average amount held by customers. You know that rows with missing cust_id don’t really help you, and that on average, the acct_amount is usually 5 times the amount of inv_amount.</p>
+<p>In this exercise, you will drop rows of accounts with missing cust_ids, and impute missing values of inv_amount with some domain knowledge. dplyr and assertive are loaded and accounts is available.</p>
 </div>
