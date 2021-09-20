@@ -405,3 +405,55 @@ In this exercise, you will drop rows of accounts with missing cust_ids, and impu
 
 ```
 
+## 4-3 Small distance, small difference
+In the video exercise, you learned that there are multiple ways to calculate how similar or different two strings are. Now you'll practice using the stringdist package to compute string distances using various methods. It's important to be familiar with different methods, as some methods work better on certain datasets, while others work better on other datasets.
+
+The stringdist package has been loaded for you.
+
+```{r}
+
+```
+
+## 4-4 Fixing typos with string distance
+In this chapter, one of the datasets you'll be working with, zagat, is a set of restaurants in New York, Los Angeles, Atlanta, San Francisco, and Las Vegas. The data is from Zagat, a company that collects restaurant reviews, and includes the restaurant names, addresses, phone numbers, as well as other restaurant information.
+
+The city column contains the name of the city that the restaurant is located in. However, there are a number of typos throughout the column. Your task is to map each city to one of the five correctly-spelled cities contained in the cities data frame.
+
+dplyr and fuzzyjoin are loaded, and zagat and cities are available.
+
+```{r}
+
+```
+
+
+## 4-7 Pair blocking
+Zagat and Fodor's are both companies that gather restaurant reviews. The zagat and fodors datasets both contain information about various restaurants, including addresses, phone numbers, and cuisine types. Some restaurants appear in both datasets, but don't necessarily have the same exact name or phone number written down. In this chapter, you'll work towards figuring out which restaurants appear in both datasets.
+
+The first step towards this goal is to generate pairs of records so that you can compare them. In this exercise, you'll first generate all possible pairs, and then use your newly-cleaned city column as a blocking variable.
+
+zagat and fodors are available.
+
+```{r}
+
+```
+
+## 4-8 Comparing pairs
+Now that you've generated the pairs of restaurants, it's time to compare them. You can easily customize how you perform your comparisons using the by and default_comparator arguments. There's no right answer as to what each should be set to, so in this exercise, you'll try a couple options out.
+
+dplyr and reclin are loaded and zagat and fodors are available.
+
+```{r}
+
+```
+
+
+## 4-11 Putting it together
+
+During this chapter, you've cleaned up the city column of zagat using string similarity, as well as generated and compared pairs of restaurants from zagat and fodors. The end is near - all that's left to do is score and select pairs and link the data together, and you'll be able to begin your analysis in no time!
+
+reclin and dplyr are loaded and zagat and fodors are available.
+
+```{r}
+
+```
+
