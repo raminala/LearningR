@@ -342,10 +342,71 @@ sfo_survey %&gt;%
 <div id="detecting-inconsistent-text-data" class="section level2">
 <h2>2-9 Detecting inconsistent text data</h2>
 <p>You’ve recently received some news that the customer support team wants to ask the SFO survey participants some follow-up questions. However, the auto-dialer that the call center uses isn’t able to parse all of the phone numbers since they’re all in different formats. After some investigation, you found that some phone numbers are written with hyphens (-) and some are written with parentheses ((,)). In this exercise, you’ll figure out which phone numbers have these issues so that you know which ones need fixing.</p>
+<p>dplyr and stringr are loaded, and phone_correction is available.</p>
+<pre class="r"><code># Filter for rows with &quot;-&quot; in the phone column
+phone_correction %&gt;%
+  filter(str_detect(phone, &quot;-&quot;))</code></pre>
+<pre><code>## # A tibble: 1,421 x 4
+##       id airline          destination          phone         
+##    &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;                &lt;chr&gt;         
+##  1  1844 TURKISH AIRLINES ISTANBUL             731-813-2043  
+##  2  1840 TURKISH AIRLINES ISTANBUL             563-732-6802  
+##  3  3010 AMERICAN         MIAMI                (637) 782-6989
+##  4  2097 UNITED INTL      MEXICO CITY          (359) 803-9809
+##  5  1835 TURKISH AIRLINES ISTANBUL             (416) 788-2844
+##  6  1849 TURKISH AIRLINES ISTANBUL             311-305-4367  
+##  7  2289 QANTAS           SYDNEY               817-400-0481  
+##  8   105 UNITED           WASHINGTON DC-DULLES (729) 609-4819
+##  9  1973 CATHAY PACIFIC   HONG KONG            (201) 737-4409
+## 10  2385 UNITED INTL      SYDNEY               (137) 611-3694
+## # ... with 1,411 more rows</code></pre>
+<pre class="r"><code># Filter for rows with &quot;(&quot; or &quot;)&quot; in the phone column
+phone_correction %&gt;%
+  filter(str_detect(phone, fixed(&quot;(&quot;)) | str_detect(phone, fixed(&quot;)&quot;)))</code></pre>
+<pre><code>## # A tibble: 739 x 4
+##       id airline          destination          phone         
+##    &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;                &lt;chr&gt;         
+##  1  3010 AMERICAN         MIAMI                (637) 782-6989
+##  2  2097 UNITED INTL      MEXICO CITY          (359) 803-9809
+##  3  1835 TURKISH AIRLINES ISTANBUL             (416) 788-2844
+##  4   105 UNITED           WASHINGTON DC-DULLES (729) 609-4819
+##  5  1973 CATHAY PACIFIC   HONG KONG            (201) 737-4409
+##  6  2385 UNITED INTL      SYDNEY               (137) 611-3694
+##  7   517 UNITED           FT. LAUDERDALE       (812) 869-6263
+##  8  2885 EVA AIR          TAIPEI               (194) 198-0504
+##  9  2128 FRONTIER         DENVER               (299) 137-6993
+## 10  2132 FRONTIER         DENVER               (739) 710-2966
+## # ... with 729 more rows</code></pre>
 </div>
 <div id="replacing-and-removing" class="section level2">
 <h2>2-10 Replacing and removing</h2>
 <p>In the last exercise, you saw that the phone column of sfo_data is plagued with unnecessary parentheses and hyphens. The customer support team has requested that all phone numbers be in the format “123 456 7890”. In this exercise, you’ll use your new stringr skills to fulfill this request.</p>
+<pre class="r"><code># Remove parentheses from phone column
+phone_no_parens &lt;- phone_correction$phone %&gt;%
+  # Remove &quot;(&quot;s
+  str_remove_all(fixed(&quot;(&quot;)) %&gt;%
+  # Remove &quot;)&quot;s
+  str_remove_all(fixed(&quot;)&quot;))
+
+# Add phone_no_parens as column
+phone_correction %&gt;%
+  mutate(phone_no_parens = phone_no_parens,
+  # Replace all hyphens in phone_no_parens with spaces
+         phone_clean = str_replace_all(phone_no_parens, &quot;-&quot;, &quot; &quot;))</code></pre>
+<pre><code>## # A tibble: 2,809 x 6
+##       id airline          destination phone          phone_no_parens phone_clean
+##    &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;       &lt;chr&gt;          &lt;chr&gt;           &lt;chr&gt;      
+##  1  1842 TURKISH AIRLINES ISTANBUL    858 990 5153   858 990 5153    858 990 51~
+##  2  1844 TURKISH AIRLINES ISTANBUL    731-813-2043   731-813-2043    731 813 20~
+##  3  1840 TURKISH AIRLINES ISTANBUL    563-732-6802   563-732-6802    563 732 68~
+##  4  1837 TURKISH AIRLINES ISTANBUL    145 725 4021   145 725 4021    145 725 40~
+##  5  1833 TURKISH AIRLINES ISTANBUL    931 311 5801   931 311 5801    931 311 58~
+##  6  3010 AMERICAN         MIAMI       (637) 782-6989 637 782-6989    637 782 69~
+##  7  1838 TURKISH AIRLINES ISTANBUL    172 990 3485   172 990 3485    172 990 34~
+##  8  1845 TURKISH AIRLINES ISTANBUL    872 325 4341   872 325 4341    872 325 43~
+##  9  2097 UNITED INTL      MEXICO CITY (359) 803-9809 359 803-9809    359 803 98~
+## 10  1846 TURKISH AIRLINES ISTANBUL    152 790 8238   152 790 8238    152 790 82~
+## # ... with 2,799 more rows</code></pre>
 </div>
 <div id="invalid-phone-numbers" class="section level2">
 <h2>2-11 Invalid phone numbers</h2>
