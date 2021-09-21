@@ -515,7 +515,7 @@ The city column contains the name of the city that the restaurant is located in.
 
 dplyr and fuzzyjoin are loaded, and zagat and cities are available.
 
-```{r}
+```{r results='hide'}
 
 cities <- data.frame(city_actual=c("new york", "los angeles", "atlanta", "san francisco", "las vegas"))
 

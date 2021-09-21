@@ -696,12 +696,34 @@ assert_all_are_not_na(accounts_clean$cust_id)</code></pre>
 <h2>4-3 Small distance, small difference</h2>
 <p>In the video exercise, you learned that there are multiple ways to calculate how similar or different two strings are. Now you’ll practice using the stringdist package to compute string distances using various methods. It’s important to be familiar with different methods, as some methods work better on certain datasets, while others work better on other datasets.</p>
 <p>The stringdist package has been loaded for you.</p>
+<p>Calculate the distance between “las angelos” and “los angeles”.</p>
+<pre class="r"><code># Calculate Damerau-Levenshtein distance
+stringdist(&quot;las angelos&quot;, &quot;los angeles&quot;, method = &quot;dl&quot;)</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code># Calculate LCS distance
+stringdist(&quot;las angelos&quot;, &quot;los angeles&quot;, method = &quot;lcs&quot;)</code></pre>
+<pre><code>## [1] 4</code></pre>
+<pre class="r"><code># Calculate Jaccard distance
+stringdist(&quot;las angelos&quot;, &quot;los angeles&quot;, method = &quot;jaccard&quot;)</code></pre>
+<pre><code>## [1] 0</code></pre>
 </div>
 <div id="fixing-typos-with-string-distance" class="section level2">
 <h2>4-4 Fixing typos with string distance</h2>
 <p>In this chapter, one of the datasets you’ll be working with, zagat, is a set of restaurants in New York, Los Angeles, Atlanta, San Francisco, and Las Vegas. The data is from Zagat, a company that collects restaurant reviews, and includes the restaurant names, addresses, phone numbers, as well as other restaurant information.</p>
 <p>The city column contains the name of the city that the restaurant is located in. However, there are a number of typos throughout the column. Your task is to map each city to one of the five correctly-spelled cities contained in the cities data frame.</p>
 <p>dplyr and fuzzyjoin are loaded, and zagat and cities are available.</p>
+<pre class="r"><code>cities &lt;- data.frame(city_actual=c(&quot;new york&quot;, &quot;los angeles&quot;, &quot;atlanta&quot;, &quot;san francisco&quot;, &quot;las vegas&quot;))
+
+# Count the number of each city variation
+zagat %&gt;%
+  count(city)
+
+# Join zagat and cities and look at results
+zagat %&gt;%
+  # Left join based on stringdist using city and city_actual cols
+  stringdist_left_join(cities, by = c(city = &quot;city_actual&quot;)) %&gt;%
+  # Select the name, city, and city_actual cols
+  select(name, city, city_actual)</code></pre>
 </div>
 <div id="pair-blocking" class="section level2">
 <h2>4-7 Pair blocking</h2>
