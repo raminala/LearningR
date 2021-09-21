@@ -402,7 +402,7 @@ accounts_2 %>%
 
 ## 3-6 Validating age
 
-Now that you found some inconsistencies in the total amounts, you're suspicious that there may also be inconsistencies in the acct_agecolumn, and you want to see if these inconsistencies are related. Using the skills you learned from the video exercise, you'll need to validate the age of each account and see if rows with inconsistent acct_ages are the same ones that had inconsistent totals
+Now that you found some inconsistencies in the total amounts, you're suspicious that there may also be inconsistencies in the acct_age column, and you want to see if these inconsistencies are related. Using the skills you learned from the video exercise, you'll need to validate the age of each account and see if rows with inconsistent acct_ages are the same ones that had inconsistent totals
 
 dplyr and lubridate are loaded, and accounts is available.
 
