@@ -12,9 +12,10 @@ tags:
 ```{r include=FALSE}
 library(tidyverse)
 library(assertive)
+library(lubridate) # for date conversion
 
 bike_share_rides <- readRDS("bike_share_rides_ch1_1.rds")
-ch3_1_accounts <- readRDS("ch3_1_accounts.rds")
+
 fodors <- readRDS("fodors.rds")
 sfo_survey <- readRDS("sfo_survey_ch2_1.rds")
 zagat <- readRDS("zagat.rds")
@@ -24,6 +25,9 @@ dest_sizes <- data.frame(dest_size= c("Small", "Medium", "Large", "Hub"),
 
 phone_correction <- read_csv("phone_correction.csv")
 
+accounts <- readRDS("ch3_1_accounts.rds")
+account_offices <- read_csv("account_offices.csv")
+accounts_2  <- read_csv("accounts_2.csv")
 ```
 
 It's commonly said that data scientists spend 80% of their time cleaning and manipulating data and only 20% of their time analyzing it. The time spent cleaning is vital since analyzing dirty data can lead you to draw inaccurate conclusions.
@@ -346,7 +350,15 @@ In this chapter, you work at an asset management company and you'll be working w
 dplyr and lubridate are loaded and accounts is available.
 
 ```{r}
+# Check out the accounts data frame
+head(accounts)
 
+# Define the date formats
+formats <- c("%Y-%m-%d", "%B %d, %Y")
+
+# Convert dates to the same format
+accounts %>%
+  mutate(date_opened_clean = parse_date_time(date_opened, formats))
 ```
 
 ## 3-3 Currency uniformity
@@ -357,8 +369,20 @@ The formula to convert yen to dollars is USD = JPY / 104.
 
 dplyr and ggplot2 are loaded and the accounts and account_offices data frames are available.
 
-```{r}
+```{r warning=FALSE}
+# Scatter plot of opening date and total amount
+accounts %>%
+  ggplot(aes(x = date_opened, y = total)) +
+  geom_point()
 
+# Left join accounts to account_offices by id
+accounts %>%
+  left_join(account_offices, by = "id") %>%
+  # Convert totals from the Tokyo office to USD
+  mutate(total_usd = ifelse(office == "Tokyo", total / 104, total)) %>%
+  # Scatter plot of opening date vs total_usd
+  ggplot(aes(x = date_opened, y = total_usd)) +
+    geom_point()
 ```
 
 ## 3-5 Validating totals
@@ -368,7 +392,12 @@ In this lesson, you'll continue to work with the accounts data frame, but this t
 dplyr is loaded and accounts is available.
 
 ```{r}
-
+# Find invalid totals
+accounts_2 %>%
+  # theoretical_total: sum of the three funds
+  mutate(theoretical_total=fund_A +fund_B +fund_C) %>%
+  # Find accounts where total doesn't match theoretical_total
+  filter(theoretical_total!=total)
 ```
 
 ## 3-6 Validating age

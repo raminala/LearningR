@@ -116,13 +116,8 @@ assert_all_are_in_closed_range(bike_share_rides$duration_min_const, lower = 0, u
 <h2>1-7 Back to the future</h2>
 <p>Something has gone wrong and it looks like you have data with dates from the future, which is way outside of the date range you expected to be working with. To fix this, you’ll need to remove any rides from the dataset that have a date in the future. Before you can do this, the date column needs to be converted from a character to a Date. Having these as Date objects will make it much easier to figure out which rides are from the future, since R makes it easy to check if one Date object is before (&lt;) or after (&gt;) another.</p>
 <p>dplyr and assertive are loaded and bike_share_rides is available.</p>
-<pre class="r"><code>library(lubridate)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;lubridate&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     date, intersect, setdiff, union</code></pre>
-<pre class="r"><code># Convert date to Date type
+<pre class="r"><code>library(lubridate)
+# Convert date to Date type
 bike_share_rides &lt;- bike_share_rides %&gt;%
   mutate(date = as.Date(date))
 
@@ -452,17 +447,157 @@ phone_correction %&gt;%
 <h2>3-2 Date uniformity</h2>
 <p>In this chapter, you work at an asset management company and you’ll be working with the accounts dataset, which contains information about each customer, the amount in their account, and the date their account was opened. Your boss has asked you to calculate some summary statistics about the average value of each account and whether the age of the account is associated with a higher or lower account value. Before you can do this, you need to make sure that the accounts dataset you’ve been given doesn’t contain any uniformity problems. In this exercise, you’ll investigate the date_opened column and clean it up so that all the dates are in the same format.</p>
 <p>dplyr and lubridate are loaded and accounts is available.</p>
+<pre class="r"><code># Check out the accounts data frame
+head(accounts)</code></pre>
+<pre><code>##         id      date_opened    total
+## 1 A880C79F       2003-10-19   169305
+## 2 BE8222DF October 05, 2018   107460
+## 3 19F9E113       2008-07-29 15297152
+## 4 A2FE52A3       2005-06-09 14897272
+## 5 F6DC2C08       2012-03-31   124568
+## 6 D2E55799       2007-06-20 13635752</code></pre>
+<pre class="r"><code># Define the date formats
+formats &lt;- c(&quot;%Y-%m-%d&quot;, &quot;%B %d, %Y&quot;)
+
+# Convert dates to the same format
+accounts %&gt;%
+  mutate(date_opened_clean = parse_date_time(date_opened, formats))</code></pre>
+<pre><code>##          id        date_opened    total date_opened_clean
+## 1  A880C79F         2003-10-19   169305        2003-10-19
+## 2  BE8222DF   October 05, 2018   107460        2018-10-05
+## 3  19F9E113         2008-07-29 15297152        2008-07-29
+## 4  A2FE52A3         2005-06-09 14897272        2005-06-09
+## 5  F6DC2C08         2012-03-31   124568        2012-03-31
+## 6  D2E55799         2007-06-20 13635752        2007-06-20
+## 7  53AE87EF  December 01, 2017 15375984        2017-12-01
+## 8  3E97F253         2019-06-03 14515800        2019-06-03
+## 9  4AE79EA1         2011-05-07 23338536        2011-05-07
+## 10 2322DFB4         2018-04-07   189524        2018-04-07
+## 11 645335B2         2018-11-16   154001        2018-11-16
+## 12 D5EB0F00         2001-04-16   174576        2001-04-16
+## 13 1EB593F7         2005-04-21   191989        2005-04-21
+## 14 DDBA03D9         2006-06-13  9617192        2006-06-13
+## 15 40E4A2F4         2009-01-07   180547        2009-01-07
+## 16 39132EEA         2012-07-07 15611960        2012-07-07
+## 17 387F8E4D   January 03, 2011  9402640        2011-01-03
+## 18 11C3C3C0  December 24, 2017   180003        2017-12-24
+## 19 C2FC91E1         2004-05-21   105722        2004-05-21
+## 20 FB8F01C1         2001-09-06 22575072        2001-09-06
+## 21 0128D2D0         2005-04-09 19179784        2005-04-09
+## 22 BE6E4B3F         2009-10-20 15679976        2009-10-20
+## 23 7C6E2ECC         2003-05-16   169814        2003-05-16
+## 24 02E63545         2015-10-25   125117        2015-10-25
+## 25 4399C98B       May 19, 2001   130421        2001-05-19
+## 26 98F4CF0F       May 27, 2014 14893944        2014-05-27
+## 27 247222A6       May 26, 2015   150372        2015-05-26
+## 28 420985EE         2008-12-27   123125        2008-12-27
+## 29 0E3903BA         2015-11-11   182668        2015-11-11
+## 30 64EF994F         2009-02-26   161141        2009-02-26
+## 31 CCF84EDB         2008-12-26   136128        2008-12-26
+## 32 51C21705     April 22, 2016 16191136        2016-04-22
+## 33 C868C6AD   January 31, 2000 11733072        2000-01-31
+## 34 92C237C6         2005-12-13 11838528        2005-12-13
+## 35 9ECEADB2       May 17, 2018   146153        2018-05-17
+## 36 DF0AFE50         2004-12-03 15250040        2004-12-03
+## 37 5CD605B3         2016-10-19    87921        2016-10-19
+## 38 402839E2 September 14, 2019   163416        2019-09-14
+## 39 78286CE7         2009-10-05 15049216        2009-10-05
+## 40 168E071B         2013-07-11    87826        2013-07-11
+## 41 466CCDAA         2002-03-24 14981304        2002-03-24
+## 42 8DE1ECB9         2015-10-17   217975        2015-10-17
+## 43 E19FE6B5      June 06, 2009   101936        2009-06-06
+## 44 1240D39C September 07, 2011 15761824        2011-09-07
+## 45 A7BFAA72         2019-11-12   133790        2019-11-12
+## 46 C3D24436       May 24, 2002   101584        2002-05-24
+## 47 FAD92F0F September 13, 2007 17081064        2007-09-13
+## 48 236A1D51         2019-10-01 18486936        2019-10-01
+## 49 A6DDDC4C         2000-08-17    67962        2000-08-17
+## 50 DDFD0B3D         2001-04-11 15776384        2001-04-11
+## 51 D13375E9  November 01, 2005 13944632        2005-11-01
+## 52 AC50B796         2016-06-30 16111264        2016-06-30
+## 53 290319FD       May 27, 2005   170178        2005-05-27
+## 54 FC71925A  November 02, 2006   186281        2006-11-02
+## 55 7B0F3685         2013-05-23   179102        2013-05-23
+## 56 BE411172         2017-02-24 17689984        2017-02-24
+## 57 58066E39 September 16, 2015 17025632        2015-09-16
+## 58 EA7FF83A         2004-11-02 11598704        2004-11-02
+## 59 14A2DDB7         2019-03-06 12808952        2019-03-06
+## 60 305EEAA8         2018-09-01 14417728        2018-09-01
+## 61 8F25E54C  November 24, 2008   189126        2008-11-24
+## 62 19DD73C6         2002-12-31 14692600        2002-12-31
+## 63 ACB8E6AF         2013-07-27    71359        2013-07-27
+## 64 91BFCC40         2014-01-10   132859        2014-01-10
+## 65 86ACAF81         2011-12-14 24533704        2011-12-14
+## 66 77E85C14  November 20, 2009 13868192        2009-11-20
+## 67 C5C6B79D         2008-03-01   188424        2008-03-01
+## 68 0E5B69F5         2018-05-07 18650632        2018-05-07
+## 69 5275B518         2017-11-23    71665        2017-11-23
+## 70 17217048       May 25, 2001 20111208        2001-05-25
+## 71 E7496A7F         2008-09-27   142669        2008-09-27
+## 72 41BBB7B4  February 22, 2005   144229        2005-02-22
+## 73 F6C7ABA1         2008-01-07   183440        2008-01-07
+## 74 E699DF01  February 17, 2008   199603        2008-02-17
+## 75 BACA7378         2005-05-11   204271        2005-05-11
+## 76 84A4302F         2003-08-12 19420648        2003-08-12
+## 77 F8A78C27     April 05, 2006    41164        2006-04-05
+## 78 8BADDF6A  December 31, 2010   158203        2010-12-31
+## 79 9FB57E68 September 01, 2017   216352        2017-09-01
+## 80 5C98E8F5         2014-11-25   103200        2014-11-25
+## 81 6BB53C2A  December 03, 2016   146394        2016-12-03
+## 82 E23F2505   October 15, 2017   121614        2017-10-15
+## 83 0C121914      June 21, 2017   227729        2017-06-21
+## 84 3627E08A         2008-04-01   238104        2008-04-01
+## 85 A94493B3    August 01, 2009    85975        2009-08-01
+## 86 0682E9DE         2002-10-01    72832        2002-10-01
+## 87 49931170         2011-03-25 14519856        2011-03-25
+## 88 A154F63B         2000-07-11   133800        2000-07-11
+## 89 3690CCED         2014-10-19   226595        2014-10-19
+## 90 48F5E6D8  February 16, 2020   135435        2020-02-16
+## 91 515FAD84         2013-06-20    98190        2013-06-20
+## 92 59794264         2008-01-16   157964        2008-01-16
+## 93 2038185B         2016-06-24   194662        2016-06-24
+## 94 65EAC615  February 20, 2004   140191        2004-02-20
+## 95 6C7509C9 September 16, 2000   212089        2000-09-16
+## 96 BD969A9D         2007-04-29   167238        2007-04-29
+## 97 B0CDCE3D       May 28, 2014   145240        2014-05-28
+## 98 33A7F03E   October 14, 2007   191839        2007-10-14</code></pre>
 </div>
 <div id="currency-uniformity" class="section level2">
 <h2>3-3 Currency uniformity</h2>
 <p>Now that your dates are in order, you’ll need to correct any unit differences. When you first plot the data, you’ll notice that there’s a group of very high values, and a group of relatively lower values. The bank has two different offices - one in New York, and one in Tokyo, so you suspect that the accounts managed by the Tokyo office are in Japanese yen instead of U.S. dollars. Luckily, you have a data frame called account_offices that indicates which office manages each customer’s account, so you can use this information to figure out which totals need to be converted from yen to dollars.</p>
 <p>The formula to convert yen to dollars is USD = JPY / 104.</p>
 <p>dplyr and ggplot2 are loaded and the accounts and account_offices data frames are available.</p>
+<pre class="r"><code># Scatter plot of opening date and total amount
+accounts %&gt;%
+  ggplot(aes(x = date_opened, y = total)) +
+  geom_point()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code># Left join accounts to account_offices by id
+accounts %&gt;%
+  left_join(account_offices, by = &quot;id&quot;) %&gt;%
+  # Convert totals from the Tokyo office to USD
+  mutate(total_usd = ifelse(office == &quot;Tokyo&quot;, total / 104, total)) %&gt;%
+  # Scatter plot of opening date vs total_usd
+  ggplot(aes(x = date_opened, y = total_usd)) +
+    geom_point()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
 </div>
 <div id="validating-totals" class="section level2">
 <h2>3-5 Validating totals</h2>
 <p>In this lesson, you’ll continue to work with the accounts data frame, but this time, you have a bit more information about each account. There are three different funds that account holders can store their money in. In this exercise, you’ll validate whether the total amount in each account is equal to the sum of the amount in fund_A, fund_B, and fund_C. If there are any accounts that don’t match up, you can look into them further to see what went wrong in the bookkeeping that led to inconsistencies.</p>
 <p>dplyr is loaded and accounts is available.</p>
+<pre class="r"><code># Find invalid totals
+accounts_2 %&gt;%
+  # theoretical_total: sum of the three funds
+  mutate(theoretical_total=fund_A +fund_B +fund_C) %&gt;%
+  # Find accounts where total doesn&#39;t match theoretical_total
+  filter(theoretical_total!=total)</code></pre>
+<pre><code>## # A tibble: 3 x 8
+##   id       date_opened  total fund_A fund_B fund_C acct_age theoretical_total
+##   &lt;chr&gt;    &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;             &lt;dbl&gt;
+## 1 D5EB0F00 4/16/2001   130920  69487  48681  56408       20            174576
+## 2 92C237C6 12/13/2005   85362  72556  21739  19537       15            113832
+## 3 0E5B69F5 5/7/2018    134488  88475  44383  46475        3            179333</code></pre>
 </div>
 <div id="validating-age" class="section level2">
 <h2>3-6 Validating age</h2>
