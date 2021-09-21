@@ -19,7 +19,7 @@ imaging:
 params:
   description: Variaty of instructions for using R in Machine Learning. See [Introduction to Statistical Learning Series](https://www.youtube.com/playlist?list=PLOg0ngHtcqbPTlZzRHA2ocQZqB1D_qZ5V) for theorical background.
   homeMetaContent: An accessibility-friendly Hugo theme, ported from the original Cupper project.
-  footer: Made with [Hugo](https://gohugo.io/). Themed by [Cupper](https://github.com/zwbetz-gh/cupper-hugo-theme). Deployed to [Netlify](https://www.netlify.com/).
+  footer: [Ramin Ala](https://www.linkedin.com/in/ramin-ala-6645b3188/?originalSubdomain=ca).
   # For more date formats see https://gohugo.io/functions/format/
   dateFormat: Jan 2, 2006
   codePenUser: someUser
