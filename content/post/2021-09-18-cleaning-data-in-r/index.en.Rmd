@@ -539,18 +539,36 @@ The first step towards this goal is to generate pairs of records so that you can
 
 zagat and fodors are available.
 
-```{r}
+---
+# Load reclin
+library(reclin)
 
-```
+# Generate all possible pairs
+pair_blocking(zagat, fodors)
+
+# Generate pairs with same city
+pair_blocking(zagat, fodors, blocking_var = "city")
+---
 
 ## 4-8 Comparing pairs
 Now that you've generated the pairs of restaurants, it's time to compare them. You can easily customize how you perform your comparisons using the by and default_comparator arguments. There's no right answer as to what each should be set to, so in this exercise, you'll try a couple options out.
 
 dplyr and reclin are loaded and zagat and fodors are available.
 
-```{r}
+---
+# Generate pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs by name using lcs()
+  compare_pairs(by = "name",
+      default_comparator = lcs())
 
-```
+
+# Generate pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs by name, phone, addr
+  compare_pairs(by = c("name", "phone", "addr"),
+      default_comparator = jaro_winkler())
+---
 
 
 ## 4-11 Putting it together
@@ -559,7 +577,16 @@ During this chapter, you've cleaned up the city column of zagat using string sim
 
 reclin and dplyr are loaded and zagat and fodors are available.
 
-```{r}
-
-```
+---
+# Create pairs
+pair_blocking(zagat, fodors, blocking_var = "city") %>%
+  # Compare pairs
+  compare_pairs(by = "name", default_comparator = jaro_winkler()) %>%
+  # Score pairs
+  score_problink() %>%
+  # Select pairs
+  select_n_to_m() %>%
+  # Link data 
+  link()
+---
 
