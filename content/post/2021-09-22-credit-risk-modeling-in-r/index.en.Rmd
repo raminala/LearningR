@@ -205,3 +205,91 @@ conf_matrix[2,2]/(conf_matrix[2,1]+conf_matrix[2,2])
 ```
 
 
+## 2-2 Basic logistic regression
+
+In the video, you looked at a logistic regression model including the variable age as a predictor. Now, you will include a categorical variable, and learn how to interpret its parameter estimates.
+
+When you include a categorical variable in a logistic regression model in R, you will obtain a parameter estimate for all but one of its categories. This category for which no parameter estimate is given is called the reference category. The parameter for each of the other categories represents the odds ratio in favor of a loan default between the category of interest and the reference category. Don't worry if this doesn't make complete sense to you yet, you'll do more exercises on this later on!
+
+```{r}
+# Build a glm model with variable ir_cat as a predictor
+log_model_cat <- glm(loan_status ~ ir_cat, family = "binomial", data = training_set)
+
+
+# Print the parameter estimates 
+log_model_cat
+
+# Look at the different categories in ir_cat using table()
+table(loan_data$ir_cat)
+```
+
+```{r}
+# to access coefficients:
+log_model_cat$coefficients
+```
+
+## 2-4 Multiple variables in a logistic regression model
+
+The interpretation of a single parameter still holds when including several variables in a model. When you do include several variables and ask for the interpretation when a certain variable changes, it is assumed that the other variables remain constant, or unchanged. There is a fancy latin phrase for this, ceteris paribus, literally meaning "keeping all others the same".
+
+To build a logistic regression model with multiple variables, you can use the + sign to add variables. Your formula will look something like:
+
+y ~ x1 + ... + xk
+
+In order to evaluate the model there are a number of things to be aware of. You already looked at the parameter values, but that is not the only thing of importance. Also important is the statistical significance of a certain parameter estimate. The significance of a parameter is often referred to as a p-value, however in a model output you will see it denoted as Pr(>|t|). In glm, mild significance is denoted by a "." to very strong significance denoted by "***". When a parameter is not significant, this means you cannot assure that this parameter is significantly different from 0. Statistical significance is important. In general, it only makes sense to interpret the effect on default for significant parameters.
+
+```{r}
+# Build the logistic regression model
+log_model_multi <- glm(loan_status ~ age+ir_cat+grade+loan_amnt+annual_inc, family = "binomial", data = training_set)
+
+
+# Obtain significance levels using summary()
+summary(log_model_multi)
+```
+
+## 2-7 Predicting the probability of default
+
+In the video you looked at the predicted probability of default for one case in the test set. Luckily, you can predict the probability for all the test set cases at once using the predict() function.
+
+After having obtained all the predictions for the test set elements, it is useful to get an initial idea of how good the model is at discriminating by looking at the range of predicted probabilities. A small range means that predictions for the test set cases do not lie far apart, and therefore the model might not be very good at discriminating good from bad customers. With low default percentages, you will notice that in general, very low probabilities of default are predicted. It's time to have a look at a first model.
+
+log_model_small is loaded in the workspace.
+
+```{r}
+
+```
+
+## 2-8 Making more discriminative models
+
+In the previous exercise, the range for predicted probabilities of default was rather small. As discussed, small predicted default probabilities are to be expected with low default rates, but building bigger models (which basically means: including more predictors) can expand the range of your predictions.
+
+Whether this will eventually lead to better predictions still needs to be validated and depends on the quality of the newly included predictors. But first, have a look at how bigger models can expand the range.
+
+```{r}
+
+```
+
+## 2-10 Specifying a cut-off
+
+We have shown you how the specification of a cut-off can make the difference to obtain a good confusion matrix. Now, you will learn how to transform the prediction vector to a vector of binary values indicating the status of the loan. The ifelse() function in R can help you here.
+
+Applying the ifelse() function in the context of a cut-off, you would have something like
+
+ifelse(predictions > 0.3, 1, 0)
+
+In the first argument, you are testing whether a certain value in the predictions-vector is bigger than 0.3. If this is TRUE, R returns "1" (specified in the second argument), if FALSE, R returns "0" (specified in the third argument), representing "default" and "no default", respectively.
+
+```{r}
+
+```
+
+## 2-13 Comparing link functions for a given cut-off
+
+In this last exercise, you will fit a model using each of the three link functions (logit, probit and cloglog), make predictions for the test set, classify the predictions in the appropriate group (default versus non-default) for a given cut-off, make a confusion matrix and compute the accuracy and sensitivity for each of the models given the cut-off value! Wow, you've learned a lot so far. And finally, you will try to identify the model that performs best in terms of accuracy given the cut-off value!
+
+It is important to know that the differences between the models will generally be very small, and again, the results will depend on the chosen cut-off value. The observed outcome (default versus non-default) is stored in true_val in the console.
+
+```{r}
+
+```
+
