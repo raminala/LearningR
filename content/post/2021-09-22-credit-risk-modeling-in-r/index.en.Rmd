@@ -55,7 +55,7 @@ The data set loan_data is loaded in your workspace. You previously explored cate
 To do this, let's experiment with the function hist() to understand the distribution of the number of loans for different customers.
 
 ```{r}
-loan_data %>% ggplot(aes(loan_amnt))+ geom_histogram(bins = 30)+
+loan_data %>% ggplot(aes(loan_amnt))+ geom_histogram(bins = 30, fill="white", color="black")+
   labs(x = "Loan amount", title = "Histogram of the loan amount")
 ```
 
