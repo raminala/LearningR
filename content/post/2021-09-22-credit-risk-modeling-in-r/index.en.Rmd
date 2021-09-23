@@ -1,0 +1,21 @@
+---
+title: Credit Risk Modeling in R
+author: ''
+date: '2021-09-22'
+slug: credit-risk-modeling-in-r
+categories: []
+tags:
+  - logistic regression
+  - decision trees
+---
+
+```{r include=FALSE}
+aa <- readRDS("loan_data_ch1.rds")
+bb <- readRDS("loan_data_ch2.rds")
+```
+
+
+This hands-on-course with real-life credit data will teach you how to model credit risk by using logistic regression and decision trees in R.
+
+Modeling credit risk for both personal and company loans is of major importance for banks. The probability that a debtor will default is a key component in getting to a measure for credit risk. While other models will be introduced in this course as well, you will learn about two model types that are often used in the credit scoring context; logistic regression and decision trees. You will learn how to use them in this particular context, and how these models are evaluated by banks.
+
