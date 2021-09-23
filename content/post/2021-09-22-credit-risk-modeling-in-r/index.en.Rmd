@@ -185,7 +185,11 @@ test_set <- loan_data[-index_train, ]
 ```
 
 
-## 1-13 
+## 1-13 Creating a confusion matrix
+
+In this example, assume that you have run a model and stored the predicted outcomes in a vector called model_pred. You want to see how the model performed so you will construct a confusion matrix. You will compare the actual loan status column (loan_status) to the predicted values (model_pred), using the table() function, where the arguments are the true values and the predicted values. Recall the confusion matrix structure:
+
+![Caption for the picture.](1.JPG)
 
 ```{r}
 

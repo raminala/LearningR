@@ -205,6 +205,11 @@ training_set &lt;- loan_data[index_train, ]
 # Create test set: test_set
 test_set &lt;- loan_data[-index_train, ]</code></pre>
 </div>
-<div id="section" class="section level2">
-<h2>1-13</h2>
+<div id="creating-a-confusion-matrix" class="section level2">
+<h2>1-13 Creating a confusion matrix</h2>
+<p>In this example, assume that you have run a model and stored the predicted outcomes in a vector called model_pred. You want to see how the model performed so you will construct a confusion matrix. You will compare the actual loan status column (loan_status) to the predicted values (model_pred), using the table() function, where the arguments are the true values and the predicted values. Recall the confusion matrix structure:</p>
+<div class="figure">
+<img src="1.JPG" alt="" />
+<p class="caption">Caption for the picture.</p>
+</div>
 </div>
