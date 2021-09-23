@@ -155,6 +155,8 @@ loan_data$ir_cat <- as.factor(loan_data$ir_cat)
 
 # Look at your new variable using plot()
 plot(loan_data$ir_cat)
+
+loan_data %>% ggplot(aes(ir_cat))+ geom_bar(fill="grey", color="black", width = 0.8)+theme_minimal()
 ```
 
 

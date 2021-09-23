@@ -102,7 +102,7 @@ CrossTable(loan_data$grade, loan_data$loan_status, prop.r = TRUE, prop.c = FALSE
 <h2>1-5 Histograms</h2>
 <p>The data set loan_data is loaded in your workspace. You previously explored categorical variables using the CrossTable() function. Now you would like to explore continuous variables to identify potential outliers or unexpected data structures.</p>
 <p>To do this, let’s experiment with the function hist() to understand the distribution of the number of loans for different customers.</p>
-<pre class="r"><code>loan_data %&gt;% ggplot(aes(loan_amnt))+ geom_histogram(bins = 30)+
+<pre class="r"><code>loan_data %&gt;% ggplot(aes(loan_amnt))+ geom_histogram(bins = 30, fill=&quot;white&quot;, color=&quot;black&quot;)+
   labs(x = &quot;Loan amount&quot;, title = &quot;Histogram of the loan amount&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
@@ -185,6 +185,8 @@ loan_data$ir_cat &lt;- as.factor(loan_data$ir_cat)
 # Look at your new variable using plot()
 plot(loan_data$ir_cat)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>loan_data %&gt;% ggplot(aes(ir_cat))+ geom_bar(fill=&quot;grey&quot;, color=&quot;black&quot;, width = 0.8)+theme_minimal()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
 </div>
 <div id="splitting-the-data-set" class="section level2">
 <h2>1-12 Splitting the data set</h2>
