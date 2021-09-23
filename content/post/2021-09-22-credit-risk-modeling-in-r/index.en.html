@@ -212,4 +212,17 @@ test_set &lt;- loan_data[-index_train, ]</code></pre>
 <img src="1.JPG" alt="" />
 <p class="caption">Caption for the picture.</p>
 </div>
+<pre class="r"><code># Create confusion matrix
+ conf_matrix &lt;- table(test_set$loan_status, model_pred$x)
+conf_matrix</code></pre>
+<pre><code>##    
+##        0    1
+##   0 6025 2584
+##   1  755  334</code></pre>
+<pre class="r"><code># Compute classification accuracy
+(conf_matrix[1,1]+conf_matrix[2,2])/(conf_matrix[1,1]+conf_matrix[2,2]+conf_matrix[2,1]+conf_matrix[1,2])</code></pre>
+<pre><code>## [1] 0.6557022</code></pre>
+<pre class="r"><code># Compute sensitivity
+conf_matrix[2,2]/(conf_matrix[2,1]+conf_matrix[2,2])</code></pre>
+<pre><code>## [1] 0.3067034</code></pre>
 </div>
