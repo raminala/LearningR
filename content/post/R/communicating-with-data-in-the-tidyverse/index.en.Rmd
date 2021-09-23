@@ -11,8 +11,11 @@ tags:
 ```{r results='hide'}
 library(tidyverse)
 
-ilo_hourly_compensation <- read.csv("ilo_hourly_compensation.csv")
-ilo_working_hours <- read.csv("ilo_working_hours.csv")
+#ilo_hourly_compensation <- read.csv("ilo_hourly_compensation.csv")
+#ilo_working_hours <- read.csv("ilo_working_hours.csv")
+
+load("ilo_hourly_compensation.RData")
+load("ilo_working_hours.RData")
 ```
 
 ## 1-2 Join the two data sets together
