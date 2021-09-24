@@ -357,47 +357,33 @@ log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = 
 <h2>2-13 Comparing link functions for a given cut-off</h2>
 <p>In this last exercise, you will fit a model using each of the three link functions (logit, probit and cloglog), make predictions for the test set, classify the predictions in the appropriate group (default versus non-default) for a given cut-off, make a confusion matrix and compute the accuracy and sensitivity for each of the models given the cut-off value! Wow, you’ve learned a lot so far. And finally, you will try to identify the model that performs best in terms of accuracy given the cut-off value!</p>
 <p>It is important to know that the differences between the models will generally be very small, and again, the results will depend on the chosen cut-off value. The observed outcome (default versus non-default) is stored in true_val in the console.</p>
-<table style="width:6%;">
-<colgroup>
-<col width="5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td># Fit the logit, probit and cloglog-link logistic regression models
-log_model_logit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-family = binomial(link = logit), data = training_set)
-log_model_probit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-family = binomial(link = probit), data = training_set)</td>
-</tr>
-<tr class="even">
-<td>log_model_cloglog &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-family = binomial(link = cloglog), data = training_set)</td>
-</tr>
-<tr class="odd">
-<td># Make predictions for all models using the test set
-predictions_logit &lt;- predict(log_model_logit, newdata = test_set, type = “response”)
-predictions_probit &lt;- predict(log_model_probit, newdata = test_set, type = “response”)
-predictions_cloglog &lt;- predict(log_model_cloglog, newdata = test_set, type = “response”)</td>
-</tr>
-<tr class="even">
-<td># Use a cut-off of 14% to make binary predictions-vectors
-cutoff &lt;- 0.14
-class_pred_logit &lt;- ifelse(predictions_logit &gt; cutoff, 1, 0)
-class_pred_probit &lt;- ifelse(predictions_probit &gt; cutoff, 1, 0)
-class_pred_cloglog &lt;- ifelse(predictions_cloglog &gt; cutoff, 1, 0)</td>
-</tr>
-<tr class="odd">
-<td># Make a confusion matrix for the three models
-tab_class_logit &lt;- table(true_val,class_pred_logit)
-tab_class_probit &lt;- table(true_val,class_pred_probit)
-tab_class_cloglog &lt;- table(true_val,class_pred_cloglog)</td>
-</tr>
-<tr class="even">
-<td># Compute the classification accuracy for all three models
-acc_logit &lt;- sum(diag(tab_class_logit)) / nrow(test_set)
-acc_probit &lt;- sum(diag(tab_class_probit)) / nrow(test_set)
-acc_cloglog &lt;- sum(diag(tab_class_cloglog)) / nrow(test_set)</td>
-</tr>
-</tbody>
-</table>
+<pre class="r"><code># Fit the logit, probit and cloglog-link logistic regression models
+#log_model_logit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+#                      family = binomial(link = logit), data = training_set)
+#log_model_probit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+#                       family = binomial(link = probit), data = training_set)
+
+#log_model_cloglog &lt;-  glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+#                       family = binomial(link = cloglog), data = training_set)
+  
+# Make predictions for all models using the test set
+#predictions_logit &lt;- predict(log_model_logit, newdata = test_set, type = &quot;response&quot;)
+#predictions_probit &lt;- predict(log_model_probit, newdata = test_set, type = &quot;response&quot;)
+#predictions_cloglog &lt;- predict(log_model_cloglog, newdata = test_set, type = &quot;response&quot;)
+  
+# Use a cut-off of 14% to make binary predictions-vectors
+#cutoff &lt;- 0.14
+#class_pred_logit &lt;- ifelse(predictions_logit &gt; cutoff, 1, 0)
+#class_pred_probit &lt;- ifelse(predictions_probit &gt; cutoff, 1, 0)
+#class_pred_cloglog &lt;- ifelse(predictions_cloglog &gt; cutoff, 1, 0)
+  
+# Make a confusion matrix for the three models
+#tab_class_logit &lt;- table(true_val,class_pred_logit)
+#tab_class_probit &lt;- table(true_val,class_pred_probit)
+#tab_class_cloglog &lt;- table(true_val,class_pred_cloglog)
+  
+# Compute the classification accuracy for all three models
+#acc_logit &lt;- sum(diag(tab_class_logit)) / nrow(test_set)
+#acc_probit &lt;- sum(diag(tab_class_probit)) / nrow(test_set)
+#acc_cloglog &lt;- sum(diag(tab_class_cloglog)) / nrow(test_set)</code></pre>
 </div>
