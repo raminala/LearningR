@@ -256,6 +256,16 @@ log_model_small is loaded in the workspace.
 
 ```{r}
 
+log_model_small <- glm(formula = loan_status ~ age + ir_cat, family = "binomial", data = training_set)
+
+# Build the logistic regression model
+predictions_all_small <- predict(log_model_small, newdata = test_set, type = "response")
+
+# Look at the range of the object "predictions_all_small"
+range(predictions_all_small)
+
+min(predictions_all_small)
+max(predictions_all_small)
 ```
 
 ## 2-8 Making more discriminative models
@@ -265,8 +275,19 @@ In the previous exercise, the range for predicted probabilities of default was r
 Whether this will eventually lead to better predictions still needs to be validated and depends on the quality of the newly included predictors. But first, have a look at how bigger models can expand the range.
 
 ```{r}
+# Build the logistic regression model
+log_model_full <- glm(loan_status ~ ., family = "binomial", data = training_set)
+
+# Make PD-predictions for all test set elements using the the full logistic regression model
+#predictions_all_full <- predict(log_model_full, newdata = test_set, type = "response")
+
+# Look at the predictions range
+#range(predictions_all_full)
 
 ```
+
+
+
 
 ## 2-10 Specifying a cut-off
 
@@ -279,7 +300,16 @@ ifelse(predictions > 0.3, 1, 0)
 In the first argument, you are testing whether a certain value in the predictions-vector is bigger than 0.3. If this is TRUE, R returns "1" (specified in the second argument), if FALSE, R returns "0" (specified in the third argument), representing "default" and "no default", respectively.
 
 ```{r}
+# The code for the logistic regression model and the predictions is given below
+log_model_full <- glm(loan_status ~ ., family = "binomial", data = training_set)
 
+#predictions_all_full <- predict(log_model_full, newdata = test_set, type = "response")
+
+# Make a binary predictions-vector using a cut-off of 15%
+#pred_cutoff_15 <- ifelse(predictions_all_full>0.15, 1, 0)
+
+# Construct a confusion matrix
+#table(test_set$loan_status, pred_cutoff_15)
 ```
 
 ## 2-13 Comparing link functions for a given cut-off
@@ -288,7 +318,37 @@ In this last exercise, you will fit a model using each of the three link functio
 
 It is important to know that the differences between the models will generally be very small, and again, the results will depend on the chosen cut-off value. The observed outcome (default versus non-default) is stored in true_val in the console.
 
-```{r}
+---
+# Fit the logit, probit and cloglog-link logistic regression models
+log_model_logit <- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = logit), data = training_set)
+log_model_probit <- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = probit), data = training_set)
 
-```
+log_model_cloglog <-  glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = cloglog), data = training_set)
+  
+# Make predictions for all models using the test set
+predictions_logit <- predict(log_model_logit, newdata = test_set, type = "response")
+predictions_probit <- predict(log_model_probit, newdata = test_set, type = "response")
+predictions_cloglog <- predict(log_model_cloglog, newdata = test_set, type = "response")
+  
+# Use a cut-off of 14% to make binary predictions-vectors
+cutoff <- 0.14
+class_pred_logit <- ifelse(predictions_logit > cutoff, 1, 0)
+class_pred_probit <- ifelse(predictions_probit > cutoff, 1, 0)
+class_pred_cloglog <- ifelse(predictions_cloglog > cutoff, 1, 0)
+  
+# Make a confusion matrix for the three models
+tab_class_logit <- table(true_val,class_pred_logit)
+tab_class_probit <- table(true_val,class_pred_probit)
+tab_class_cloglog <- table(true_val,class_pred_cloglog)
+  
+# Compute the classification accuracy for all three models
+acc_logit <- sum(diag(tab_class_logit)) / nrow(test_set)
+acc_probit <- sum(diag(tab_class_probit)) / nrow(test_set)
+acc_cloglog <- sum(diag(tab_class_cloglog)) / nrow(test_set)
+---
+
+
 
