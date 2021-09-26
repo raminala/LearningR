@@ -448,3 +448,15 @@ text(tree_loss_matrix)
 
 ```
 
+## 3-9 Pruning the tree with changed prior probabilities
+
+In the video, you have learned that pruning a tree is necessary to avoid overfitting. There were some big trees in the previous exercises and now you will put what you have learned into practice, and prune the previously constructed tree with the changed prior probabilities. The rpart package is already loaded in your workspace.
+
+You will first set a seed to make sure the results are reproducible as mentioned in the video, because you will be examining cross-validated error results. Results involve randomness and could differ slightly upon running the function again with a different seed.
+
+In this exercise you will learn to identify which complexity parameter (CP) will minimize the cross-validated error results, then prune your tree based on this value.
+
+```{r}
+
+```
+
