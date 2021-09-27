@@ -680,37 +680,32 @@ predictions_probit contains PD-predictions using the probit and containing varia
 predictions_cloglog contains PD-predictions using the cloglog link and containing variables age, emp_cat, ir_cat and loan_amnt.
 predictions_all_full contains PD-predictions using the default logit link and containing all seven variables in the data set.
 You will first draw the ROC-curves for these four models in one plot. Afterwards, you will look at the area under the curve.</p>
-<table style="width:6%;">
-<colgroup>
-<col width="5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td># Load the pROC-package
-library(pROC)</td>
-</tr>
-<tr class="even">
-<td># Construct the objects containing ROC-information
-ROC_logit &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_logit) ROC_probit &lt;- roc(test_set\)</span>loan_status, predictions_probit)
-ROC_cloglog &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_cloglog) ROC_all_full &lt;- roc(test_set\)</span>loan_status, predictions_all_full)</td>
-</tr>
-<tr class="odd">
-<td># Draw all ROCs on one plot
-plot(ROC_logit)
+<hr />
+</div>
+</div>
+<div id="load-the-proc-package" class="section level1">
+<h1>Load the pROC-package</h1>
+<p>library(pROC)</p>
+</div>
+<div id="construct-the-objects-containing-roc-information" class="section level1">
+<h1>Construct the objects containing ROC-information</h1>
+<p>ROC_logit &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_logit) ROC_probit &lt;- roc(test_set\)</span>loan_status, predictions_probit)
+ROC_cloglog &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_cloglog) ROC_all_full &lt;- roc(test_set\)</span>loan_status, predictions_all_full)</p>
+</div>
+<div id="draw-all-rocs-on-one-plot" class="section level1">
+<h1>Draw all ROCs on one plot</h1>
+<p>plot(ROC_logit)
 lines(ROC_probit, col = “blue”)
 lines(ROC_cloglog, col = “red”)
-lines(ROC_all_full, col = “green”)</td>
-</tr>
-<tr class="even">
-<td># Compute the AUCs
-auc(ROC_logit)
+lines(ROC_all_full, col = “green”)</p>
+</div>
+<div id="compute-the-aucs" class="section level1">
+<h1>Compute the AUCs</h1>
+<p>auc(ROC_logit)
 auc(ROC_probit)
 auc(ROC_cloglog)
-auc(ROC_all_full)</td>
-</tr>
-</tbody>
-</table>
-</div>
+auc(ROC_all_full)</p>
+<hr />
 <div id="roc-curves-for-comparison-of-tree-based-models" class="section level2">
 <h2>4-7 ROC-curves for comparison of tree-based models</h2>
 <p>It’s time for you to repeat the previous exercises, now comparing the tree-based models. The pROC() is now loaded in your workspace. The PD-predictions for tree-based methods are stored in the objects</p>
@@ -718,101 +713,86 @@ auc(ROC_all_full)</td>
 predictions_prior
 predictions_loss_matrix
 predictions_weights</p>
-<table style="width:6%;">
-<colgroup>
-<col width="5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td># Construct the objects containing ROC-information
-ROC_undersample &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_undersample) ROC_prior &lt;- roc(test_set\)</span>loan_status, predictions_prior)
-ROC_loss_matrix &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_loss_matrix) ROC_weights &lt;- roc(test_set\)</span>loan_status, predictions_weights)</td>
-</tr>
-<tr class="even">
-<td># Draw the ROC-curves in one plot
-plot(ROC_undersample)
+<hr />
+</div>
+</div>
+<div id="construct-the-objects-containing-roc-information-1" class="section level1">
+<h1>Construct the objects containing ROC-information</h1>
+<p>ROC_undersample &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_undersample) ROC_prior &lt;- roc(test_set\)</span>loan_status, predictions_prior)
+ROC_loss_matrix &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_loss_matrix) ROC_weights &lt;- roc(test_set\)</span>loan_status, predictions_weights)</p>
+</div>
+<div id="draw-the-roc-curves-in-one-plot" class="section level1">
+<h1>Draw the ROC-curves in one plot</h1>
+<p>plot(ROC_undersample)
 lines(ROC_prior, col=“blue”)
 lines(ROC_loss_matrix, col=“red”)
-lines(ROC_weights, col=“green”)</td>
-</tr>
-<tr class="odd">
-<td># Compute the AUCs
-auc(ROC_undersample)
+lines(ROC_weights, col=“green”)</p>
+</div>
+<div id="compute-the-aucs-1" class="section level1">
+<h1>Compute the AUCs</h1>
+<p>auc(ROC_undersample)
 auc(ROC_prior)
 auc(ROC_loss_matrix)
-auc(ROC_weights)</td>
-</tr>
-</tbody>
-</table>
-</div>
+auc(ROC_weights)</p>
+<hr />
 <div id="another-round-of-pruning-based-on-auc" class="section level2">
 <h2>4-9 Another round of pruning based on AUC</h2>
 <p>In the video you saw how the “full” logistic regression model with a logit link was being pruned based on the AUC. You saw how the variable home_ownership was deleted from the model, as it improved the overall AUC. After repeating this process for two additional rounds, the variables age and ir_cat were deleted, leading to the model:</p>
 <p>log_3_remove_ir &lt;- glm(loan_status ~ loan_amnt + grade + annual_inc + emp_cat, family = binomial, data = training_set)
 with an AUC of 0.6545. Now, it’s your turn to see whether the AUC can still be improved by deleting another variable from the model.</p>
-<table style="width:6%;">
-<colgroup>
-<col width="5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td># Build four models each time deleting one variable in log_3_remove_ir
-log_4_remove_amnt &lt;- glm(loan_status ~ grade + annual_inc + emp_cat,
+<hr />
+</div>
+</div>
+<div id="build-four-models-each-time-deleting-one-variable-in-log_3_remove_ir" class="section level1">
+<h1>Build four models each time deleting one variable in log_3_remove_ir</h1>
+<p>log_4_remove_amnt &lt;- glm(loan_status ~ grade + annual_inc + emp_cat,
 family = binomial, data = training_set)
 log_4_remove_grade &lt;- glm(loan_status ~ loan_amnt + annual_inc + emp_cat,
 family = binomial, data = training_set)
 log_4_remove_inc &lt;- glm(loan_status ~ loan_amnt + grade + emp_cat ,
 family = binomial, data = training_set)
 log_4_remove_emp &lt;- glm(loan_status ~ loan_amnt + grade + annual_inc,
-family = binomial, data = training_set)</td>
-</tr>
-<tr class="even">
-<td># Make PD-predictions for each of the models
-pred_4_remove_amnt &lt;- predict(log_4_remove_amnt, newdata = test_set, type = “response”)
+family = binomial, data = training_set)</p>
+</div>
+<div id="make-pd-predictions-for-each-of-the-models" class="section level1">
+<h1>Make PD-predictions for each of the models</h1>
+<p>pred_4_remove_amnt &lt;- predict(log_4_remove_amnt, newdata = test_set, type = “response”)
 pred_4_remove_grade &lt;- predict(log_4_remove_grade, newdata = test_set, type = “response”)
 pred_4_remove_inc &lt;- predict(log_4_remove_inc, newdata = test_set, type = “response”)
-pred_4_remove_emp &lt;- predict(log_4_remove_emp, newdata = test_set, type = “response”)</td>
-</tr>
-<tr class="odd">
-<td># Compute the AUCs
-auc(test_set<span class="math inline">\(loan_status, pred_4_remove_amnt) auc(test_set\)</span>loan_status, pred_4_remove_grade)
-auc(test_set<span class="math inline">\(loan_status, pred_4_remove_inc) auc(test_set\)</span>loan_status, pred_4_remove_emp)</td>
-</tr>
-</tbody>
-</table>
+pred_4_remove_emp &lt;- predict(log_4_remove_emp, newdata = test_set, type = “response”)</p>
 </div>
+<div id="compute-the-aucs-2" class="section level1">
+<h1>Compute the AUCs</h1>
+<p>auc(test_set<span class="math inline">\(loan_status, pred_4_remove_amnt) auc(test_set\)</span>loan_status, pred_4_remove_grade)
+auc(test_set<span class="math inline">\(loan_status, pred_4_remove_inc) auc(test_set\)</span>loan_status, pred_4_remove_emp)</p>
+<hr />
 <div id="further-model-reduction" class="section level2">
 <h2>4-11 Further model reduction?</h2>
 <p>Deleting the variable loan_amnt, the AUC can be further improved to 0.6548! The resulting model is</p>
 <p>log_4_remove_amnt &lt;- glm(loan_status ~ grade + annual_inc + emp_cat, family = binomial, data = training_set)
 Is it possible to reduce the logistic regression model to only two variable without reducing the AUC? In this exercise you will see if it is possible!</p>
-<table style="width:6%;">
-<colgroup>
-<col width="5%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td># Build three models each time deleting one variable in log_4_remove_amnt
-log_5_remove_grade &lt;- glm(loan_status ~ annual_inc + emp_cat, family = binomial, data = training_set)
-log_5_remove_inc &lt;- glm(loan_status ~ grade + emp_cat , family = binomial, data = training_set)
-log_5_remove_emp &lt;- glm(loan_status ~ grade + annual_inc, family = binomial, data = training_set)</td>
-</tr>
-<tr class="even">
-<td># Make PD-predictions for each of the models
-pred_5_remove_grade &lt;- predict(log_5_remove_grade, newdata = test_set, type = “response”)
-pred_5_remove_inc &lt;- predict(log_5_remove_inc, newdata = test_set, type = “response”)
-pred_5_remove_emp &lt;- predict(log_5_remove_emp, newdata = test_set, type = “response”)</td>
-</tr>
-<tr class="odd">
-<td># Compute the AUCs
-auc(test_set<span class="math inline">\(loan_status, pred_5_remove_grade) auc(test_set\)</span>loan_status, pred_5_remove_inc)
-auc(test_set$loan_status, pred_5_remove_emp)</td>
-</tr>
-<tr class="even">
-<td># Plot the ROC-curve for the best model here
-plot(roc(test_set$loan_status,pred_4_remove_amnt))</td>
-</tr>
-</tbody>
-</table>
+<hr />
 </div>
+</div>
+<div id="build-three-models-each-time-deleting-one-variable-in-log_4_remove_amnt" class="section level1">
+<h1>Build three models each time deleting one variable in log_4_remove_amnt</h1>
+<p>log_5_remove_grade &lt;- glm(loan_status ~ annual_inc + emp_cat, family = binomial, data = training_set)<br />
+log_5_remove_inc &lt;- glm(loan_status ~ grade + emp_cat , family = binomial, data = training_set)
+log_5_remove_emp &lt;- glm(loan_status ~ grade + annual_inc, family = binomial, data = training_set)</p>
+</div>
+<div id="make-pd-predictions-for-each-of-the-models-1" class="section level1">
+<h1>Make PD-predictions for each of the models</h1>
+<p>pred_5_remove_grade &lt;- predict(log_5_remove_grade, newdata = test_set, type = “response”)
+pred_5_remove_inc &lt;- predict(log_5_remove_inc, newdata = test_set, type = “response”)
+pred_5_remove_emp &lt;- predict(log_5_remove_emp, newdata = test_set, type = “response”)</p>
+</div>
+<div id="compute-the-aucs-3" class="section level1">
+<h1>Compute the AUCs</h1>
+<p>auc(test_set<span class="math inline">\(loan_status, pred_5_remove_grade) auc(test_set\)</span>loan_status, pred_5_remove_inc)
+auc(test_set$loan_status, pred_5_remove_emp)</p>
+</div>
+<div id="plot-the-roc-curve-for-the-best-model-here" class="section level1">
+<h1>Plot the ROC-curve for the best model here</h1>
+<p>plot(roc(test_set$loan_status,pred_4_remove_amnt))</p>
+<hr />
 </div>
