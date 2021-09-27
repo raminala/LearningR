@@ -28,3 +28,51 @@ nsdq_symb <- readRDS("nsdq_symb.rds")
 **Course Description**
 
 Having honed your visualization skills by learning ggplot2, it's now time to tackle larger datasets. In this course, you will learn several techniques for visualizing big data, with particular focus on the scalable visualization technique of faceting. You will learn how to put this technique into action using the Trelliscope approach as implemented in the trelliscopejs R package. Trelliscope plugs seamlessly into standard R workflows and produces interactive visualizations that allow you to visually explore your data in detail. By the end of this course, you will be able to easily create interactive exploratory displays of large datasets that will help you and your colleagues gain new insights into your data.
+
+## 1. General strategies for visualizing big data
+
+Learn different strategies for plotting big data using ggplot2, including calculating and plotting summary statistics, various techniques to deal with overplotting, and principles of small multiples with faceting, which leads into Trelliscope.
+
+
+## 1-2 
+
+```{r}
+
+```
+
+## 1-3 
+
+```{r}
+
+```
+
+## 1-4 
+
+```{r}
+
+```
+
+## 1-6 
+
+```{r}
+
+```
+
+## 1-7 
+
+```{r}
+
+```
+
+## 1-8 
+
+```{r}
+
+```
+
+## 1-10 
+
+```{r}
+
+```
+
