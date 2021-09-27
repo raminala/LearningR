@@ -21,7 +21,10 @@ model_pred <- read.csv("model_pred.csv")
 undersampled_training_set <- read.csv("undersampled_training_set.csv")
 case_weights <- read.csv("case_weights.csv")
 
-bb <- readRDS("loan_data_ch2.rds")
+training_set <- readRDS("loan_data_ch2.rds")
+test_set2 <- read.csv("test_set2.csv") %>% mutate(ir_cat=ifelse(ir_cat=="11-Aug","8-11", ir_cat))
+
+training_set_ch3  <- read.csv("training_set_ch3.csv") %>% mutate(ir_cat=ifelse(ir_cat=="11-Aug","8-11", ir_cat))
 ```
 
 This hands-on-course with real-life credit data will teach you how to model credit risk by using logistic regression and decision trees in R.
@@ -262,7 +265,7 @@ log_model_small is loaded in the workspace.
 log_model_small <- glm(formula = loan_status ~ age + ir_cat, family = "binomial", data = training_set)
 
 # Build the logistic regression model
-predictions_all_small <- predict(log_model_small, newdata = test_set, type = "response")
+predictions_all_small <- predict(log_model_small, newdata = test_set2, type = "response")
 
 # Look at the range of the object "predictions_all_small"
 range(predictions_all_small)
@@ -282,13 +285,16 @@ Whether this will eventually lead to better predictions still needs to be valida
 log_model_full <- glm(loan_status ~ ., family = "binomial", data = training_set)
 
 # Make PD-predictions for all test set elements using the the full logistic regression model
-#predictions_all_full <- predict(log_model_full, newdata = test_set, type = "response")
+predictions_all_full <- predict(log_model_full, newdata = test_set2, type = "response")
 
 # Look at the predictions range
-#range(predictions_all_full)
+range(predictions_all_full)
 
 ```
 
+```{r}
+str(training_set)
+```
 
 
 
@@ -305,14 +311,13 @@ In the first argument, you are testing whether a certain value in the prediction
 ```{r}
 # The code for the logistic regression model and the predictions is given below
 log_model_full <- glm(loan_status ~ ., family = "binomial", data = training_set)
-
-predictions_all_full <- predict(log_model_full, newdata = test_set, type = "response")
+predictions_all_full <- predict(log_model_full, newdata = test_set2, type = "response")
 
 # Make a binary predictions-vector using a cut-off of 15%
 pred_cutoff_15 <- ifelse(predictions_all_full>0.15, 1, 0)
 
 # Construct a confusion matrix
-table(test_set$loan_status, pred_cutoff_15)
+table(test_set2$loan_status, pred_cutoff_15)
 ```
 
 ## 2-13 Comparing link functions for a given cut-off
@@ -325,24 +330,25 @@ It is important to know that the differences between the models will generally b
 
 ```{r }
 # Fit the logit, probit and cloglog-link logistic regression models
-#log_model_logit <- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-#                      family = binomial(link = logit), data = training_set)
-#log_model_probit <- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-#                       family = binomial(link = probit), data = training_set)
+log_model_logit <- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                      family = binomial(link = logit), data = training_set)
 
-#log_model_cloglog <-  glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-#                       family = binomial(link = cloglog), data = training_set)
+log_model_probit <- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = probit), data = training_set)
+
+log_model_cloglog <-  glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = cloglog), data = training_set)
   
 # Make predictions for all models using the test set
-#predictions_logit <- predict(log_model_logit, newdata = test_set, type = "response")
-#predictions_probit <- predict(log_model_probit, newdata = test_set, type = "response")
-#predictions_cloglog <- predict(log_model_cloglog, newdata = test_set, type = "response")
+predictions_logit <- predict(log_model_logit, newdata = test_set2, type = "response")
+predictions_probit <- predict(log_model_probit, newdata = test_set2, type = "response")
+predictions_cloglog <- predict(log_model_cloglog, newdata = test_set2, type = "response")
   
 # Use a cut-off of 14% to make binary predictions-vectors
-#cutoff <- 0.14
-#class_pred_logit <- ifelse(predictions_logit > cutoff, 1, 0)
-#class_pred_probit <- ifelse(predictions_probit > cutoff, 1, 0)
-#class_pred_cloglog <- ifelse(predictions_cloglog > cutoff, 1, 0)
+cutoff <- 0.14
+class_pred_logit <- ifelse(predictions_logit > cutoff, 1, 0)
+class_pred_probit <- ifelse(predictions_probit > cutoff, 1, 0)
+class_pred_cloglog <- ifelse(predictions_cloglog > cutoff, 1, 0)
   
 # Make a confusion matrix for the three models
 #tab_class_logit <- table(true_val,class_pred_logit)
@@ -383,7 +389,7 @@ gini_rl <- 2 * 10 / 54 * 44 / 54
 gain <- gini_root - 446 / 500 * gini_ll - 54 / 500 * gini_rl
 
 # compare the gain-column in small_tree$splits with our computed gain, multiplied by 500, and assure they are the same
-small_tree$splits
+#small_tree$splits
 improve <- gain * 500
 ```
 
@@ -506,13 +512,14 @@ prp(ptree_loss_matrix, extra = 1)
 ```
 
 ## 3-12 One final tree using more options
+
 In this exercise, you will use some final arguments that were discussed in the video. Some specifications in the rpart.control()-function will be changed, and some weights will be included using the weights argument in rpart(). The vector case_weights has been constructed for you and is loaded in your workspace. This vector contains weights of 1 for the non-defaults in the training set, and weights of 3 for defaults in the training sets. By specifying higher weights for default, the model will assign higher importance to classifying defaults correctly.
 
 ```{r}
 # set a seed and run the code to obtain a tree using weights, minsplit and minbucket
 set.seed(345)
 tree_weights <- rpart(loan_status ~ ., method = "class", weights=case_weights$x, 
-                      data = training_set,
+                      data = training_set_ch3,
                       control = rpart.control(minsplit = 5, minbucket = 2, cp = 0.001))
 
 # Plot the cross-validated error rate for a changing cp
@@ -531,7 +538,7 @@ ptree_weights <- prune(tree_weights, cp = tree_min)
 prp(ptree_weights, extra = 1)
 ```
 
-## 3-12 Confusion matrices and accuracy of our final trees
+## 3-13 Confusion matrices and accuracy of our final trees
 
 Over the past few exercises, you have constructed quite a few pruned decision trees, with four in total. As you can see, the eventual number of splits varies quite a bit from one tree to another:
 
@@ -548,9 +555,10 @@ In case you needed a reminder, here is how to compute the accuracy:
 
 Classification accuracy= (TP+TN)/(TP+FP+TN+FN)
 
-```{r}
+---
+
 # Make predictions for each of the pruned trees using the test set.
-pred_undersample <- predict(ptree_undersample, newdata = test_set,  type = "class")
+pred_undersample <- predict(ptree_undersample, newdata = test_set2,  type = "class")
 pred_prior <- predict(ptree_prior, newdata = test_set, type = "class")
 pred_loss_matrix <- predict(ptree_loss_matrix, newdata = test_set, type = "class")
 pred_weights <- predict(ptree_weights, newdata = test_set, type = "class")
@@ -566,7 +574,8 @@ acc_undersample <- sum(diag(confmat_undersample)) / nrow(test_set)
 acc_prior <- sum(diag(confmat_prior)) / nrow(test_set)
 acc_loss_matrix <- sum(diag(confmat_loss_matrix)) / nrow(test_set)
 acc_weights <- sum(diag(confmat_weights)) / nrow(test_set)
-```
+
+---
 
 ## 4-2 Computing a bad rate given a fixed acceptance rate
 
@@ -581,7 +590,7 @@ Remember that if you use the predict() function for a tree, the probability of d
 
 ```{r}
 # Make predictions for the probability of default using the pruned tree and the test set.
-prob_default_prior <- predict(ptree_prior, newdata = test_set)[ ,2]
+prob_default_prior <- predict(ptree_prior, newdata = test_set2)[ ,2]
 
 # Obtain the cutoff for acceptance rate 80%
 cutoff_prior <- quantile(prob_default_prior, 0.8)
@@ -604,30 +613,166 @@ Repeating the calculations you did in the previous exercise for several acceptan
 You know how to compute a bad rate for a certain acceptance rate by now, so the function strategy_bank was written and loaded into your workspace to speed things up. This function computes the cut-off and bad rate for the acceptance rates that are multiples of 5% (0%, 5%, 10%, …).
 
 ```{r}
-
+strategy_bank <- function(prob_of_def){
+cutoff=rep(NA, 21)
+bad_rate=rep(NA, 21)
+accept_rate=seq(1,0,by=-0.05)
+for (i in 1:21){
+  cutoff[i]=quantile(prob_of_def,accept_rate[i])
+  pred_i=ifelse(prob_of_def> cutoff[i], 1, 0)
+  pred_as_good=test_set$loan_status[pred_i==0]
+  bad_rate[i]=sum(pred_as_good)/length(pred_as_good)}
+table=cbind(accept_rate,cutoff=round(cutoff,4),bad_rate=round(bad_rate,4))
+return(list(table=table,bad_rate=bad_rate, accept_rate=accept_rate, cutoff=cutoff))
+}
 ```
 
-## 4-6 
+
+---
+
+# Have a look at the function strategy_bank
+strategy_bank
+
+# Apply the function strategy_bank to both predictions_cloglog and predictions_loss_matrix
+strategy_cloglog <- strategy_bank(predictions_cloglog)
+strategy_loss_matrix <- strategy_bank(predictions_loss_matrix)
+
+# Obtain the strategy tables for both prediction-vectors
+strategy_cloglog$table
+strategy_loss_matrix$table
+
+# Draw the strategy functions
+par(mfrow = c(1,2))
+plot(strategy_cloglog$accept_rate, strategy_cloglog$bad_rate, 
+     type = "l", xlab = "Acceptance rate", ylab = "Bad rate", 
+     lwd = 2, main = "logistic regression")
+
+plot(strategy_loss_matrix$accept_rate, strategy_loss_matrix$bad_rate, 
+     type = "l", xlab = "Acceptance rate", 
+     ylab = "Bad rate", lwd = 2, main = "tree")
+
+---
+
+## 4-6 ROC-curves for comparison of logistic regression models
+
+ROC-curves can easily be created using the pROC-package in R. Let's have a look if there is a big difference between ROC-curves for the four logistic regression-models previously used throughout this course. A small heads up:
+
+predictions_logit contains probability of default (PD) predictions using the default logit link and containing variables age, emp_cat, ir_cat and loan_amnt.
+predictions_probit contains PD-predictions using the probit and containing variables age, emp_cat, ir_cat and loan_amnt.
+predictions_cloglog contains PD-predictions using the cloglog link and containing variables age, emp_cat, ir_cat and loan_amnt.
+predictions_all_full contains PD-predictions using the default logit link and containing all seven variables in the data set.
+You will first draw the ROC-curves for these four models in one plot. Afterwards, you will look at the area under the curve.
+
+---
+# Load the pROC-package
+library(pROC)
+
+# Construct the objects containing ROC-information
+ROC_logit <- roc(test_set$loan_status, predictions_logit)
+ROC_probit <- roc(test_set$loan_status, predictions_probit)
+ROC_cloglog <- roc(test_set$loan_status, predictions_cloglog)
+ROC_all_full <- roc(test_set$loan_status, predictions_all_full)
+
+# Draw all ROCs on one plot
+plot(ROC_logit)
+lines(ROC_probit, col = "blue")
+lines(ROC_cloglog, col = "red")
+lines(ROC_all_full, col = "green")
+
+# Compute the AUCs
+auc(ROC_logit)
+auc(ROC_probit)
+auc(ROC_cloglog)
+auc(ROC_all_full)
+---
+
+## 4-7 ROC-curves for comparison of tree-based models
+
+It's time for you to repeat the previous exercises, now comparing the tree-based models. The pROC() is now loaded in your workspace. The PD-predictions for tree-based methods are stored in the objects
+
+predictions_undersample
+predictions_prior
+predictions_loss_matrix
+predictions_weights
+
+---
+# Construct the objects containing ROC-information
+ROC_undersample <- roc(test_set$loan_status, predictions_undersample)
+ROC_prior <- roc(test_set$loan_status, predictions_prior)
+ROC_loss_matrix <- roc(test_set$loan_status, predictions_loss_matrix)
+ROC_weights <- roc(test_set$loan_status, predictions_weights)
+
+# Draw the ROC-curves in one plot
+plot(ROC_undersample)
+lines(ROC_prior, col="blue")
+lines(ROC_loss_matrix, col="red")
+lines(ROC_weights, col="green")
+
+# Compute the AUCs
+auc(ROC_undersample)
+auc(ROC_prior)
+auc(ROC_loss_matrix)
+auc(ROC_weights)
+---
+
+## 4-9 Another round of pruning based on AUC
+
+In the video you saw how the "full" logistic regression model with a logit link was being pruned based on the AUC. You saw how the variable home_ownership was deleted from the model, as it improved the overall AUC. After repeating this process for two additional rounds, the variables age and ir_cat were deleted, leading to the model:
+
+log_3_remove_ir <- glm(loan_status ~ loan_amnt + grade + annual_inc + emp_cat, family = binomial, data = training_set)
+with an AUC of 0.6545. Now, it's your turn to see whether the AUC can still be improved by deleting another variable from the model.
+
+---
+# Build four models each time deleting one variable in log_3_remove_ir
+log_4_remove_amnt <- glm(loan_status ~ grade + annual_inc + emp_cat, 
+                         family = binomial, data = training_set) 
+log_4_remove_grade <- glm(loan_status ~ loan_amnt  + annual_inc + emp_cat, 
+                          family = binomial, data = training_set)
+log_4_remove_inc <- glm(loan_status ~ loan_amnt + grade  + emp_cat , 
+                        family = binomial, data = training_set)
+log_4_remove_emp <- glm(loan_status ~ loan_amnt + grade + annual_inc, 
+                        family = binomial, data = training_set)
+
+# Make PD-predictions for each of the models
+pred_4_remove_amnt <- predict(log_4_remove_amnt, newdata = test_set, type = "response")
+pred_4_remove_grade <- predict(log_4_remove_grade, newdata = test_set, type = "response")
+pred_4_remove_inc <- predict(log_4_remove_inc, newdata = test_set, type = "response")
+pred_4_remove_emp <- predict(log_4_remove_emp, newdata = test_set, type = "response")
+
+# Compute the AUCs
+auc(test_set$loan_status, pred_4_remove_amnt)
+auc(test_set$loan_status, pred_4_remove_grade)
+auc(test_set$loan_status, pred_4_remove_inc)
+auc(test_set$loan_status, pred_4_remove_emp)
+---
+
+## 4-11 Further model reduction?
+
+Deleting the variable loan_amnt, the AUC can be further improved to 0.6548! The resulting model is
+
+log_4_remove_amnt <- glm(loan_status ~ grade + annual_inc + emp_cat, family = binomial, data = training_set) 
+Is it possible to reduce the logistic regression model to only two variable without reducing the AUC? In this exercise you will see if it is possible!
 
 ```{r}
 
 ```
 
-## 4-7 
+---
+# Build three models each time deleting one variable in log_4_remove_amnt
+log_5_remove_grade <- glm(loan_status ~ annual_inc + emp_cat, family = binomial, data = training_set)  
+log_5_remove_inc <- glm(loan_status ~ grade  + emp_cat , family = binomial, data = training_set)
+log_5_remove_emp <- glm(loan_status ~ grade + annual_inc, family = binomial, data = training_set)
 
-```{r}
+# Make PD-predictions for each of the models
+pred_5_remove_grade <- predict(log_5_remove_grade, newdata = test_set, type = "response")
+pred_5_remove_inc <- predict(log_5_remove_inc, newdata = test_set, type = "response")
+pred_5_remove_emp <- predict(log_5_remove_emp, newdata = test_set, type = "response")
 
-```
+# Compute the AUCs
+auc(test_set$loan_status, pred_5_remove_grade)
+auc(test_set$loan_status, pred_5_remove_inc)
+auc(test_set$loan_status, pred_5_remove_emp)
 
-## 4-9 
-
-```{r}
-
-```
-
-## 4-11 
-
-```{r}
-
-```
-
+# Plot the ROC-curve for the best model here
+plot(roc(test_set$loan_status,pred_4_remove_amnt))
+---
