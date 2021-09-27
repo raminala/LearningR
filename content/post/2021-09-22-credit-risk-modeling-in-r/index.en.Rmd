@@ -281,6 +281,8 @@ In the previous exercise, the range for predicted probabilities of default was r
 Whether this will eventually lead to better predictions still needs to be validated and depends on the quality of the newly included predictors. But first, have a look at how bigger models can expand the range.
 
 ```{r}
+training_set <- readRDS("loan_data_ch2.rds")
+
 # Build the logistic regression model
 log_model_full <- glm(loan_status ~ ., family = "binomial", data = training_set)
 

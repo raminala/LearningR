@@ -183,10 +183,8 @@ loan_data$ir_cat[which(is.na(loan_data$int_rate))] &lt;- &quot;Missing&quot;
 loan_data$ir_cat &lt;- as.factor(loan_data$ir_cat)
 
 # Look at your new variable using plot()
-plot(loan_data$ir_cat)</code></pre>
+loan_data %&gt;% ggplot(aes(ir_cat))+ geom_bar(fill=&quot;grey&quot;, color=&quot;black&quot;, width = 0.8)+theme_minimal()</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<pre class="r"><code>loan_data %&gt;% ggplot(aes(ir_cat))+ geom_bar(fill=&quot;grey&quot;, color=&quot;black&quot;, width = 0.8)+theme_minimal()</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
 </div>
 <div id="splitting-the-data-set" class="section level2">
 <h2>1-12 Splitting the data set</h2>
@@ -313,13 +311,13 @@ summary(log_model_multi)</code></pre>
 <pre class="r"><code>log_model_small &lt;- glm(formula = loan_status ~ age + ir_cat, family = &quot;binomial&quot;, data = training_set)
 
 # Build the logistic regression model
-predictions_all_small &lt;- predict(log_model_small, newdata = test_set, type = &quot;response&quot;)
+predictions_all_small &lt;- predict(log_model_small, newdata = test_set2, type = &quot;response&quot;)
 
 # Look at the range of the object &quot;predictions_all_small&quot;
 range(predictions_all_small)</code></pre>
-<pre><code>## [1] 0.03540088 0.18829001</code></pre>
+<pre><code>## [1] 0.03676511 0.18829001</code></pre>
 <pre class="r"><code>min(predictions_all_small)</code></pre>
-<pre><code>## [1] 0.03540088</code></pre>
+<pre><code>## [1] 0.03676511</code></pre>
 <pre class="r"><code>max(predictions_all_small)</code></pre>
 <pre><code>## [1] 0.18829</code></pre>
 </div>
@@ -327,14 +325,27 @@ range(predictions_all_small)</code></pre>
 <h2>2-8 Making more discriminative models</h2>
 <p>In the previous exercise, the range for predicted probabilities of default was rather small. As discussed, small predicted default probabilities are to be expected with low default rates, but building bigger models (which basically means: including more predictors) can expand the range of your predictions.</p>
 <p>Whether this will eventually lead to better predictions still needs to be validated and depends on the quality of the newly included predictors. But first, have a look at how bigger models can expand the range.</p>
-<pre class="r"><code># Build the logistic regression model
-log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = training_set)</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<pre class="r"><code># Make PD-predictions for all test set elements using the the full logistic regression model
-#predictions_all_full &lt;- predict(log_model_full, newdata = test_set, type = &quot;response&quot;)
+<pre class="r"><code>training_set &lt;- readRDS(&quot;loan_data_ch2.rds&quot;)
+
+# Build the logistic regression model
+log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = training_set)
+
+# Make PD-predictions for all test set elements using the the full logistic regression model
+predictions_all_full &lt;- predict(log_model_full, newdata = test_set2, type = &quot;response&quot;)
 
 # Look at the predictions range
-#range(predictions_all_full)</code></pre>
+range(predictions_all_full)</code></pre>
+<pre><code>## [1] 4.531443e-06 5.166014e-01</code></pre>
+<pre class="r"><code>str(training_set)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    29091 obs. of  8 variables:
+##  $ loan_status   : int  0 0 0 0 0 0 1 0 1 0 ...
+##  $ loan_amnt     : int  5000 2400 10000 5000 3000 12000 9000 3000 10000 1000 ...
+##  $ grade         : Factor w/ 7 levels &quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;D&quot;,..: 2 3 3 1 5 2 3 2 2 4 ...
+##  $ home_ownership: Factor w/ 4 levels &quot;MORTGAGE&quot;,&quot;OTHER&quot;,..: 4 4 4 4 4 3 4 4 4 4 ...
+##  $ annual_inc    : num  24000 12252 49200 36000 48000 ...
+##  $ age           : int  33 31 24 39 24 28 22 22 28 22 ...
+##  $ emp_cat       : Factor w/ 5 levels &quot;0-15&quot;,&quot;15-30&quot;,..: 1 2 1 1 1 1 1 1 1 1 ...
+##  $ ir_cat        : Factor w/ 5 levels &quot;0-8&quot;,&quot;11-13.5&quot;,..: 4 5 2 5 5 2 2 4 4 3 ...</code></pre>
 </div>
 <div id="specifying-a-cut-off" class="section level2">
 <h2>2-10 Specifying a cut-off</h2>
@@ -343,39 +354,43 @@ log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = 
 <p>ifelse(predictions &gt; 0.3, 1, 0)</p>
 <p>In the first argument, you are testing whether a certain value in the predictions-vector is bigger than 0.3. If this is TRUE, R returns “1” (specified in the second argument), if FALSE, R returns “0” (specified in the third argument), representing “default” and “no default”, respectively.</p>
 <pre class="r"><code># The code for the logistic regression model and the predictions is given below
-log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = training_set)</code></pre>
-<pre><code>## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-<pre class="r"><code>#predictions_all_full &lt;- predict(log_model_full, newdata = test_set, type = &quot;response&quot;)
+log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = training_set)
+predictions_all_full &lt;- predict(log_model_full, newdata = test_set2, type = &quot;response&quot;)
 
 # Make a binary predictions-vector using a cut-off of 15%
-#pred_cutoff_15 &lt;- ifelse(predictions_all_full&gt;0.15, 1, 0)
+pred_cutoff_15 &lt;- ifelse(predictions_all_full&gt;0.15, 1, 0)
 
 # Construct a confusion matrix
-#table(test_set$loan_status, pred_cutoff_15)</code></pre>
+table(test_set2$loan_status, pred_cutoff_15)</code></pre>
+<pre><code>##    pred_cutoff_15
+##        0    1
+##   0 6810 1850
+##   1  642  395</code></pre>
 </div>
 <div id="comparing-link-functions-for-a-given-cut-off" class="section level2">
 <h2>2-13 Comparing link functions for a given cut-off</h2>
 <p>In this last exercise, you will fit a model using each of the three link functions (logit, probit and cloglog), make predictions for the test set, classify the predictions in the appropriate group (default versus non-default) for a given cut-off, make a confusion matrix and compute the accuracy and sensitivity for each of the models given the cut-off value! Wow, you’ve learned a lot so far. And finally, you will try to identify the model that performs best in terms of accuracy given the cut-off value!</p>
 <p>It is important to know that the differences between the models will generally be very small, and again, the results will depend on the chosen cut-off value. The observed outcome (default versus non-default) is stored in true_val in the console.</p>
 <pre class="r"><code># Fit the logit, probit and cloglog-link logistic regression models
-#log_model_logit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-#                      family = binomial(link = logit), data = training_set)
-#log_model_probit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-#                       family = binomial(link = probit), data = training_set)
+log_model_logit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                      family = binomial(link = logit), data = training_set)
 
-#log_model_cloglog &lt;-  glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
-#                       family = binomial(link = cloglog), data = training_set)
+log_model_probit &lt;- glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = probit), data = training_set)
+
+log_model_cloglog &lt;-  glm(loan_status ~ age + emp_cat + ir_cat + loan_amnt,
+                       family = binomial(link = cloglog), data = training_set)
   
 # Make predictions for all models using the test set
-#predictions_logit &lt;- predict(log_model_logit, newdata = test_set, type = &quot;response&quot;)
-#predictions_probit &lt;- predict(log_model_probit, newdata = test_set, type = &quot;response&quot;)
-#predictions_cloglog &lt;- predict(log_model_cloglog, newdata = test_set, type = &quot;response&quot;)
+predictions_logit &lt;- predict(log_model_logit, newdata = test_set2, type = &quot;response&quot;)
+predictions_probit &lt;- predict(log_model_probit, newdata = test_set2, type = &quot;response&quot;)
+predictions_cloglog &lt;- predict(log_model_cloglog, newdata = test_set2, type = &quot;response&quot;)
   
 # Use a cut-off of 14% to make binary predictions-vectors
-#cutoff &lt;- 0.14
-#class_pred_logit &lt;- ifelse(predictions_logit &gt; cutoff, 1, 0)
-#class_pred_probit &lt;- ifelse(predictions_probit &gt; cutoff, 1, 0)
-#class_pred_cloglog &lt;- ifelse(predictions_cloglog &gt; cutoff, 1, 0)
+cutoff &lt;- 0.14
+class_pred_logit &lt;- ifelse(predictions_logit &gt; cutoff, 1, 0)
+class_pred_probit &lt;- ifelse(predictions_probit &gt; cutoff, 1, 0)
+class_pred_cloglog &lt;- ifelse(predictions_cloglog &gt; cutoff, 1, 0)
   
 # Make a confusion matrix for the three models
 #tab_class_logit &lt;- table(true_val,class_pred_logit)
@@ -386,4 +401,418 @@ log_model_full &lt;- glm(loan_status ~ ., family = &quot;binomial&quot;, data = 
 #acc_logit &lt;- sum(diag(tab_class_logit)) / nrow(test_set)
 #acc_probit &lt;- sum(diag(tab_class_probit)) / nrow(test_set)
 #acc_cloglog &lt;- sum(diag(tab_class_cloglog)) / nrow(test_set)</code></pre>
+</div>
+<div id="computing-the-gain-for-a-tree" class="section level2">
+<h2>3-2 Computing the gain for a tree</h2>
+<p>In the video, you looked at how the Gini-measure is used to create the perfect split for a tree. Now, you will compute the gain for the tree loaded in your workspace.</p>
+<p>The data set contains 500 cases, 89 of these cases are defaults. This led to a Gini of 0.292632 in the root node. As a small reminder, remember that Gini of a certain node = 2 * proportion of defaults in this node * proportion of non-defaults in this node. Have a look at the code for a refresher.</p>
+<p>gini_root &lt;- 2 * (89 / 500) * (411 / 500)</p>
+<p>You will use these Gini measures to help you calculate the gain of the leaf nodes with respect to the root node. Look at the following code to get an idea of how you can use the gini measures you created to calculate the gain of a node.</p>
+<p>Gain = gini_root - (prop(cases left leaf) * gini_left) - (prop(cases right leaf * gini_right))</p>
+<p>Compute the gini in the left hand and the right hand node, and the gain of the two leaf nodes with respect to the root node. The object containing the tree is small_tree.</p>
+<pre class="r"><code># The Gini-measure of the root node is given below
+gini_root &lt;- 2 * 89 / 500 * 411 / 500
+
+# Compute the Gini measure for the left leaf node
+gini_ll &lt;- 2 * 45 / 446 * 401 / 446
+
+# Compute the Gini measure for the right leaf node
+gini_rl &lt;- 2 * 10 / 54 * 44 / 54
+
+# Compute the gain
+gain &lt;- gini_root - 446 / 500 * gini_ll - 54 / 500 * gini_rl
+
+# compare the gain-column in small_tree$splits with our computed gain, multiplied by 500, and assure they are the same
+#small_tree$splits
+improve &lt;- gain * 500</code></pre>
+</div>
+<div id="undersampling-the-training-set" class="section level2">
+<h2>3-5 Undersampling the training set</h2>
+<p>In the video, you saw that to overcome the unbalanced data problem, you can use under- or oversampling. The training set has been undersampled for you, such that 1/3 of the training set consists of defaults, and 2/3 of non-defaults. The resulting data set is available in your workspace and named undersampled_training_set, and contains less observations (6570 instead of 19394). In this exercise, you will create a decision tree using the undersampled data set.</p>
+<p>You will notice that the trees in this and the next exercises are very big, so big that you cannot really read them anymore. Don’t worry about this for now, we will tell you how you can make them more manageable in the next video!</p>
+<pre class="r"><code># Load package rpart in your workspace.
+library(rpart)
+
+# Change the code provided in the video such that a decision tree is constructed using the undersampled training set. Include rpart.control to relax the complexity parameter to 0.001.
+tree_undersample &lt;- rpart(loan_status ~ ., method = &quot;class&quot;,
+                          data =  undersampled_training_set,
+                          control = rpart.control(cp = 0.001))
+
+# Plot the decision tree
+plot(tree_undersample, uniform = TRUE)
+
+# Add labels to the decision tree
+text(tree_undersample)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="changing-the-prior-probabilities" class="section level2">
+<h2>3-6 Changing the prior probabilities</h2>
+<p>As mentioned in the video, you can also change the prior probabilities to obtain a decision tree. This is an indirect way of adjusting the importance of misclassifications for each class. You can specify another argument inside rpart() to include prior probabities. The argument you are looking for has the following form</p>
+<p>parms = list(prior=c(non_default_proportion, default_proportion))</p>
+<p>The rpart package is now already loaded in your workspace.</p>
+<pre class="r"><code># Change the code below such that a tree is constructed with adjusted prior probabilities.
+tree_prior &lt;- rpart(loan_status ~ ., method = &quot;class&quot;,
+                    data = training_set, parms = list(prior = c(0.7, 0.3)),
+                    control = rpart.control(cp = 0.001))
+
+# Plot the decision tree
+plot(tree_prior, uniform = TRUE)
+
+# Add labels to the decision tree
+text(tree_prior)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+</div>
+<div id="including-a-loss-matrix" class="section level2">
+<h2>3-7 Including a loss matrix</h2>
+<p>Thirdly, you can include a loss matrix, changing the relative importance of misclassifying a default as non-default versus a non-default as a default. You want to stress that misclassifying a default as a non-default should be penalized more heavily. Including a loss matrix can again be done in the argument parms in the loss matrix.</p>
+<p>parms = list(loss = matrix(c(0, cost_def_as_nondef, cost_nondef_as_def, 0), ncol=2))
+Doing this, you are constructing a 2x2-matrix with zeroes on the diagonal and changed loss penalties off-diagonal. The default loss matrix is all ones off-diagonal.</p>
+<pre class="r"><code># Change the code provided in the video such that a decision tree is constructed using a loss matrix penalizing 10 times more heavily for misclassified defaults.
+tree_loss_matrix  &lt;- rpart(loan_status ~ ., method = &quot;class&quot;, data = training_set,
+                           parms = list(loss = matrix(c(0, 10, 1, 0), ncol = 2)),
+                           control = rpart.control(cp = 0.001))
+
+# Plot the decision tree
+plot(tree_loss_matrix, uniform = TRUE)
+
+# Add labels to the decision tree
+text(tree_loss_matrix)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+<div id="pruning-the-tree-with-changed-prior-probabilities" class="section level2">
+<h2>3-9 Pruning the tree with changed prior probabilities</h2>
+<p>In the video, you have learned that pruning a tree is necessary to avoid overfitting. There were some big trees in the previous exercises and now you will put what you have learned into practice, and prune the previously constructed tree with the changed prior probabilities. The rpart package is already loaded in your workspace.</p>
+<p>You will first set a seed to make sure the results are reproducible as mentioned in the video, because you will be examining cross-validated error results. Results involve randomness and could differ slightly upon running the function again with a different seed.</p>
+<p>In this exercise you will learn to identify which complexity parameter (CP) will minimize the cross-validated error results, then prune your tree based on this value.</p>
+<pre class="r"><code># tree_prior is loaded in your workspace
+
+# Plot the cross-validated error rate as a function of the complexity parameter
+plotcp(tree_prior)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<pre class="r"><code># Use printcp() to identify for which complexity parameter the cross-validated error rate is minimized.
+printcp(tree_prior)</code></pre>
+<pre><code>## 
+## Classification tree:
+## rpart(formula = loan_status ~ ., data = training_set, method = &quot;class&quot;, 
+##     parms = list(prior = c(0.7, 0.3)), control = rpart.control(cp = 0.001))
+## 
+## Variables actually used in tree construction:
+## [1] age            annual_inc     emp_cat        grade          home_ownership
+## [6] ir_cat         loan_amnt     
+## 
+## Root node error: 8727.3/29091 = 0.3
+## 
+## n= 29091 
+## 
+##           CP nsplit rel error  xerror     xstd
+## 1  0.0032569      0   1.00000 1.00000 0.016599
+## 2  0.0021219      7   0.97562 0.99456 0.016027
+## 3  0.0014457      8   0.97350 0.99605 0.015928
+## 4  0.0014345     12   0.96729 0.99384 0.015929
+## 5  0.0013200     16   0.96039 0.99386 0.015935
+## 6  0.0013182     18   0.95775 0.99317 0.015926
+## 7  0.0011768     20   0.95511 0.99238 0.015932
+## 8  0.0011302     21   0.95393 0.99155 0.015955
+## 9  0.0011178     22   0.95280 0.99153 0.015944
+## 10 0.0010943     23   0.95169 0.99505 0.015932
+## 11 0.0010610     24   0.95059 0.99679 0.015974
+## 12 0.0010000     26   0.94847 0.99582 0.015964</code></pre>
+<pre class="r"><code># Create an index for of the row with the minimum xerror
+index &lt;- which.min(tree_prior$cptable[ , &quot;xerror&quot;])
+
+# Create tree_min
+tree_min &lt;- tree_prior$cptable[index, &quot;CP&quot;]
+
+#  Prune the tree using tree_min
+ptree_prior &lt;- prune(tree_prior, cp = tree_min)
+
+# Use prp() to plot the pruned tree
+prp(ptree_prior)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
+</div>
+<div id="pruning-the-tree-with-the-loss-matrix" class="section level2">
+<h2>3-10 Pruning the tree with the loss matrix</h2>
+<p>In this exercise, you will prune the tree that was built using a loss matrix in order to penalize misclassified defaults more than misclassified non-defaults.</p>
+<p>Looking at the cp-plot, you will notice that pruning the tree using the minimum cross-validated error will lead to a tree that is as big as the unpruned tree, as the cross-validated error reaches its minimum for cp = 0.001. Because you would like to make the tree somewhat smaller, try pruning the tree using cp = 0.0012788. For this complexity parameter, the cross-validated error approaches the minimum observed error. Call the pruned tree ptree_loss_matrix.</p>
+<pre class="r"><code># set a seed and run the code to construct the tree with the loss matrix again
+set.seed(345)
+tree_loss_matrix  &lt;- rpart(loan_status ~ ., method = &quot;class&quot;, data = training_set,
+                           parms = list(loss=matrix(c(0, 10, 1, 0), ncol = 2)),
+                           control = rpart.control(cp = 0.001))
+
+# Plot the cross-validated error rate as a function of the complexity parameter
+plotcp(tree_loss_matrix) </code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<pre class="r"><code># Prune the tree using cp = 0.0012788
+ptree_loss_matrix &lt;- prune(tree_loss_matrix, cp = 0.0012788)
+
+# Use prp() and argument extra = 1 to plot the pruned tree
+prp(ptree_loss_matrix, extra = 1)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-24-2.png" width="672" /></p>
+</div>
+<div id="one-final-tree-using-more-options" class="section level2">
+<h2>3-12 One final tree using more options</h2>
+<p>In this exercise, you will use some final arguments that were discussed in the video. Some specifications in the rpart.control()-function will be changed, and some weights will be included using the weights argument in rpart(). The vector case_weights has been constructed for you and is loaded in your workspace. This vector contains weights of 1 for the non-defaults in the training set, and weights of 3 for defaults in the training sets. By specifying higher weights for default, the model will assign higher importance to classifying defaults correctly.</p>
+<pre class="r"><code># set a seed and run the code to obtain a tree using weights, minsplit and minbucket
+set.seed(345)
+tree_weights &lt;- rpart(loan_status ~ ., method = &quot;class&quot;, weights=case_weights$x, 
+                      data = training_set_ch3,
+                      control = rpart.control(minsplit = 5, minbucket = 2, cp = 0.001))
+
+# Plot the cross-validated error rate for a changing cp
+plotcp(tree_weights)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<pre class="r"><code># Create an index for of the row with the minimum xerror
+index &lt;- which.min(tree_weights$cp[ , &quot;xerror&quot;])
+
+# Create tree_min
+tree_min &lt;- tree_weights$cp[index, &quot;CP&quot;]
+
+# Prune the tree using tree_min
+ptree_weights &lt;- prune(tree_weights, cp = tree_min)
+
+# Plot the pruned tree using the rpart.plot()-package
+prp(ptree_weights, extra = 1)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-25-2.png" width="672" /></p>
+</div>
+<div id="confusion-matrices-and-accuracy-of-our-final-trees" class="section level2">
+<h2>3-13 Confusion matrices and accuracy of our final trees</h2>
+<p>Over the past few exercises, you have constructed quite a few pruned decision trees, with four in total. As you can see, the eventual number of splits varies quite a bit from one tree to another:</p>
+<p>ptree_undersample # 7 splits
+ptree_prior # 9 splits
+ptree_loss_matrix # 24 splits
+ptree_weights # 6 splits</p>
+<p>Now it is important to know which tree performs best in terms of accuracy. In order to get the accuracy, you will start off by making predictions using the test set, and construct the confusion matrix for each of these trees. You will add the argument type = “class” when doing these predictions. By doing this there is no need to set a cut-off.</p>
+<p>Nevertheless, it is important to be aware of the fact that not only the accuracy is important, but also the sensitivity and specificity. Additionally, predicting probabilities instead of binary values (0 or 1) has the advantage that the cut-off can be moved along. Then again, the difficulty here is the choice of the cut-off. You will return to this in the next chapter.</p>
+<p>In case you needed a reminder, here is how to compute the accuracy:</p>
+<p>Classification accuracy= (TP+TN)/(TP+FP+TN+FN)</p>
+<hr />
+</div>
+<div id="make-predictions-for-each-of-the-pruned-trees-using-the-test-set." class="section level1">
+<h1>Make predictions for each of the pruned trees using the test set.</h1>
+<p>pred_undersample &lt;- predict(ptree_undersample, newdata = test_set2, type = “class”)
+pred_prior &lt;- predict(ptree_prior, newdata = test_set, type = “class”)
+pred_loss_matrix &lt;- predict(ptree_loss_matrix, newdata = test_set, type = “class”)
+pred_weights &lt;- predict(ptree_weights, newdata = test_set, type = “class”)</p>
+</div>
+<div id="construct-confusion-matrices-using-the-predictions." class="section level1">
+<h1>Construct confusion matrices using the predictions.</h1>
+<p>confmat_undersample &lt;- table(test_set<span class="math inline">\(loan_status, pred_undersample) confmat_prior &lt;- table(test_set\)</span>loan_status, pred_prior)
+confmat_loss_matrix &lt;- table(test_set<span class="math inline">\(loan_status, pred_loss_matrix) confmat_weights &lt;- table(test_set\)</span>loan_status, pred_weights)</p>
+</div>
+<div id="compute-the-accuracies" class="section level1">
+<h1>Compute the accuracies</h1>
+<p>acc_undersample &lt;- sum(diag(confmat_undersample)) / nrow(test_set)
+acc_prior &lt;- sum(diag(confmat_prior)) / nrow(test_set)
+acc_loss_matrix &lt;- sum(diag(confmat_loss_matrix)) / nrow(test_set)
+acc_weights &lt;- sum(diag(confmat_weights)) / nrow(test_set)</p>
+<hr />
+<div id="computing-a-bad-rate-given-a-fixed-acceptance-rate" class="section level2">
+<h2>4-2 Computing a bad rate given a fixed acceptance rate</h2>
+<p>In the video, you learned how to compute the bad rate (or, the percentage of defaults) in the loan portfolio of a bank when given:</p>
+<p>a specific model
+the acceptance rate</p>
+<p>In this exercise, you will compute the bad rate that a bank can expect when using the pruned tree ptree_prior that you fitted before, and an acceptance rate of 80%. As a reminder, the tree is plotted on your right hand side.</p>
+<p>Remember that if you use the predict() function for a tree, the probability of default can be found in the second column. Therefore [,2] was pasted to the predict() function.</p>
+<pre class="r"><code># Make predictions for the probability of default using the pruned tree and the test set.
+prob_default_prior &lt;- predict(ptree_prior, newdata = test_set2)[ ,2]
+
+# Obtain the cutoff for acceptance rate 80%
+cutoff_prior &lt;- quantile(prob_default_prior, 0.8)
+  
+# Obtain the binary predictions.
+bin_pred_prior_80 &lt;- ifelse(prob_default_prior &gt; cutoff_prior, 1, 0)
+
+# Obtain the actual default status for the accepted loans
+accepted_status_prior_80 &lt;- test_set$loan_status[bin_pred_prior_80 == 0]
+
+# Obtain the bad rate for the accepted loans
+sum(accepted_status_prior_80) / length(accepted_status_prior_80)</code></pre>
+<pre><code>## [1] 0.1117108</code></pre>
+</div>
+<div id="the-strategy-table-and-strategy-curve" class="section level2">
+<h2>4-3 The strategy table and strategy curve</h2>
+<p>Repeating the calculations you did in the previous exercise for several acceptance rates, you can obtain a strategy table. This table can be a useful tool for banks, as they can give them a better insight to define an acceptance strategy.</p>
+<p>You know how to compute a bad rate for a certain acceptance rate by now, so the function strategy_bank was written and loaded into your workspace to speed things up. This function computes the cut-off and bad rate for the acceptance rates that are multiples of 5% (0%, 5%, 10%, …).</p>
+<pre class="r"><code>strategy_bank &lt;- function(prob_of_def){
+cutoff=rep(NA, 21)
+bad_rate=rep(NA, 21)
+accept_rate=seq(1,0,by=-0.05)
+for (i in 1:21){
+  cutoff[i]=quantile(prob_of_def,accept_rate[i])
+  pred_i=ifelse(prob_of_def&gt; cutoff[i], 1, 0)
+  pred_as_good=test_set$loan_status[pred_i==0]
+  bad_rate[i]=sum(pred_as_good)/length(pred_as_good)}
+table=cbind(accept_rate,cutoff=round(cutoff,4),bad_rate=round(bad_rate,4))
+return(list(table=table,bad_rate=bad_rate, accept_rate=accept_rate, cutoff=cutoff))
+}</code></pre>
+<hr />
+</div>
+</div>
+<div id="have-a-look-at-the-function-strategy_bank" class="section level1">
+<h1>Have a look at the function strategy_bank</h1>
+<p>strategy_bank</p>
+</div>
+<div id="apply-the-function-strategy_bank-to-both-predictions_cloglog-and-predictions_loss_matrix" class="section level1">
+<h1>Apply the function strategy_bank to both predictions_cloglog and predictions_loss_matrix</h1>
+<p>strategy_cloglog &lt;- strategy_bank(predictions_cloglog)
+strategy_loss_matrix &lt;- strategy_bank(predictions_loss_matrix)</p>
+</div>
+<div id="obtain-the-strategy-tables-for-both-prediction-vectors" class="section level1">
+<h1>Obtain the strategy tables for both prediction-vectors</h1>
+<p>strategy_cloglog<span class="math inline">\(table strategy_loss_matrix\)</span>table</p>
+</div>
+<div id="draw-the-strategy-functions" class="section level1">
+<h1>Draw the strategy functions</h1>
+<p>par(mfrow = c(1,2))
+plot(strategy_cloglog<span class="math inline">\(accept_rate, strategy_cloglog\)</span>bad_rate,
+type = “l”, xlab = “Acceptance rate”, ylab = “Bad rate”,
+lwd = 2, main = “logistic regression”)</p>
+<p>plot(strategy_loss_matrix<span class="math inline">\(accept_rate, strategy_loss_matrix\)</span>bad_rate,
+type = “l”, xlab = “Acceptance rate”,
+ylab = “Bad rate”, lwd = 2, main = “tree”)</p>
+<hr />
+<div id="roc-curves-for-comparison-of-logistic-regression-models" class="section level2">
+<h2>4-6 ROC-curves for comparison of logistic regression models</h2>
+<p>ROC-curves can easily be created using the pROC-package in R. Let’s have a look if there is a big difference between ROC-curves for the four logistic regression-models previously used throughout this course. A small heads up:</p>
+<p>predictions_logit contains probability of default (PD) predictions using the default logit link and containing variables age, emp_cat, ir_cat and loan_amnt.
+predictions_probit contains PD-predictions using the probit and containing variables age, emp_cat, ir_cat and loan_amnt.
+predictions_cloglog contains PD-predictions using the cloglog link and containing variables age, emp_cat, ir_cat and loan_amnt.
+predictions_all_full contains PD-predictions using the default logit link and containing all seven variables in the data set.
+You will first draw the ROC-curves for these four models in one plot. Afterwards, you will look at the area under the curve.</p>
+<table style="width:6%;">
+<colgroup>
+<col width="5%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td># Load the pROC-package
+library(pROC)</td>
+</tr>
+<tr class="even">
+<td># Construct the objects containing ROC-information
+ROC_logit &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_logit) ROC_probit &lt;- roc(test_set\)</span>loan_status, predictions_probit)
+ROC_cloglog &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_cloglog) ROC_all_full &lt;- roc(test_set\)</span>loan_status, predictions_all_full)</td>
+</tr>
+<tr class="odd">
+<td># Draw all ROCs on one plot
+plot(ROC_logit)
+lines(ROC_probit, col = “blue”)
+lines(ROC_cloglog, col = “red”)
+lines(ROC_all_full, col = “green”)</td>
+</tr>
+<tr class="even">
+<td># Compute the AUCs
+auc(ROC_logit)
+auc(ROC_probit)
+auc(ROC_cloglog)
+auc(ROC_all_full)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="roc-curves-for-comparison-of-tree-based-models" class="section level2">
+<h2>4-7 ROC-curves for comparison of tree-based models</h2>
+<p>It’s time for you to repeat the previous exercises, now comparing the tree-based models. The pROC() is now loaded in your workspace. The PD-predictions for tree-based methods are stored in the objects</p>
+<p>predictions_undersample
+predictions_prior
+predictions_loss_matrix
+predictions_weights</p>
+<table style="width:6%;">
+<colgroup>
+<col width="5%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td># Construct the objects containing ROC-information
+ROC_undersample &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_undersample) ROC_prior &lt;- roc(test_set\)</span>loan_status, predictions_prior)
+ROC_loss_matrix &lt;- roc(test_set<span class="math inline">\(loan_status, predictions_loss_matrix) ROC_weights &lt;- roc(test_set\)</span>loan_status, predictions_weights)</td>
+</tr>
+<tr class="even">
+<td># Draw the ROC-curves in one plot
+plot(ROC_undersample)
+lines(ROC_prior, col=“blue”)
+lines(ROC_loss_matrix, col=“red”)
+lines(ROC_weights, col=“green”)</td>
+</tr>
+<tr class="odd">
+<td># Compute the AUCs
+auc(ROC_undersample)
+auc(ROC_prior)
+auc(ROC_loss_matrix)
+auc(ROC_weights)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="another-round-of-pruning-based-on-auc" class="section level2">
+<h2>4-9 Another round of pruning based on AUC</h2>
+<p>In the video you saw how the “full” logistic regression model with a logit link was being pruned based on the AUC. You saw how the variable home_ownership was deleted from the model, as it improved the overall AUC. After repeating this process for two additional rounds, the variables age and ir_cat were deleted, leading to the model:</p>
+<p>log_3_remove_ir &lt;- glm(loan_status ~ loan_amnt + grade + annual_inc + emp_cat, family = binomial, data = training_set)
+with an AUC of 0.6545. Now, it’s your turn to see whether the AUC can still be improved by deleting another variable from the model.</p>
+<table style="width:6%;">
+<colgroup>
+<col width="5%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td># Build four models each time deleting one variable in log_3_remove_ir
+log_4_remove_amnt &lt;- glm(loan_status ~ grade + annual_inc + emp_cat,
+family = binomial, data = training_set)
+log_4_remove_grade &lt;- glm(loan_status ~ loan_amnt + annual_inc + emp_cat,
+family = binomial, data = training_set)
+log_4_remove_inc &lt;- glm(loan_status ~ loan_amnt + grade + emp_cat ,
+family = binomial, data = training_set)
+log_4_remove_emp &lt;- glm(loan_status ~ loan_amnt + grade + annual_inc,
+family = binomial, data = training_set)</td>
+</tr>
+<tr class="even">
+<td># Make PD-predictions for each of the models
+pred_4_remove_amnt &lt;- predict(log_4_remove_amnt, newdata = test_set, type = “response”)
+pred_4_remove_grade &lt;- predict(log_4_remove_grade, newdata = test_set, type = “response”)
+pred_4_remove_inc &lt;- predict(log_4_remove_inc, newdata = test_set, type = “response”)
+pred_4_remove_emp &lt;- predict(log_4_remove_emp, newdata = test_set, type = “response”)</td>
+</tr>
+<tr class="odd">
+<td># Compute the AUCs
+auc(test_set<span class="math inline">\(loan_status, pred_4_remove_amnt) auc(test_set\)</span>loan_status, pred_4_remove_grade)
+auc(test_set<span class="math inline">\(loan_status, pred_4_remove_inc) auc(test_set\)</span>loan_status, pred_4_remove_emp)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="further-model-reduction" class="section level2">
+<h2>4-11 Further model reduction?</h2>
+<p>Deleting the variable loan_amnt, the AUC can be further improved to 0.6548! The resulting model is</p>
+<p>log_4_remove_amnt &lt;- glm(loan_status ~ grade + annual_inc + emp_cat, family = binomial, data = training_set)
+Is it possible to reduce the logistic regression model to only two variable without reducing the AUC? In this exercise you will see if it is possible!</p>
+<table style="width:6%;">
+<colgroup>
+<col width="5%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td># Build three models each time deleting one variable in log_4_remove_amnt
+log_5_remove_grade &lt;- glm(loan_status ~ annual_inc + emp_cat, family = binomial, data = training_set)
+log_5_remove_inc &lt;- glm(loan_status ~ grade + emp_cat , family = binomial, data = training_set)
+log_5_remove_emp &lt;- glm(loan_status ~ grade + annual_inc, family = binomial, data = training_set)</td>
+</tr>
+<tr class="even">
+<td># Make PD-predictions for each of the models
+pred_5_remove_grade &lt;- predict(log_5_remove_grade, newdata = test_set, type = “response”)
+pred_5_remove_inc &lt;- predict(log_5_remove_inc, newdata = test_set, type = “response”)
+pred_5_remove_emp &lt;- predict(log_5_remove_emp, newdata = test_set, type = “response”)</td>
+</tr>
+<tr class="odd">
+<td># Compute the AUCs
+auc(test_set<span class="math inline">\(loan_status, pred_5_remove_grade) auc(test_set\)</span>loan_status, pred_5_remove_inc)
+auc(test_set$loan_status, pred_5_remove_emp)</td>
+</tr>
+<tr class="even">
+<td># Plot the ROC-curve for the best model here
+plot(roc(test_set$loan_status,pred_4_remove_amnt))</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
