@@ -568,3 +568,66 @@ acc_loss_matrix <- sum(diag(confmat_loss_matrix)) / nrow(test_set)
 acc_weights <- sum(diag(confmat_weights)) / nrow(test_set)
 ```
 
+## 4-2 Computing a bad rate given a fixed acceptance rate
+
+In the video, you learned how to compute the bad rate (or, the percentage of defaults) in the loan portfolio of a bank when given:
+
+a specific model
+the acceptance rate
+
+In this exercise, you will compute the bad rate that a bank can expect when using the pruned tree ptree_prior that you fitted before, and an acceptance rate of 80%. As a reminder, the tree is plotted on your right hand side.
+
+Remember that if you use the predict() function for a tree, the probability of default can be found in the second column. Therefore [,2] was pasted to the predict() function.
+
+```{r}
+# Make predictions for the probability of default using the pruned tree and the test set.
+prob_default_prior <- predict(ptree_prior, newdata = test_set)[ ,2]
+
+# Obtain the cutoff for acceptance rate 80%
+cutoff_prior <- quantile(prob_default_prior, 0.8)
+  
+# Obtain the binary predictions.
+bin_pred_prior_80 <- ifelse(prob_default_prior > cutoff_prior, 1, 0)
+
+# Obtain the actual default status for the accepted loans
+accepted_status_prior_80 <- test_set$loan_status[bin_pred_prior_80 == 0]
+
+# Obtain the bad rate for the accepted loans
+sum(accepted_status_prior_80) / length(accepted_status_prior_80)
+
+```
+
+## 4-3 The strategy table and strategy curve
+
+Repeating the calculations you did in the previous exercise for several acceptance rates, you can obtain a strategy table. This table can be a useful tool for banks, as they can give them a better insight to define an acceptance strategy.
+
+You know how to compute a bad rate for a certain acceptance rate by now, so the function strategy_bank was written and loaded into your workspace to speed things up. This function computes the cut-off and bad rate for the acceptance rates that are multiples of 5% (0%, 5%, 10%, …).
+
+```{r}
+
+```
+
+## 4-6 
+
+```{r}
+
+```
+
+## 4-7 
+
+```{r}
+
+```
+
+## 4-9 
+
+```{r}
+
+```
+
+## 4-11 
+
+```{r}
+
+```
+
