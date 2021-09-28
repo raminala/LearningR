@@ -112,8 +112,14 @@ ggplot(daily_count, aes(pickup_date, n_rides)) +
 
 The distribution of the total cab fare plot we created earlier was interesting, but we might be able to gain additional insight into this distribution by investigating whether it varies with respect to another variable. In this exercise, we'll look at the tip amount portion of the cab fare distribution and see if it is different for different payment types by creating a histogram and faceting on payment type.
 
-```{r}
+ To help visually compare distributions, set the number of columns to 1 and make the y-axis scales free by specifying the scales to be "free_y"
 
+```{r}
+# Histogram of the tip amount faceted on payment type
+ggplot(tx, aes(tip_amount + 0.01)) +
+  geom_histogram() +
+  scale_x_log10() +
+  facet_wrap(~ payment_type, ncol = 1, scales = "free_y")
 ```
 
 ## 1-10 Comparing fare distribution by payment type
