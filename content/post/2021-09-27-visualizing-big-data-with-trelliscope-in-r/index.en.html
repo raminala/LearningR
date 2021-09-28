@@ -84,10 +84,9 @@ ggplot(daily_count, aes(pickup_date, n_rides)) +
 <p>To help visually compare distributions, set the number of columns to 1 and make the y-axis scales free by specifying the scales to be “free_y”</p>
 <pre class="r"><code># Histogram of the tip amount faceted on payment type
 ggplot(tx, aes(tip_amount + 0.01)) +
-  geom_histogram() +
+  geom_histogram(bins = 30) +
   scale_x_log10() +
   facet_wrap(~ payment_type, ncol = 1, scales = &quot;free_y&quot;)</code></pre>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="comparing-fare-distribution-by-payment-type" class="section level2">

@@ -117,7 +117,7 @@ The distribution of the total cab fare plot we created earlier was interesting, 
 ```{r}
 # Histogram of the tip amount faceted on payment type
 ggplot(tx, aes(tip_amount + 0.01)) +
-  geom_histogram() +
+  geom_histogram(bins = 30) +
   scale_x_log10() +
   facet_wrap(~ payment_type, ncol = 1, scales = "free_y")
 ```
