@@ -11,6 +11,7 @@ tags:
 
 ```{r include=FALSE}
 library(tidyverse)
+library(hexbin)
 
 load("pokemon.Rdata")
 load("route_hod.Rdata")
@@ -75,16 +76,36 @@ ggplot(tx, aes(payment_type)) +
 
 We would assume that there is a relationship between the total cab fare and the duration of the trip. Since there are too many data points to make a scatterplot, let's use a hexagon-binned plot to investigate this relationship.
 
-```{r}
+```{r warning=FALSE}
 
+# Create a hexagon-binned plot of total_amount vs. trip_duration
+ggplot(tx, aes(trip_duration, total_amount)) +
+  geom_hex(bins=75) +
+  scale_x_log10() +
+  scale_y_log10()
 ```
 
 ## 1-7 Faceting daily rides
 
 We noticed some interesting behavior when we looked at daily ride counts faceted by day-of-week. Let's investigate whether faceting on additional variables yields any new insights. Here we will see if there are different day-of-week patterns when also looking at the payment types of cash or credit card.
 
-```{r}
+Use facet_grid() to facet with payment_type as rows and day of week pickup_dow as columns.
 
+Note that the coord_fixed() code constrains the aspect ratio of the resulting plot to help highlight patterns visually.
+
+```{r message=FALSE}
+tx <- tx %>% mutate(pickup_date=pick_day) %>% mutate(pickup_dow=pick_dow)
+# Summarize taxi rides count by payment type, pickup date, pickup day of week
+daily_count <- tx %>%
+  filter(payment_type %in% c("Card", "Cash")) %>%
+  group_by(pickup_date, pickup_dow, payment_type) %>%
+  summarise(n_rides=n())
+
+# Plot the data
+ggplot(daily_count, aes(pickup_date, n_rides)) +
+  geom_point() +
+  facet_grid(payment_type ~ pickup_dow) +
+  coord_fixed(ratio = 0.4)
 ```
 
 ## 1-8 Tip amount distribution faceted by payment type
