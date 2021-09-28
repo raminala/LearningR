@@ -18,24 +18,159 @@ tags:
 <h2>1. General strategies for visualizing big data</h2>
 <p>Learn different strategies for plotting big data using ggplot2, including calculating and plotting summary statistics, various techniques to deal with overplotting, and principles of small multiples with faceting, which leads into Trelliscope.</p>
 </div>
-<div id="section" class="section level2">
-<h2>1-2</h2>
+<div id="daily-ride-counts" class="section level2">
+<h2>1-2 Daily ride counts</h2>
+<p>A useful way to tabulate and visualize cab rides is by looking at the number of rides according to the calendar day. In this exercise, you’ll compute this summary and examine how daily ridership varies by time and the day of week.</p>
+<pre class="r"><code>tx &lt;- tx %&gt;% mutate(pickup_date=pick_day)
+# Summarize the number of taxi rides by pickup day
+daily_count &lt;- tx %&gt;%
+  group_by(pickup_date) %&gt;%
+  summarise(n_rides = n())
+
+# Create a line plot
+ggplot(daily_count, aes(pickup_date, n_rides)) +
+  geom_line()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
-<div id="section-1" class="section level2">
-<h2>1-3</h2>
+<div id="distribution-of-cab-fare-amount" class="section level2">
+<h2>1-3 Distribution of cab fare amount</h2>
+<p>Let’s learn about how much cab rides cost in NYC and look at a histogram of the total cab fare. Since the fare amount is likely to be highly skewed, we will plot it with the x-axis in the log scale.</p>
+<pre class="r"><code># Create a histogram of total_amount
+ggplot(tx, aes(total_amount)) +
+  geom_histogram(bins = 30) +
+  scale_x_log10()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
-<div id="section-2" class="section level2">
-<h2>1-4</h2>
+<div id="distribution-of-payment-type" class="section level2">
+<h2>1-4 Distribution of payment type</h2>
+<p>An interesting categorical variable in the data having to do with payments is the payment type. This has four possible values: <em>Card</em>, <em>Cash</em>, <em>Disputed</em>, and <em>Unknown.</em> A bar chart of the frequency of each of these values can help us understand the prevalence of different payment methods.</p>
+<pre class="r"><code># Create a bar chart of payment_type
+ggplot(tx, aes(payment_type)) +
+  geom_bar()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
-<div id="section-3" class="section level2">
-<h2>1-6</h2>
+<div id="relationship-between-trip-duration-and-total-fare" class="section level2">
+<h2>1-6 Relationship between trip duration and total fare</h2>
+<p>We would assume that there is a relationship between the total cab fare and the duration of the trip. Since there are too many data points to make a scatterplot, let’s use a hexagon-binned plot to investigate this relationship.</p>
 </div>
-<div id="section-4" class="section level2">
-<h2>1-7</h2>
+<div id="faceting-daily-rides" class="section level2">
+<h2>1-7 Faceting daily rides</h2>
+<p>We noticed some interesting behavior when we looked at daily ride counts faceted by day-of-week. Let’s investigate whether faceting on additional variables yields any new insights. Here we will see if there are different day-of-week patterns when also looking at the payment types of cash or credit card.</p>
 </div>
-<div id="section-5" class="section level2">
-<h2>1-8</h2>
+<div id="tip-amount-distribution-faceted-by-payment-type" class="section level2">
+<h2>1-8 Tip amount distribution faceted by payment type</h2>
+<p>The distribution of the total cab fare plot we created earlier was interesting, but we might be able to gain additional insight into this distribution by investigating whether it varies with respect to another variable. In this exercise, we’ll look at the tip amount portion of the cab fare distribution and see if it is different for different payment types by creating a histogram and faceting on payment type.</p>
 </div>
-<div id="section-6" class="section level2">
-<h2>1-10</h2>
+<div id="comparing-fare-distribution-by-payment-type" class="section level2">
+<h2>1-10 Comparing fare distribution by payment type</h2>
+<p>We have seen that there is no tip for cash payments. Does this mean people who pay with cash don’t tip, or does it mean that tips aren’t recorded when people pay with cash? For similar routes, we would expect the distributions of total fare to be identical regardless of payment type. In this exercise, we will create a quantile plot comparing the distribution of total fare by payment type and compare that with the original plot in a different facet.</p>
+<p>A dataset amount_compare has been created for you that contains variables payment_type, amount, and amount_type. amount_type distinguishes between values that reflect a total payment vs. a payment with no tip.</p>
+</div>
+<div id="ggplot2-trelliscopejs" class="section level2">
+<h2>2. ggplot2 + TrelliscopeJS</h2>
+<p>In the previous chapter you saw how faceting can b used as a powerful technique for visualizing a lot of data that can be naturally partitioned in some meaningful way. Now, using the trelliscopejs package with ggplot2, you will learn how to create faceted visualizations when the number of partitions in the data becomes too large to effectively view in a single screen.</p>
+</div>
+<div id="trelliscope-faceting-gapminder-by-country" class="section level2">
+<h2>2-2 Trelliscope faceting gapminder by country</h2>
+<p>With a subset of the gapminder data (just the two countries in Oceania), take the example of life expectancy vs. year faceted by country and continent and create a TrelliscopeJS display.</p>
+</div>
+<div id="interacting-with-the-display" class="section level2">
+<h2>2-4 Interacting with the display</h2>
+<p>Investigate the output of the life expectancy by country plot and answer the following question: Which Asian country has the lowest average life expectancy?</p>
+</div>
+<div id="customizing-the-gapminder-display" class="section level2">
+<h2>2-6 Customizing the gapminder display</h2>
+<p>Let’s put some of these features to the test with our by-country life expectancy trajectory plot. Note that we are again working with just the two countries from Oceania.</p>
+</div>
+<div id="examining-the-new-cognostics" class="section level2">
+<h2>2-7 Examining the new cognostics</h2>
+<p>Investigate the output of the plot you just created (now with all countries and with as_plotly = TRUE) and interact with the cognostics to answer the question: Which country has the poorest linear model fit according to the fraction of variance explained by the model? Note that this quantity is known as “R-squared”, and that cognostics associated with the linear model fit begin with _lm.</p>
+</div>
+<div id="adding-custom-cognostics" class="section level2">
+<h2>2-9 Adding custom cognostics</h2>
+<p>Let’s create some custom cognostics. To do so, you’ll add two new variables to the gapminder data: delta_lifeExp and ihme_link.</p>
+</div>
+<div id="interpreting-custom-cognostics" class="section level2">
+<h2>2-10 Interpreting custom cognostics</h2>
+<p>Which continent has seen the highest number of its countries increase their life expectancy by over 30 years?</p>
+</div>
+<div id="trelliscope-in-the-tidyverse" class="section level2">
+<h2>3. Trelliscope in the Tidyverse</h2>
+<p>The ggplot2 + trelliscopejs interface is easy to use, but trelliscopejs also provides a faceted plotting mechanism that gives you much more flexibility in what plotting system you use and how to specify cognostics. You will learn all about that in this chapter!</p>
+</div>
+<div id="grouping-and-nesting" class="section level2">
+<h2>3-2 Grouping and nesting</h2>
+<p>Let’s practice nesting data frames, getting familiar with the output, and computing on nested data frames.</p>
+</div>
+<div id="stock-price-display" class="section level2">
+<h2>3-3 Stock price display</h2>
+<p>Now that we have a data frame nested by stock symbol, let’s make a Trelliscope display with a plot for each stock. In this exercise, we use just the first 10 stocks in the by_symbol dataset we created in the previous exercise and create an “open-high-low-close” plot, a plot similar to candlestick plots. The available by_symbol dataset available in your session has already been subsetted to the first 10 stocks.</p>
+</div>
+<div id="exploring-the-display" class="section level2">
+<h2>3-4 Exploring the display</h2>
+<p>We can now navigate the display to look at the plots for each of the stocks. Explore the display to see what you can learn in general about the data. After you have satisfied your curiosity, use your display navigation skills to answer the following question: What was the highest high price that Nvidia Corporation (symbol: NVDA) reached in 2016?</p>
+</div>
+<div id="adding-cognostics" class="section level2">
+<h2>3-6 Adding cognostics</h2>
+<p>Let’s practice custom cognostics by taking the by_symbol data merged with the stock metadata creating a cognostic for the log market capitalization.</p>
+</div>
+<div id="cognostics-from-nested-data-frames" class="section level2">
+<h2>3-7 Cognostics from nested data frames</h2>
+<p>Let’s compute the average close price, average volume, and annual return as cognostics. The variables that these are based on, open, close, and volume, are inside the nested data frame data in our by_symbol dataset.</p>
+<p>Note that a function, annual_return(), has been provided for convenience.</p>
+</div>
+<div id="navigating-stock-plots-with-new-cognostics" class="section level2">
+<h2>3-8 Navigating stock plots with new cognostics</h2>
+<p>The cognostics we’ve added in the previous two exercises can add a lot of meaningful interactions to the display. Given a display created with these cognostics, looking at stocks with more than 10 billion market capitalization (1e10), which stock in the technology sector had the worst annual return?</p>
+</div>
+<div id="customizing-the-stock-display" class="section level2">
+<h2>3-10 Customizing the stock display</h2>
+<p>Let’s customize our stock display by specifying a wider plot having an aspect ratio of 2, and let’s give it a custom description.</p>
+<p>Note that the data frame by_symbol has already been computed and contains the panel column and all the cognostics that we desire for our display.</p>
+</div>
+<div id="visualizing-pokemon" class="section level2">
+<h2>3-12 Visualizing Pokemon</h2>
+<p>Let’s try visualizing the pokemon data. There are a lot of variables in the pokemon dataset, so let’s only select a few that we really want to use as cognostics.</p>
+</div>
+<div id="the-most-powerful-pokemon" class="section level2">
+<h2>3-13 The most powerful Pokemon</h2>
+<p>Now that we have our display, can you answer who is the most powerful (with respect to attack) 1st-generation (generation_id) Pokemon of type (type_1) “fire”?</p>
+</div>
+<div id="case-study-exploring-montreal-bixi-bike-data" class="section level2">
+<h2>4. Case Study: Exploring Montreal BIXI Bike Data</h2>
+<p>The Montreal BIXI bike network provides open data for every bike ride, including the date, time, duration, and start and end stations of the ride. In this chapter, you will analyze data from over 4 million bike rides in 2017, going between 546 stations. There are many interesting exploratory questions to ask from this data and you will create exploratory visualizations ranging from summary statistics to detailed Trelliscope visualizations that will give you interesting insight into the data.</p>
+</div>
+<div id="number-of-daily-rides" class="section level2">
+<h2>4-2 Number of daily rides</h2>
+<p>Make a summary plot of the number of daily rides with workweek / weekend days colored differently.</p>
+</div>
+<div id="examining-time-of-day" class="section level2">
+<h2>4-3 Examining time-of-day</h2>
+<p>Now let’s look at how rides are distributed according to the time of day. Let’s make a summary plot of weekly ride counts faceted by start hour of day and broken down by workweek/weekend.</p>
+</div>
+<div id="effect-of-membership-and-weekday" class="section level2">
+<h2>4-4 Effect of membership and weekday</h2>
+<p>Expanding on the previous plot, let’s add one more variable into our summary, adding a facet dimension for whether or not the rider is a member of BIXI.</p>
+</div>
+<div id="daily-plots" class="section level2">
+<h2>4-6 Daily plots</h2>
+<p>Let’s now look at the number of rides vs. hour for each day. To start, we’ll create a summary dataset for the first full month in the dataset (May) and look at it.</p>
+</div>
+<div id="looking-at-all-days" class="section level2">
+<h2>4-7 Looking at all days</h2>
+<p>Let’s view the previous visualization as a Trelliscope display, building on the daily_may dataset we created in the previous exercise, available in your session. This will allow us to later swap out the “May-only” data summary to look at all 215 days without being constrained for visual space.</p>
+</div>
+<div id="augmenting-the-data-route-summary-statistics" class="section level2">
+<h2>4-9 Augmenting the data: Route summary statistics</h2>
+<p>We have constructed a dataset that is nearly ready for visualization, route_hod. Let’s add in a few more variables that will be useful as cognostics as we anticipate interactively viewing the display.</p>
+</div>
+<div id="visualizing-the-data-counts-by-hour-of-day" class="section level2">
+<h2>4-10 Visualizing the data: Counts by hour-of-day</h2>
+<p>We can now create a Trelliscope display using ggplot2. We want to plot number of rides vs. hour of day, colored by workweek / weekend, and faceted by route using facet_trelliscope().</p>
+<p>route_hod is available in your workspace, but it only contains the top 8 routes. We will view the result for all top routes in the final exercise.</p>
+</div>
+<div id="evaluating-the-visualization" class="section level2">
+<h2>4-11 Evaluating the visualization</h2>
+<p>There are interesting and varying patterns of ride counts for different routes. Try experimenting with sorting and filtering by different metrics. Which are the most common start and end stations? Are some stations more associated with leisure vs. commuter rides? Are commuter routes generally longer or shorter in distance / duration?</p>
+<p>Now answer the following question: What route with average trip duration less than 10 minutes has the most total rides?</p>
 </div>
