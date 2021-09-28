@@ -34,13 +34,25 @@ Having honed your visualization skills by learning ggplot2, it's now time to tac
 Learn different strategies for plotting big data using ggplot2, including calculating and plotting summary statistics, various techniques to deal with overplotting, and principles of small multiples with faceting, which leads into Trelliscope.
 
 
-## 1-2 
+## 1-2 Daily ride counts
+
+A useful way to tabulate and visualize cab rides is by looking at the number of rides according to the calendar day. In this exercise, you'll compute this summary and examine how daily ridership varies by time and the day of week.
 
 ```{r}
+tx <- tx %>% mutate(pickup_date=pick_day)
+# Summarize the number of taxi rides by pickup day
+daily_count <- tx %>%
+  group_by(pickup_date) %>%
+  summarise(n_rides = n())
 
+# Create a line plot
+ggplot(daily_count, aes(pickup_date, n_rides)) +
+  geom_line()
 ```
 
-## 1-3 
+## 1-3 Distribution of cab fare amount
+
+Let's learn about how much cab rides cost in NYC and look at a histogram of the total cab fare. Since the fare amount is likely to be highly skewed, we will plot it with the x-axis in the log scale.
 
 ```{r}
 
