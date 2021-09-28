@@ -18,6 +18,7 @@ load("route_hod.Rdata")
 load("tx_sub.Rdata")
 
 bike <- readRDS("bike.rds")
+tx_pop <- read.csv("tx_pop.csv")
 
 # STOCKS
 
@@ -128,8 +129,21 @@ We have seen that there is no tip for cash payments. Does this mean people who p
 
 A dataset amount_compare has been created for you that contains variables payment_type, amount, and amount_type. amount_type distinguishes between values that reflect a total payment vs. a payment with no tip.
 
-```{r}
+Use geom_qq() to create a quantile plot of the total fare amount, amount. Be sure to specify distribution = stats::qunif
 
+
+```{r warning=FALSE}
+# Get data ready to plot
+amount_compare <- tx_pop %>%
+  mutate(total_no_tip = total_amount - tip_amount) %>%
+  select(total_amount, total_no_tip, payment_type) %>%
+  gather(amount_type, amount, -payment_type)
+
+# Quantile plot
+ggplot(amount_compare, aes(sample = amount, color = payment_type)) +
+  geom_qq(distribution = stats::qunif, shape = 21) +
+  facet_wrap(~ amount_type) +
+  ylim(c(3, 20))
 ```
 
 ## 2. ggplot2 + TrelliscopeJS
