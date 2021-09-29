@@ -157,7 +157,11 @@ In the previous chapter you saw how faceting can b used as a powerful technique 
 With a subset of the gapminder data (just the two countries in Oceania), take the example of life expectancy vs. year faceted by country and continent and create a TrelliscopeJS display.
 
 ```{r}
-
+# Create the plot
+ggplot(gapminder, aes(year, lifeExp)) +
+  geom_line() +
+  # Facet on country and continent
+  facet_trelliscope(~ country+continent)
 ```
 
 ## 2-4 Interacting with the display
