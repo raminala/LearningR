@@ -11,8 +11,9 @@ tags:
 
 ```{r include=FALSE}
 library(tidyverse)
-library(hexbin)
-
+library(hexbin) # hexagon-binned plot
+library(trelliscopejs)
+library(gapminder)
 load("pokemon.Rdata")
 load("route_hod.Rdata")
 load("tx_sub.Rdata")
@@ -120,7 +121,7 @@ The distribution of the total cab fare plot we created earlier was interesting, 
 ggplot(tx, aes(tip_amount + 0.01)) +
   geom_histogram(bins = 30) +
   scale_x_log10() +
-  facet_wrap(~ payment_type, ncol = 1, scales = "free_y")
+  facet_wrap( ~payment_type, ncol = 1, scales = "free_y")
 ```
 
 ## 1-10 Comparing fare distribution by payment type
@@ -137,8 +138,9 @@ Use geom_qq() to create a quantile plot of the total fare amount, amount. Be sur
 amount_compare <- tx_pop %>%
   mutate(total_no_tip = total_amount - tip_amount) %>%
   select(total_amount, total_no_tip, payment_type) %>%
-  gather(amount_type, amount, -payment_type)
-
+ # gather(amount_type, amount, -payment_type)
+pivot_longer(cols=c("total_amount", "total_no_tip"), names_to= "amount_type", values_to="amount")
+  
 # Quantile plot
 ggplot(amount_compare, aes(sample = amount, color = payment_type)) +
   geom_qq(distribution = stats::qunif, shape = 21) +

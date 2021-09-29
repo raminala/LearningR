@@ -86,13 +86,27 @@ ggplot(daily_count, aes(pickup_date, n_rides)) +
 ggplot(tx, aes(tip_amount + 0.01)) +
   geom_histogram(bins = 30) +
   scale_x_log10() +
-  facet_wrap(~ payment_type, ncol = 1, scales = &quot;free_y&quot;)</code></pre>
+  facet_wrap( ~payment_type, ncol = 1, scales = &quot;free_y&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="comparing-fare-distribution-by-payment-type" class="section level2">
 <h2>1-10 Comparing fare distribution by payment type</h2>
 <p>We have seen that there is no tip for cash payments. Does this mean people who pay with cash don’t tip, or does it mean that tips aren’t recorded when people pay with cash? For similar routes, we would expect the distributions of total fare to be identical regardless of payment type. In this exercise, we will create a quantile plot comparing the distribution of total fare by payment type and compare that with the original plot in a different facet.</p>
 <p>A dataset amount_compare has been created for you that contains variables payment_type, amount, and amount_type. amount_type distinguishes between values that reflect a total payment vs. a payment with no tip.</p>
+<p>Use geom_qq() to create a quantile plot of the total fare amount, amount. Be sure to specify distribution = stats::qunif</p>
+<pre class="r"><code># Get data ready to plot
+amount_compare &lt;- tx_pop %&gt;%
+  mutate(total_no_tip = total_amount - tip_amount) %&gt;%
+  select(total_amount, total_no_tip, payment_type) %&gt;%
+ # gather(amount_type, amount, -payment_type)
+pivot_longer(cols=c(&quot;total_amount&quot;, &quot;total_no_tip&quot;), names_to= &quot;amount_type&quot;, values_to=&quot;amount&quot;)
+  
+# Quantile plot
+ggplot(amount_compare, aes(sample = amount, color = payment_type)) +
+  geom_qq(distribution = stats::qunif, shape = 21) +
+  facet_wrap(~ amount_type) +
+  ylim(c(3, 20))</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="ggplot2-trelliscopejs" class="section level2">
 <h2>2. ggplot2 + TrelliscopeJS</h2>
