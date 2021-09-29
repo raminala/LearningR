@@ -177,14 +177,6 @@ ggplot(gapminder, aes(year, lifeExp)) +
   )
 ```
 
-## 2-4 Interacting with the display
-
-Investigate the output of the life expectancy by country plot and answer the following question: Which Asian country has the lowest average life expectancy?
-
-```{r}
-
-```
-
 ## 2-6 Customizing the gapminder display
 
 Let's put some of these features to the test with our by-country life expectancy trajectory plot. Note that we are again working with just the two countries from Oceania.
