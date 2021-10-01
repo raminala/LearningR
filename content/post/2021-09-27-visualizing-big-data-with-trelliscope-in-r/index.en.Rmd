@@ -23,7 +23,7 @@ tx_pop <- read.csv("tx_pop.csv")
 
 # STOCKS
 
-nsdq2016 <- readRDS("nsdq2016.rds")
+stocks <- readRDS("nsdq2016.rds")
 nsdq_symb <- readRDS("nsdq_symb.rds")
 ```
 
@@ -218,7 +218,16 @@ The ggplot2 + trelliscopejs interface is easy to use, but trelliscopejs also pro
 Let's practice nesting data frames, getting familiar with the output, and computing on nested data frames.
 
 ```{r}
+# Nest stocks by symbol
+by_symbol <- stocks %>%
+  group_by(symbol) %>%
+  nest()
 
+min_volume_fn <- function(x) min(x$volume)
+
+# Create new column
+by_symbol_min <- by_symbol %>%
+  mutate(min_volume = map_dbl(data, min_volume_fn))
 ```
 
 ## 3-3 Stock price display
@@ -226,6 +235,19 @@ Let's practice nesting data frames, getting familiar with the output, and comput
 Now that we have a data frame nested by stock symbol, let's make a Trelliscope display with a plot for each stock. In this exercise, we use just the first 10 stocks in the by_symbol dataset we created in the previous exercise and create an "open-high-low-close" plot, a plot similar to candlestick plots. The available by_symbol dataset available in your session has already been subsetted to the first 10 stocks.
 
 ```{r}
+library(trelliscopejs)
+library(dplyr)
+library(purrr)
+library(plotly)
+
+ohlc_plot <- function(d) {
+  plot_ly(d, x = ~date, type = "ohlc",
+    open = ~open, close = ~close,
+    high = ~high, low = ~low)
+}
+
+by_symbol_plot <- by_symbol %>%
+  mutate(panel = map_plot(data, ohlc_plot))
 
 ```
 
