@@ -264,7 +264,13 @@ We can now navigate the display to look at the plots for each of the stocks. Exp
 Let's practice custom cognostics by taking the by_symbol data merged with the stock metadata creating a cognostic for the log market capitalization.
 
 ```{r}
-
+# Create market_cap_log
+by_symbol <- mutate(by_symbol,
+  market_cap_log = cog(
+    val = log10(market_cap),
+     desc= "log base 10 market capitalization"
+  )
+)
 ```
 
 ## 3-7 Cognostics from nested data frames
@@ -274,7 +280,18 @@ Let's compute the average close price, average volume, and annual return as cogn
 Note that a function, annual_return(), has been provided for convenience.
 
 ```{r}
+annual_return <- function(x)
+  100 * (tail(x$close, 1) - head(x$open, 1)) / head(x$open, 1)
 
+# Compute by_symbol_avg
+by_symbol_avg <- mutate(by_symbol,
+  stats = map(data, function(x) {
+    data_frame(
+      mean_close = mean(x$close),
+      mean_volume = mean(x$volume),
+      annual_return = annual_return(x)
+    )
+  }))
 ```
 
 ## 3-8 Navigating stock plots with new cognostics
