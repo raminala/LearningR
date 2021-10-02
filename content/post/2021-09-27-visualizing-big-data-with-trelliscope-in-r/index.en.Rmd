@@ -309,7 +309,12 @@ Let's customize our stock display by specifying a wider plot having an aspect ra
 Note that the data frame by_symbol has already been computed and contains the panel column and all the cognostics that we desire for our display.
 
 ```{r}
+# Create the trelliscope display
+p <- trelliscope(by_symbol, desc="vvv",  name = "ohlc_top500",  width= 600, height= 300)
 
+
+# View the display
+p
 ```
 
 ## 3-12 Visualizing Pokemon
@@ -317,7 +322,22 @@ Note that the data frame by_symbol has already been computed and contains the pa
 Let's try visualizing the pokemon data. There are a lot of variables in the pokemon dataset, so let's only select a few that we really want to use as cognostics.
 
 ```{r}
+library(dplyr)
+library(trelliscopejs)
 
+# Create a new data frame to use for plotting
+pokemon2 <- pokemon %>%
+  # Reduce the variables in the dataset
+  select(pokemon, type_1, attack, generation_id, url_image) %>%
+  mutate(
+    # Respecify pokemon
+    pokemon = cog(val = pokemon, default_label = TRUE),
+    # Create panel variable
+    panel = img_panel(url_image)
+  )
+
+# Create the display
+trelliscope(pokemon2, name = "pokemon", nrow = 3, ncol = 6)
 ```
 
 ## 3-13 The most powerful Pokemon
