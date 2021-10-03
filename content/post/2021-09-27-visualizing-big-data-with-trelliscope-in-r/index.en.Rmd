@@ -405,8 +405,17 @@ ggplot(wk_memb_hod, aes(start_wk, n, color = weekday)) +
 
 Let's now look at the number of rides vs. hour for each day. To start, we'll create a summary dataset for the first full month in the dataset (May) and look at it.
 
-```{r}
+```{r message=FALSE}
+# Compute daily_may
+daily_may <- bike %>%
+  filter(start_mon=="5") %>%
+  group_by(start_day, start_hod, membership) %>%
+  summarise(n = n())
 
+# Plot the result
+ggplot(daily_may, aes(start_hod, n, color = membership)) +
+  geom_point() +
+  facet_wrap(~start_day,ncol=7)
 ```
 
 ## 4-7 Looking at all days
@@ -414,7 +423,10 @@ Let's now look at the number of rides vs. hour for each day. To start, we'll cre
 Let's view the previous visualization as a Trelliscope display, building on the daily_may dataset we created in the previous exercise, available in your session. This will allow us to later swap out the "May-only" data summary to look at all 215 days without being constrained for visual space.
 
 ```{r}
-
+ggplot(daily_may, aes(start_hod, n, color = membership)) +
+  geom_point() +
+  # Facet on start_day
+  facet_trelliscope(~start_day,ncol=7, nrow=3)
 ```
 
 ## 4-9 Augmenting the data: Route summary statistics
