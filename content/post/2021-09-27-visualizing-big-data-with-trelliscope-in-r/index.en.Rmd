@@ -389,7 +389,16 @@ ggplot(week_hod, aes(start_wk, n, color = weekday)) +
 Expanding on the previous plot, let's add one more variable into our summary, adding a facet dimension for whether or not the rider is a member of BIXI.
 
 ```{r}
+# Compute wk_memb_hod
+wk_memb_hod <- bike %>%
+  group_by(start_wk, start_hod, weekday, membership) %>%
+  summarise(n = n())
 
+# Plot the result
+ggplot(wk_memb_hod, aes(start_wk, n, color = weekday)) +
+  geom_point() +
+  facet_grid(membership ~ start_hod) +
+  scale_y_sqrt()
 ```
 
 ## 4-6 Daily plots
