@@ -372,7 +372,16 @@ ggplot(daily, aes(start_day, n, color = weekday)) +
 Now let's look at how rides are distributed according to the time of day. Let's make a summary plot of weekly ride counts faceted by start hour of day and broken down by workweek/weekend.
 
 ```{r}
+# Compute week_hod
+week_hod <- bike %>%
+  group_by(start_wk, start_hod, weekday) %>%
+  summarise(n = n())
 
+# Plot the result
+ggplot(week_hod, aes(start_wk, n, color = weekday)) +
+  geom_point() +
+  facet_grid(~ start_hod) +
+  scale_y_sqrt()
 ```
 
 ## 4-4 Effect of membership and weekday
