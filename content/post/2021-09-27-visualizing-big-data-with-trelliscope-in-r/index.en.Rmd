@@ -356,8 +356,15 @@ The Montreal BIXI bike network provides open data for every bike ride, including
 
 Make a summary plot of the number of daily rides with workweek / weekend days colored differently.
 
-```{r}
+```{r message=FALSE}
+# Compute daily counts
+daily <- bike %>%
+  group_by(start_day, weekday) %>%
+  summarise(n = n())
 
+# Plot the result
+ggplot(daily, aes(start_day, n, color = weekday)) +
+  geom_point()
 ```
 
 ## 4-3 Examining time-of-day
