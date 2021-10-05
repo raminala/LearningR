@@ -1,0 +1,14 @@
+---
+title: Sampling in R
+author: ''
+date: '2021-10-04'
+slug: sampling-in-r
+categories: []
+tags:
+  - sampling
+---
+
+```{r include=FALSE}
+
+```
+
