@@ -35,3 +35,6 @@ netflix_df %>%
   separate(duration, into = c("value", "unit"), sep = " ", convert = TRUE)
 ```
 
+## 1-5 International phone numbers
+
+You work for a multinational company that uses auto-dialer software to contact its customers. When new customers subscribe online they are asked for a phone number but they often forget to add the country code needed for international calls. You were asked to fix this issue in the database. You've been given a data frame with national numbers and country codes named phone_nr_df. Now you want to combine the country_code and national_number columns to create valid international numbers.
