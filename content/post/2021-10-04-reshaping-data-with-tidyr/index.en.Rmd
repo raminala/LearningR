@@ -1,0 +1,37 @@
+---
+title: Reshaping Data with tidyr
+author: ''
+date: '2021-10-04'
+slug: reshaping-data-with-tidyr
+categories: []
+tags:
+  - data_wrangling
+  - dataset_preparation
+---
+
+```{r include=FALSE}
+library(tidyverse)
+
+netflix_df <- read_csv("netflix_df.csv")
+olympic <- readRDS("olympic_medals_top_10.rds")
+```
+
+
+Data in the wild can be scary—when confronted with a complicated and messy dataset you may find yourself wondering, where do I even start? The tidyr package allows you to wrangle such beasts into nice and tidy datasets. Inaccessible values stored in column names will be put into rows, JSON files will become data frames, and missing values will never go missing again. You'll practice these techniques on a wide range of messy datasets, learning along the way how many dogs the Soviet Union sent into space and what bird is most popular in New Zealand. With the tidyr package in your tidyverse toolkit, you'll be able to transform almost any dataset in a tidy format which will pay-off during the rest of your analysis.
+
+## 1- Tidy data
+
+You'll be introduced to the concept of tidy data which is central to this course. In the first two lessons, you'll jump straight into the action by separating messy character columns into tidy variables and observations ready for analysis. In the final lesson, you'll learn how to overwrite and remove missing values.
+
+## 1-3 Multiple variables per column
+
+Being a busy person, you don't want to spend too much time on Netflix, so you decide to crunch some numbers on TV show and movie durations before deciding what to watch. You've managed to obtain a dataset named netflix_df, but its duration column has an issue. It contains strings with both a value and unit of duration ("min" or "Season").
+
+You'll tidy this dataset so that each variable gets its own column.
+
+```{r}
+netflix_df %>% 
+  # Split the duration column into value and unit columns
+  separate(duration, into = c("value", "unit"), sep = " ", convert = TRUE)
+```
+
