@@ -1,0 +1,196 @@
+---
+title: Reshaping Data with tidyr
+author: ''
+date: '2021-10-04'
+slug: reshaping-data-with-tidyr
+categories: []
+tags:
+  - data_wrangling
+  - dataset_preparation
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Data in the wild can be scary—when confronted with a complicated and messy dataset you may find yourself wondering, where do I even start? The tidyr package allows you to wrangle such beasts into nice and tidy datasets. Inaccessible values stored in column names will be put into rows, JSON files will become data frames, and missing values will never go missing again. You’ll practice these techniques on a wide range of messy datasets, learning along the way how many dogs the Soviet Union sent into space and what bird is most popular in New Zealand. With the tidyr package in your tidyverse toolkit, you’ll be able to transform almost any dataset in a tidy format which will pay-off during the rest of your analysis.</p>
+<div id="tidy-data" class="section level2">
+<h2>1- Tidy data</h2>
+<p>You’ll be introduced to the concept of tidy data which is central to this course. In the first two lessons, you’ll jump straight into the action by separating messy character columns into tidy variables and observations ready for analysis. In the final lesson, you’ll learn how to overwrite and remove missing values.</p>
+</div>
+<div id="multiple-variables-per-column" class="section level2">
+<h2>1-3 Multiple variables per column</h2>
+<p>Being a busy person, you don’t want to spend too much time on Netflix, so you decide to crunch some numbers on TV show and movie durations before deciding what to watch. You’ve managed to obtain a dataset named netflix_df, but its duration column has an issue. It contains strings with both a value and unit of duration (“min” or “Season”).</p>
+<p>You’ll tidy this dataset so that each variable gets its own column.</p>
+<pre class="r"><code>netflix_df %&gt;% 
+  # Split the duration column into value and unit columns
+  separate(duration, into = c(&quot;value&quot;, &quot;unit&quot;), sep = &quot; &quot;, convert = TRUE)</code></pre>
+<pre><code>## # A tibble: 637 x 4
+##    title                  type    value unit  
+##    &lt;chr&gt;                  &lt;chr&gt;   &lt;int&gt; &lt;chr&gt; 
+##  1 Article 15             Movie     125 min   
+##  2 Kill Me If You Dare    Movie     100 min   
+##  3 The Spy                TV Show     1 Season
+##  4 The World We Make      Movie     108 min   
+##  5 Watchman               Movie      93 min   
+##  6 Mo Gilligan: Momentum  Movie      64 min   
+##  7 Domino                 Movie      89 min   
+##  8 TUNA GIRL              Movie      90 min   
+##  9 Bard of Blood          TV Show     1 Season
+## 10 Dragons: Rescue Riders TV Show     1 Season
+## # ... with 627 more rows</code></pre>
+</div>
+<div id="international-phone-numbers" class="section level2">
+<h2>1-5 International phone numbers</h2>
+<p>You work for a multinational company that uses auto-dialer software to contact its customers. When new customers subscribe online they are asked for a phone number but they often forget to add the country code needed for international calls. You were asked to fix this issue in the database. You’ve been given a data frame with national numbers and country codes named phone_nr_df. Now you want to combine the country_code and national_number columns to create valid international numbers.</p>
+<pre class="r"><code>phone_nr_df</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   country        country_code national_number
+##   &lt;chr&gt;                 &lt;dbl&gt;           &lt;dbl&gt;
+## 1 USA                       1      2025550117
+## 2 United Kingdom           44      1632960924
+## 3 Brazil                   55     95552452220
+## 4 Australia                61      1900654321
+## 5 China                    86     13555953217
+## 6 India                    91      8555843898</code></pre>
+<pre class="r"><code>phone_nr_df %&gt;%
+  # Unite the country_code and national_number columns
+  unite(&quot;international_number&quot;, country_code, national_number, sep = &quot; &quot;)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   country        international_number
+##   &lt;chr&gt;          &lt;chr&gt;               
+## 1 USA            1 2025550117        
+## 2 United Kingdom 44 1632960924       
+## 3 Brazil         55 95552452220      
+## 4 Australia      61 1900654321       
+## 5 China          86 13555953217      
+## 6 India          91 8555843898</code></pre>
+</div>
+<div id="extracting-observations-from-values" class="section level2">
+<h2>1-6 Extracting observations from values</h2>
+<p>You’re given a sample of the Netflix dataset containing TV shows and their casts called tvshow_df. You want to learn which six actors have the most appearances.</p>
+<p>However, the dataset only has one row per TV show, and multiple actors are listed in the cast column.</p>
+<p>Transform the data so that for each TV show, every actor has a row. The number of appearances will be calculated for you.</p>
+<pre class="r"><code>tvshow_df</code></pre>
+<pre><code>## # A tibble: 1,759 x 2
+##    title                   cast                                                 
+##    &lt;chr&gt;                   &lt;chr&gt;                                                
+##  1 Transformers Prime      Peter Cullen, Sumalee Montano, Frank Welker, Jeffrey~
+##  2 Transformers: Robots i~ Will Friedle, Darren Criss, Constance Zimmer, Khary ~
+##  3 Apaches                 Alberto Ammann, Eloy Azorín, Verónica Echegui, Lucía~
+##  4 Castle of Stars         Chaiyapol Pupart, Jintanutda Lummakanon, Worrawech D~
+##  5 Archibald&#39;s Next Big T~ Tony Hale, Rosamund Pike, Jordan Fisher, Chelsea Kan~
+##  6 The Spy                 Sacha Baron Cohen, Noah Emmerich, Hadar Ratzon Rotem~
+##  7 No Tomorrow             Joshua Sasse, Tori Anderson, Jonathan Langdon, Saray~
+##  8 Frequency               Peyton List, Riley Smith, Mekhi Phifer, Devin Kelley~
+##  9 Adam Ruins Everything   Adam Conover, Adam Lustick, Emily Axford             
+## 10 Ben 10                  Tara Strong, Montse Hernandez, David Kaye, Roger Cra~
+## # ... with 1,749 more rows</code></pre>
+<pre class="r"><code>tvshow_df %&gt;% 
+  # Separate the actors in the cast column over multiple rows
+  separate_rows(cast, sep = &quot;, &quot;, convert = TRUE) %&gt;% 
+  rename(actor = cast) %&gt;% 
+  count(actor, sort = TRUE) %&gt;% 
+  head()</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   actor                  n
+##   &lt;chr&gt;              &lt;int&gt;
+## 1 Takahiro Sakurai      18
+## 2 Yuki Kaji             16
+## 3 Daisuke Ono           14
+## 4 David Attenborough    14
+## 5 Ashleigh Ball         12
+## 6 Hiroshi Kamiya        12</code></pre>
+</div>
+<div id="separating-into-columns-and-rows" class="section level2">
+<h2>1-7 Separating into columns and rows</h2>
+<p>Remember the drink ingredients data from the video? You’ve been given an similar version (drink_df) that also includes quantities and units. Now you want to create an overview of how much of each ingredient you should buy to make these drinks.</p>
+<pre class="r"><code>drink_df</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   drink          ingredients                                    
+##   &lt;chr&gt;          &lt;chr&gt;                                          
+## 1 Chocolate milk milk 0.3 L; chocolate 40 g; sugar 10 g         
+## 2 Orange juice   oranges 3; sugar 20 g                          
+## 3 Cappuccino     milk 0.1 L; water 0.1 L; coffee 30 g; sugar 5 g</code></pre>
+<pre class="r"><code>drink_df %&gt;% 
+  # Separate the ingredients over rows
+  separate_rows(ingredients, sep = &quot;; &quot;) %&gt;% 
+  # Separate ingredients into three columns
+  separate(
+    ingredients, 
+    into = c(&quot;ingredient&quot;, &quot;quantity&quot;, &quot;unit&quot;), 
+    sep = &quot; &quot;, 
+    convert = TRUE
+  ) %&gt;% 
+  # Group by ingredient and unit
+  group_by(ingredient, unit) %&gt;% 
+  # Calculate the total quantity of each ingredient
+  summarize(quantity = sum(quantity))</code></pre>
+<pre><code>## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [4].</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;ingredient&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 6 x 3
+## # Groups:   ingredient [6]
+##   ingredient unit  quantity
+##   &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt;
+## 1 chocolate  g         40  
+## 2 coffee     g         30  
+## 3 milk       L          0.4
+## 4 oranges    &lt;NA&gt;       3  
+## 5 sugar      g         35  
+## 6 water      L          0.1</code></pre>
+</div>
+<div id="and-the-oscar-for-best-director-goes-to" class="section level2">
+<h2>1-9 And the Oscar for best director goes to … <NA></h2>
+<p>You’re working on a sample of the Netflix dataset pre-loaded as director_df. This time, the data frame contains just the directors and movie titles. Your goal is to identify the directors who created the most movies. Since the director column contains multiple names, you’ll first separate its values over multiple rows and then count the directors.</p>
+<p>Since you don’t want movies without directors polluting your overview, you’ll apply the drop_na() function.</p>
+<pre class="r"><code>director_df %&gt;% 
+  # Spread the director column over separate rows
+  separate_rows(director, sep = &quot;, &quot;) %&gt;% 
+  # Count the number of movies per director
+  count(director, sort=TRUE)</code></pre>
+<pre><code>## # A tibble: 3,536 x 2
+##    director             n
+##    &lt;chr&gt;            &lt;int&gt;
+##  1 &lt;NA&gt;               129
+##  2 Jan Suter           21
+##  3 Raúl Campos         19
+##  4 Jay Karas           14
+##  5 Marcus Raboy        14
+##  6 Jay Chapman         12
+##  7 Martin Scorsese      9
+##  8 Steven Spielberg     9
+##  9 David Dhawan         8
+## 10 Johnnie To           8
+## # ... with 3,526 more rows</code></pre>
+<pre class="r"><code>director_df %&gt;% 
+  # Drop rows with NA values in the director column
+  drop_na() %&gt;% 
+  # Spread the director column over separate rows
+  separate_rows(director, sep = &quot;, &quot;) %&gt;% 
+  # Count the number of movies per director
+  count(director, sort = TRUE)</code></pre>
+<pre><code>## # A tibble: 3,535 x 2
+##    director             n
+##    &lt;chr&gt;            &lt;int&gt;
+##  1 Jan Suter           21
+##  2 Raúl Campos         19
+##  3 Jay Karas           14
+##  4 Marcus Raboy        14
+##  5 Jay Chapman         12
+##  6 Martin Scorsese      9
+##  7 Steven Spielberg     9
+##  8 David Dhawan         8
+##  9 Johnnie To           8
+## 10 Lance Bangs          8
+## # ... with 3,525 more rows</code></pre>
+</div>
+<div id="imputing-sales-data" class="section level2">
+<h2>1-10 Imputing sales data</h2>
+<p>You’ve been asked to create a report that allows management to compare sales figures per quarter for two years. The problem is that the dataset (sales_df) contains missing values. You’ll need to impute the values in the year column so that you can visualize the data.</p>
+</div>
+<div id="nuclear-bombs-per-continent" class="section level2">
+<h2>1-11 Nuclear bombs per continent</h2>
+<p>Since WWII, a number of nations have been detonating nuclear bombs for military research. A tally of bombs detonated per nation has been calculated from the Nuclear Explosion DataBase (NEDB) and provided as nuke_df. You are interested in finding out how many bombs have been detonated by nations grouped per continent. To achieve this goal, nuke_df will be joined to country_to_continent_df which is a mapping of nation to continent. You will need to overwrite missing values with zeros so that you can create a nice plot.</p>
+<p>The dplyr and ggplot2 packages have been pre-loaded for you.</p>
+<p>Side note 1: Bombs detonated by the Soviet Union were attributed to the Russian Federation.</p>
+<p>Side note 2: The Russian Federation is solely mapped to Europe for simplicity.</p>
+</div>
