@@ -17,6 +17,9 @@ phone_nr_df <- read_csv("phone_nr_df.csv")
 tvshow_df <- read_csv("tvshow_df.csv")
 drink_df <-  read_csv("drink_df.csv")
 director_df <-  read_csv("director_df.csv")
+sales_df <-  read_csv("sales_df.csv")
+country_to_continent_df <-  read_csv("country_to_continent_df.csv")
+nuke_df <-  read_csv("nuke_df.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -124,7 +127,12 @@ director_df %>%
 You've been asked to create a report that allows management to compare sales figures per quarter for two years. The problem is that the dataset (sales_df) contains missing values. You'll need to impute the values in the year column so that you can visualize the data.
 
 ```{r}
-
+sales_df %>% 
+  # Impute the year column
+  fill(year, .direction = "up") %>%
+  # Create a line plot with sales per quarter colored by year.
+  ggplot(aes(x = quarter, y = sales, color = as.factor(year), group = year)) +
+  geom_line()
 ```
 
 ## 1-11 Nuclear bombs per continent
@@ -138,6 +146,16 @@ Side note 1: Bombs detonated by the Soviet Union were attributed to the Russian 
 Side note 2: The Russian Federation is solely mapped to Europe for simplicity.
 
 ```{r}
-
+country_to_continent_df %>% 
+  left_join(nuke_df, by = "country_code") %>%  
+  # Impute the missing values in the n_bombs column with 0L
+  replace_na(list(n_bombs = 0L)) %>% 
+  # Group the dataset by continent
+  group_by(continent) %>% 
+  # Sum the number of bombs per continent
+  summarize(n_bombs_continent = sum(n_bombs)) %>% 
+  # Plot the number of bombs per continent
+  ggplot(aes(continent, n_bombs_continent)) +
+  geom_col()
 ```
 

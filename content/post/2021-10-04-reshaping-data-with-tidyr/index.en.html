@@ -186,6 +186,13 @@ tags:
 <div id="imputing-sales-data" class="section level2">
 <h2>1-10 Imputing sales data</h2>
 <p>You’ve been asked to create a report that allows management to compare sales figures per quarter for two years. The problem is that the dataset (sales_df) contains missing values. You’ll need to impute the values in the year column so that you can visualize the data.</p>
+<pre class="r"><code>sales_df %&gt;% 
+  # Impute the year column
+  fill(year, .direction = &quot;up&quot;) %&gt;%
+  # Create a line plot with sales per quarter colored by year.
+  ggplot(aes(x = quarter, y = sales, color = as.factor(year), group = year)) +
+  geom_line()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="nuclear-bombs-per-continent" class="section level2">
 <h2>1-11 Nuclear bombs per continent</h2>
@@ -193,4 +200,16 @@ tags:
 <p>The dplyr and ggplot2 packages have been pre-loaded for you.</p>
 <p>Side note 1: Bombs detonated by the Soviet Union were attributed to the Russian Federation.</p>
 <p>Side note 2: The Russian Federation is solely mapped to Europe for simplicity.</p>
+<pre class="r"><code>country_to_continent_df %&gt;% 
+  left_join(nuke_df, by = &quot;country_code&quot;) %&gt;%  
+  # Impute the missing values in the n_bombs column with 0L
+  replace_na(list(n_bombs = 0L)) %&gt;% 
+  # Group the dataset by continent
+  group_by(continent) %&gt;% 
+  # Sum the number of bombs per continent
+  summarize(n_bombs_continent = sum(n_bombs)) %&gt;% 
+  # Plot the number of bombs per continent
+  ggplot(aes(continent, n_bombs_continent)) +
+  geom_col()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
