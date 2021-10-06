@@ -13,6 +13,10 @@ tags:
 library(tidyverse)
 
 netflix_df <- read_csv("netflix_df.csv")
+phone_nr_df <- read_csv("phone_nr_df.csv")
+tvshow_df <- read_csv("tvshow_df.csv")
+drink_df <-  read_csv("drink_df.csv")
+director_df <-  read_csv("director_df.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -38,3 +42,102 @@ netflix_df %>%
 ## 1-5 International phone numbers
 
 You work for a multinational company that uses auto-dialer software to contact its customers. When new customers subscribe online they are asked for a phone number but they often forget to add the country code needed for international calls. You were asked to fix this issue in the database. You've been given a data frame with national numbers and country codes named phone_nr_df. Now you want to combine the country_code and national_number columns to create valid international numbers.
+
+```{r}
+phone_nr_df
+
+phone_nr_df %>%
+  # Unite the country_code and national_number columns
+  unite("international_number", country_code, national_number, sep = " ")
+```
+
+## 1-6 Extracting observations from values
+
+You're given a sample of the Netflix dataset containing TV shows and their casts called tvshow_df. You want to learn which six actors have the most appearances.
+
+However, the dataset only has one row per TV show, and multiple actors are listed in the cast column.
+
+Transform the data so that for each TV show, every actor has a row. The number of appearances will be calculated for you.
+
+```{r}
+tvshow_df
+
+tvshow_df %>% 
+  # Separate the actors in the cast column over multiple rows
+  separate_rows(cast, sep = ", ", convert = TRUE) %>% 
+  rename(actor = cast) %>% 
+  count(actor, sort = TRUE) %>% 
+  head()
+```
+
+## 1-7 Separating into columns and rows
+
+Remember the drink ingredients data from the video? You've been given an similar version (drink_df) that also includes quantities and units. Now you want to create an overview of how much of each ingredient you should buy to make these drinks.
+
+
+```{r}
+drink_df
+
+
+drink_df %>% 
+  # Separate the ingredients over rows
+  separate_rows(ingredients, sep = "; ") %>% 
+  # Separate ingredients into three columns
+  separate(
+    ingredients, 
+    into = c("ingredient", "quantity", "unit"), 
+    sep = " ", 
+    convert = TRUE
+  ) %>% 
+  # Group by ingredient and unit
+  group_by(ingredient, unit) %>% 
+  # Calculate the total quantity of each ingredient
+  summarize(quantity = sum(quantity))
+```
+
+## 1-9 And the Oscar for best director goes to ... <NA>
+
+You're working on a sample of the Netflix dataset pre-loaded as director_df. This time, the data frame contains just the directors and movie titles. Your goal is to identify the directors who created the most movies. Since the director column contains multiple names, you'll first separate its values over multiple rows and then count the directors.
+
+Since you don't want movies without directors polluting your overview, you'll apply the drop_na() function.
+
+```{r}
+director_df %>% 
+  # Spread the director column over separate rows
+  separate_rows(director, sep = ", ") %>% 
+  # Count the number of movies per director
+  count(director, sort=TRUE)
+```
+
+```{r}
+director_df %>% 
+  # Drop rows with NA values in the director column
+  drop_na() %>% 
+  # Spread the director column over separate rows
+  separate_rows(director, sep = ", ") %>% 
+  # Count the number of movies per director
+  count(director, sort = TRUE)
+```
+
+## 1-10 Imputing sales data
+
+You've been asked to create a report that allows management to compare sales figures per quarter for two years. The problem is that the dataset (sales_df) contains missing values. You'll need to impute the values in the year column so that you can visualize the data.
+
+```{r}
+
+```
+
+## 1-11 Nuclear bombs per continent
+
+Since WWII, a number of nations have been detonating nuclear bombs for military research. A tally of bombs detonated per nation has been calculated from the Nuclear Explosion DataBase (NEDB) and provided as nuke_df. You are interested in finding out how many bombs have been detonated by nations grouped per continent. To achieve this goal, nuke_df will be joined to country_to_continent_df which is a mapping of nation to continent. You will need to overwrite missing values with zeros so that you can create a nice plot.
+
+The dplyr and ggplot2 packages have been pre-loaded for you.
+
+Side note 1: Bombs detonated by the Soviet Union were attributed to the Russian Federation.
+
+Side note 2: The Russian Federation is solely mapped to Europe for simplicity.
+
+```{r}
+
+```
+
