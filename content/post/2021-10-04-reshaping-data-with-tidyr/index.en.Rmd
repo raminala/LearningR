@@ -20,6 +20,8 @@ director_df <-  read_csv("director_df.csv")
 sales_df <-  read_csv("sales_df.csv")
 country_to_continent_df <-  read_csv("country_to_continent_df.csv")
 nuke_df <-  read_csv("nuke_df.csv")
+
+nuke_df2 <-  read_csv("nuke_df2.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -157,5 +159,111 @@ country_to_continent_df %>%
   # Plot the number of bombs per continent
   ggplot(aes(continent, n_bombs_continent)) +
   geom_col()
+```
+
+## 2-2 Nuclear bombs per country
+
+You've been given a version of the Nuclear Explosion DataBase (NEDB) where country names are specified in the column headers (nuke_df). You want to visualize how many nukes were detonated per year per country. You'll need to pivot the data and replace NA values first.
+
+```{r}
+nuke_df
+```
+
+## 2-3 WHO obesity per country
+
+According to the World Health Organization (WHO), worldwide obesity has nearly tripled since 1975. You're interested in the severity of this global health issue per country and whether males and females are affected differently. You'll use the WHO's obesity data (obesity_df) to investigate this issue. The data holds the percentage of females, males, and both sexes combined that are considered obese (BMI > 30) per country.
+
+You want to create a scatterplot where, per nation, you can see the obesity data colored differently for females and males. This implies that sex should become a variable with its own column.
+
+```{r}
+
+```
+
+## 2-4 Bond... James Bond
+
+You've been given a James Bond movie dataset (bond_df) and want to visualize the number of movies that Bond actors have featured in per decade. However, the data is in an untidy format with the decade values captured in the column headers. You'll tidy this dataset to give each variable its own column.
+
+```{r}
+
+```
+
+## 2-6 New-Zealand's bird of the year
+
+Every year New Zealanders vote en masse to decide which species gets the bird of the year trophy. The contest is organized by the Forest & Bird agency which allows each person to give points to up to five birds (first pick gets 5 points, second 4, …). Your job is to decide this year's winner from the messy dataset that's been pre-loaded for you as bird_df.
+
+```{r}
+
+```
+
+## 2-7 Big tech stock prices
+
+You're an analyst at an investment firm and want to visualize the weekly closing prices of five big tech firms' stocks. However, the dataset you've been handed (stock_df) is messy and has the year and week variables stored in the column headers. You'll pivot this data into a tidy format, extract the variables from the headers, and create a line plot.
+
+```{r}
+
+```
+
+## 2-9 Soviet space dogs, the dog perspective
+
+You'll be working on an pre-processed sample of the USSR space dogs database compiled by Duncan Geere and pre-loaded for you as space_dogs_df. Each of the 42 rows in this dataset represents a test rocket launch which had one or two very brave dogs on board.
+
+Your goal is to reshape this dataset so that for each launch, each dog has a row.
+
+The challenge is that in the column headers (name_1, name_2, gender_1, and gender_2), the part before the _ separator can point to two different variables (name and gender), while the second part always points to the dog ID (1st or 2nd dog).
+
+```{r}
+
+```
+
+## 2-10 WHO obesity vs. life expectancy
+
+You've been given a sample of WHO data (who_df) with obesity percentages and life expectancy data per country, year, and sex. You want to visually inspect the correlation between obesity and life expectancy.
+
+However, the data is very messy with four variables hidden in the column names. Each column name is made up of three parts separated by underscores: Values for the year, followed by those for sex, and then values for either pct.obese or life.exp. Since the third part of the column name string holds two variables you'll need to use the special ".value" value in the names_to argument.
+
+You'll pivot the data into a tidy format and create the scatterplot.
+
+```{r}
+
+```
+
+## 2-11 Uncounting observations
+
+You've found the job of your dreams providing technical support for a dog breed beauty contest. The jury members want a spreadsheet with the breed and id of each participating dog so that they can add the scores later on. You've only been given the number of participants per dog breed (dog_df) so you decide to use your tidyr skills to create the desired result.
+
+```{r}
+
+```
+
+## 2-13 Soviet space dogs, the flight perspective
+
+Remember the USSR space dogs dataset1? You changed it to a long format so that for every dog in every rocket launch, there was a row. Suppose you're given this tidy dataset and are asked to answer the question, "In what percentage of flights were both dogs of the same gender?"
+
+You'll reshape and investigate space_dogs_df to find the answer.
+
+```{r}
+
+```
+
+## 2-14 Planet temperature & distance to the Sun
+
+The intensity of light radiated by a light source follows an inverse square relationship with the distance it has traveled.
+
+https://en.wikipedia.org/wiki/Inverse-square_law 
+
+You wonder if you could observe this trend in the temperature of the planets in our Solar System given their distance to the Sun. You'll use the planet_df dataset from the devstronomy project to investigate this.
+
+```{r}
+
+```
+
+## 2-15 Transposing planet data
+
+You're again working on a planet dataset derived from the devstronomy project. This time, you're interested in the correlation between the diameter of a planet and the number of moons circling it.
+
+However, the dataset (planet_df) has a row for each variable and a column for each planet (observation). You'll transpose this data in two steps and then create a plot to inspect the correlation.
+
+```{r}
+
 ```
 
