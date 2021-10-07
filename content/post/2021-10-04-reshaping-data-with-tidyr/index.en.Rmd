@@ -20,8 +20,9 @@ director_df <-  read_csv("director_df.csv")
 sales_df <-  read_csv("sales_df.csv")
 country_to_continent_df <-  read_csv("country_to_continent_df.csv")
 nuke_df <-  read_csv("nuke_df.csv")
-
+obesity_df <-  read_csv("obesity_df.csv")
 nuke_df2 <-  read_csv("nuke_df2.csv")
+bond_df <-  read_csv("bond_df.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -166,8 +167,53 @@ country_to_continent_df %>%
 You've been given a version of the Nuclear Explosion DataBase (NEDB) where country names are specified in the column headers (nuke_df). You want to visualize how many nukes were detonated per year per country. You'll need to pivot the data and replace NA values first.
 
 ```{r}
-nuke_df
+nuke_df2
+
+nuke_df2 %>% 
+  # Pivot the data to a longer format
+  pivot_longer(-year)
 ```
+
+```{r}
+nuke_df2 %>% 
+  # Pivot the data to a longer format
+  pivot_longer(
+    -year, 
+    # Overwrite the names of the two new columns
+    names_to = "country", 
+     values_to = "n_bombs"
+  ) 
+```
+
+```{r}
+nuke_df2 %>% 
+  # Pivot the data to a longer format
+  pivot_longer(
+    -year, 
+    # Overwrite the names of the two new columns
+    names_to = "country", 
+    values_to = "n_bombs"
+  ) %>%
+  # Replace NA values for n_bombs with 0L
+   replace_na(list(n_bombs = 0L))
+```
+
+```{r}
+nuke_df2 %>% 
+  # Pivot the data to a longer format
+  pivot_longer(
+    -year, 
+    # Overwrite the names of the two new columns
+    names_to = "country", 
+    values_to = "n_bombs"
+  ) %>% 
+  # Replace NA values for n_bombs with 0L
+  replace_na(list(n_bombs = 0L)) %>% 
+  # Plot the number of bombs per country over time
+  ggplot(aes(year,n_bombs, color=country)) +
+  geom_line()
+```
+
 
 ## 2-3 WHO obesity per country
 
@@ -176,15 +222,50 @@ According to the World Health Organization (WHO), worldwide obesity has nearly t
 You want to create a scatterplot where, per nation, you can see the obesity data colored differently for females and males. This implies that sex should become a variable with its own column.
 
 ```{r}
+obesity_df
 
+obesity_df %>% 
+  # Pivot the male and female columns
+  pivot_longer(c(male,female), names_to = "sex", 
+    values_to = "pct_obese")
 ```
+
+```{r}
+obesity_df %>% 
+  # Pivot the male and female columns
+  pivot_longer(c(male, female),
+               names_to = "sex",
+               values_to = "pct_obese") %>% 
+  # Create a scatter plot with pct_obese per country colored by sex
+  ggplot(aes(x = pct_obese, color = sex,
+             y = forcats::fct_reorder(country, both_sexes))) +
+  geom_point() +
+  scale_y_discrete(breaks = c("India", "Nauru", "Cuba", "Brazil",
+                              "Pakistan", "Gabon", "Italy", "Oman",
+                              "China", "United States of America")) +
+  labs(x = "% Obese", y = "Country")
+```
+
 
 ## 2-4 Bond... James Bond
 
 You've been given a James Bond movie dataset (bond_df) and want to visualize the number of movies that Bond actors have featured in per decade. However, the data is in an untidy format with the decade values captured in the column headers. You'll tidy this dataset to give each variable its own column.
 
 ```{r}
-
+bond_df %>% 
+  # Pivot the data to long format
+  pivot_longer(
+    -Bond, 
+    # Overwrite the names of the two newly created columns
+    names_to = "decade", 
+    values_to = "n_movies", 
+    # Drop na values
+    values_drop_na = TRUE, 
+    # Transform the decade column data type to integer
+   names_transform= list(decade = as.integer)
+  ) %>% 
+  ggplot(aes(x = decade + 5, y = n_movies, fill = Bond))+
+  geom_col()
 ```
 
 ## 2-6 New-Zealand's bird of the year
