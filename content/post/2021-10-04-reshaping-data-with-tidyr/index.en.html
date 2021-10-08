@@ -681,21 +681,50 @@ ss</code></pre>
 <h2>2-13 Soviet space dogs, the flight perspective</h2>
 <p>Remember the USSR space dogs dataset1? You changed it to a long format so that for every dog in every rocket launch, there was a row. Suppose you’re given this tidy dataset and are asked to answer the question, “In what percentage of flights were both dogs of the same gender?”</p>
 <p>You’ll reshape and investigate space_dogs_df to find the answer.</p>
-<pre class="r"><code>space_dogs_df</code></pre>
-<pre><code>## # A tibble: 42 x 6
-##    date    result                     name_1      name_2       gender_1 gender_2
-##    &lt;chr&gt;   &lt;chr&gt;                      &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   
-##  1 2/22/1~ recovered safely after a ~ Ugolyok / ~ Veterok / B~ Male     Male    
-##  2 3/25/1~ one orbit, recovered safe~ Zvezdochka  &lt;NA&gt;         Female   &lt;NA&gt;    
-##  3 3/9/19~ one orbit, recovered safe~ Chernuskha  &lt;NA&gt;         Female   &lt;NA&gt;    
-##  4 12/22/~ upper stage failed, dogs ~ Shutka      Kometka      Female   Female  
-##  5 12/1/1~ spent one day in orbit, c~ Mushka      Pchyolka     Female   Female  
-##  6 9/22/1~ recovered safely           Kusachka /~ Neva         Female   Female  
-##  7 9/16/1~ recovered safely           Malyok      Palma-2      Male     Female  
-##  8 8/19/1~ spent one day in orbit, r~ Belka       Strelka      Female   Female  
-##  9 7/28/1~ exploded during launch, b~ Lisichka    Bars / Chai~ Female   Female  
-## 10 6/24/1~ recovered safely           Kusachka /~ Snezhinka /~ Female   Female  
+<pre class="r"><code>space_dogs_df2</code></pre>
+<pre><code>## # A tibble: 81 x 3
+##    date      gender dog_id
+##    &lt;chr&gt;     &lt;chr&gt;   &lt;dbl&gt;
+##  1 7/22/1951 Male        1
+##  2 7/22/1951 Male        2
+##  3 7/29/1951 Male        1
+##  4 7/29/1951 Female      2
+##  5 8/15/1951 Male        1
+##  6 8/15/1951 Male        2
+##  7 8/19/1951 Male        1
+##  8 8/19/1951 Male        2
+##  9 8/28/1951 Male        1
+## 10 8/28/1951 Male        2
+## # ... with 71 more rows</code></pre>
+<pre class="r"><code>space_dogs_df2 %&gt;% 
+  # Pivot the data to a wider format
+  pivot_wider(names_from = dog_id, values_from = gender, names_prefix = &quot;gender_&quot;)</code></pre>
+<pre><code>## # A tibble: 42 x 3
+##    date      gender_1 gender_2
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;   
+##  1 7/22/1951 Male     Male    
+##  2 7/29/1951 Male     Female  
+##  3 8/15/1951 Male     Male    
+##  4 8/19/1951 Male     Male    
+##  5 8/28/1951 Male     Male    
+##  6 9/3/1951  Male     Male    
+##  7 6/26/1951 Female   Male    
+##  8 7/2/1954  Female   Male    
+##  9 7/7/1954  Female   Male    
+## 10 7/26/1954 Female   Male    
 ## # ... with 32 more rows</code></pre>
+<pre class="r"><code>space_dogs_df2 %&gt;% 
+  # Pivot the data to a wider format
+  pivot_wider(names_from = dog_id, values_from = gender, names_prefix = &quot;gender_&quot;) %&gt;% 
+  # Drop rows with NA values
+  drop_na() %&gt;% 
+  # Create a Boolean column on whether both dogs have the same gender
+  mutate(same_gender= ifelse(gender_1 == gender_2, 1, 0)) %&gt;% 
+  summarize(pct_same_gender = mean(same_gender))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   pct_same_gender
+##             &lt;dbl&gt;
+## 1           0.795</code></pre>
 </div>
 <div id="planet-temperature-distance-to-the-sun" class="section level2">
 <h2>2-14 Planet temperature &amp; distance to the Sun</h2>
