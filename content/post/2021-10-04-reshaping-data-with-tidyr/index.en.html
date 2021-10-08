@@ -379,23 +379,163 @@ tags:
   ) %&gt;% 
   ggplot(aes(x = decade + 5, y = n_movies, fill = Bond))+
   geom_col()</code></pre>
-<pre><code>## Warning in f(names[[col]]): NAs introduced by coercion</code></pre>
-<pre><code>## Warning: Removed 7 rows containing missing values (position_stack).</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
 <div id="new-zealands-bird-of-the-year" class="section level2">
 <h2>2-6 New-Zealand’s bird of the year</h2>
 <p>Every year New Zealanders vote en masse to decide which species gets the bird of the year trophy. The contest is organized by the Forest &amp; Bird agency which allows each person to give points to up to five birds (first pick gets 5 points, second 4, …). Your job is to decide this year’s winner from the messy dataset that’s been pre-loaded for you as bird_df.</p>
+<pre class="r"><code>bird_df</code></pre>
+<pre><code>## # A tibble: 10,000 x 5
+##    points_5          points_4      points_3        points_2        points_1     
+##    &lt;chr&gt;             &lt;chr&gt;         &lt;chr&gt;           &lt;chr&gt;           &lt;chr&gt;        
+##  1 Yellow-eyed peng~ Kea           Tui             Southern Royal~ Southern Bro~
+##  2 Yellow-eyed peng~ Kereru        Tui             Saddleback      Rockhopper P~
+##  3 Fiordland Creste~ Bar-tailed G~ Banded Dotterel Black Robin     Blue Duck    
+##  4 Fantail           Kea           Tui             Kaka            Kakapo       
+##  5 Kakapo            Little Spott~ Rockhopper Pen~ Kokako          Shore Plover 
+##  6 Yellow-eyed peng~ &lt;NA&gt;          &lt;NA&gt;            &lt;NA&gt;            &lt;NA&gt;         
+##  7 Kakapo            Black Robin   Orange-fronted~ Little Spotted~ Kaka         
+##  8 Australasian Cre~ Blue Duck     New Zealand Fa~ Tomtit          Kea          
+##  9 Antipodean Albat~ Southern Bro~ Southern Royal~ Great Spotted ~ Barn Owl     
+## 10 Kereru            Rockhopper P~ Royal Spoonbill Little Spotted~ Yellow-eyed ~
+## # ... with 9,990 more rows</code></pre>
+<pre class="r"><code>bird_df %&gt;%
+  # Pivot the data to create a two column data frame
+  pivot_longer(
+    c(points_1, points_2, points_3, points_4, points_5),
+    names_to = &quot;points&quot;,
+    names_prefix = &quot;points_&quot;,
+    names_transform = list(points = as.integer),
+    values_to = &quot;species&quot;,
+    values_drop_na = TRUE
+  )</code></pre>
+<pre><code>## # A tibble: 46,808 x 2
+##    points species                 
+##     &lt;int&gt; &lt;chr&gt;                   
+##  1      1 Southern Brown Kiwi     
+##  2      2 Southern Royal Albatross
+##  3      3 Tui                     
+##  4      4 Kea                     
+##  5      5 Yellow-eyed penguin     
+##  6      1 Rockhopper Penguin      
+##  7      2 Saddleback              
+##  8      3 Tui                     
+##  9      4 Kereru                  
+## 10      5 Yellow-eyed penguin     
+## # ... with 46,798 more rows</code></pre>
+<p>Alternative solution…</p>
+<pre class="r"><code>bird_df %&gt;%
+  # Pivot the data to create a two column data frame
+  pivot_longer(
+     starts_with(&quot;points_&quot;),
+    names_to = &quot;points&quot;,
+    names_prefix = &quot;points_&quot;,
+    names_transform = list(points = as.integer),
+    values_to = &quot;species&quot;,
+    values_drop_na = TRUE
+  ) %&gt;%
+  group_by(species) %&gt;% 
+  summarize(total_points=sum(points)) %&gt;% 
+  slice_max(total_points, n = 5)</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   species             total_points
+##   &lt;chr&gt;                      &lt;int&gt;
+## 1 Yellow-eyed penguin        13522
+## 2 Kakapo                      8017
+## 3 Black Robin                 6542
+## 4 Banded Dotterel             5988
+## 5 Kaka                        5229</code></pre>
 </div>
 <div id="big-tech-stock-prices" class="section level2">
 <h2>2-7 Big tech stock prices</h2>
 <p>You’re an analyst at an investment firm and want to visualize the weekly closing prices of five big tech firms’ stocks. However, the dataset you’ve been handed (stock_df) is messy and has the year and week variables stored in the column headers. You’ll pivot this data into a tidy format, extract the variables from the headers, and create a line plot.</p>
+<pre class="r"><code>stock_df</code></pre>
+<pre><code>## # A tibble: 5 x 106
+##   company   `2019_week1` `2019_week2` `2019_week3` `2019_week4` `2019_week5`
+##   &lt;chr&gt;            &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Amazon          1848.        1641.        1696.        1671.        1626. 
+## 2 Apple             73.4         38.1         39.2         39.4         41.6
+## 3 Facebook         205.         144.         150.         149.         166. 
+## 4 Google          1337.        1057.        1098.        1091.        1111. 
+## 5 Microsoft        158.         103.         108.         107.         103. 
+## # ... with 100 more variables: 2019_week6 &lt;dbl&gt;, 2019_week7 &lt;dbl&gt;,
+## #   2019_week8 &lt;dbl&gt;, 2019_week9 &lt;dbl&gt;, 2019_week10 &lt;dbl&gt;, 2019_week11 &lt;dbl&gt;,
+## #   2019_week12 &lt;dbl&gt;, 2019_week13 &lt;dbl&gt;, 2019_week14 &lt;dbl&gt;, 2019_week15 &lt;dbl&gt;,
+## #   2019_week16 &lt;dbl&gt;, 2019_week17 &lt;dbl&gt;, 2019_week18 &lt;dbl&gt;, 2019_week19 &lt;dbl&gt;,
+## #   2019_week20 &lt;dbl&gt;, 2019_week21 &lt;dbl&gt;, 2019_week22 &lt;dbl&gt;, 2019_week23 &lt;dbl&gt;,
+## #   2019_week24 &lt;dbl&gt;, 2019_week25 &lt;dbl&gt;, 2019_week26 &lt;dbl&gt;, 2019_week27 &lt;dbl&gt;,
+## #   2019_week28 &lt;dbl&gt;, 2019_week29 &lt;dbl&gt;, 2019_week30 &lt;dbl&gt;, 2019_week31 &lt;dbl&gt;,
+## #   2019_week32 &lt;dbl&gt;, 2019_week33 &lt;dbl&gt;, 2019_week34 &lt;dbl&gt;, 2019_week35 &lt;dbl&gt;,
+## #   2019_week36 &lt;dbl&gt;, 2019_week37 &lt;dbl&gt;, 2019_week38 &lt;dbl&gt;, 2019_week39 &lt;dbl&gt;,
+## #   2019_week40 &lt;dbl&gt;, 2019_week41 &lt;dbl&gt;, 2019_week42 &lt;dbl&gt;, 2019_week43 &lt;dbl&gt;,
+## #   2019_week44 &lt;dbl&gt;, 2019_week45 &lt;dbl&gt;, 2019_week46 &lt;dbl&gt;, 2019_week47 &lt;dbl&gt;,
+## #   2019_week48 &lt;dbl&gt;, 2019_week49 &lt;dbl&gt;, 2019_week50 &lt;dbl&gt;, 2019_week51 &lt;dbl&gt;,
+## #   2019_week52 &lt;dbl&gt;, 2020_week1 &lt;dbl&gt;, 2020_week2 &lt;dbl&gt;, 2020_week3 &lt;dbl&gt;,
+## #   2020_week4 &lt;dbl&gt;, 2020_week5 &lt;dbl&gt;, 2020_week6 &lt;dbl&gt;, 2020_week7 &lt;dbl&gt;,
+## #   2020_week8 &lt;dbl&gt;, 2020_week9 &lt;dbl&gt;, 2020_week10 &lt;dbl&gt;, 2020_week11 &lt;dbl&gt;,
+## #   2020_week12 &lt;dbl&gt;, 2020_week13 &lt;dbl&gt;, 2020_week14 &lt;dbl&gt;, 2020_week15 &lt;dbl&gt;,
+## #   2020_week16 &lt;dbl&gt;, 2020_week17 &lt;dbl&gt;, 2020_week18 &lt;dbl&gt;, 2020_week19 &lt;dbl&gt;,
+## #   2020_week20 &lt;dbl&gt;, 2020_week21 &lt;dbl&gt;, 2020_week22 &lt;dbl&gt;, 2020_week23 &lt;dbl&gt;,
+## #   2020_week24 &lt;dbl&gt;, 2020_week25 &lt;dbl&gt;, 2020_week26 &lt;dbl&gt;, 2020_week27 &lt;dbl&gt;,
+## #   2020_week28 &lt;dbl&gt;, 2020_week29 &lt;dbl&gt;, 2020_week30 &lt;dbl&gt;, 2020_week31 &lt;dbl&gt;,
+## #   2020_week32 &lt;dbl&gt;, 2020_week33 &lt;dbl&gt;, 2020_week34 &lt;dbl&gt;, 2020_week35 &lt;dbl&gt;,
+## #   2020_week36 &lt;dbl&gt;, 2020_week37 &lt;dbl&gt;, 2020_week38 &lt;dbl&gt;, 2020_week39 &lt;dbl&gt;,
+## #   2020_week40 &lt;dbl&gt;, 2020_week41 &lt;dbl&gt;, 2020_week42 &lt;dbl&gt;, 2020_week43 &lt;dbl&gt;,
+## #   2020_week44 &lt;dbl&gt;, 2020_week45 &lt;dbl&gt;, 2020_week46 &lt;dbl&gt;, 2020_week47 &lt;dbl&gt;,
+## #   2020_week48 &lt;dbl&gt;, 2020_week49 &lt;dbl&gt;, 2020_week50 &lt;dbl&gt;, 2020_week51 &lt;dbl&gt;,
+## #   2020_week52 &lt;dbl&gt;, 2020_week53 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>ss &lt;- stock_df %&gt;% 
+  # Pivot the data to create 3 new columns: year, week, price
+  pivot_longer(
+    -company,
+    names_to = c(&quot;year&quot;, &quot;week&quot;),
+    values_to = &quot;price&quot;,
+    names_sep = &quot;_week&quot;,
+    names_transform = list(year = as.integer, week = as.integer)
+  ) 
+
+ss</code></pre>
+<pre><code>## # A tibble: 525 x 4
+##    company  year  week price
+##    &lt;chr&gt;   &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
+##  1 Amazon   2019     1 1848.
+##  2 Amazon   2019     2 1641.
+##  3 Amazon   2019     3 1696.
+##  4 Amazon   2019     4 1671.
+##  5 Amazon   2019     5 1626.
+##  6 Amazon   2019     6 1588.
+##  7 Amazon   2019     7 1608.
+##  8 Amazon   2019     8 1632.
+##  9 Amazon   2019     9 1672.
+## 10 Amazon   2019    10 1621.
+## # ... with 515 more rows</code></pre>
+<pre class="r"><code>ss %&gt;%
+  # Create a line plot with price per week, color by company
+  ggplot(aes(week, price, color=company)) +
+  geom_line() +
+  facet_grid(. ~ year)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 <div id="soviet-space-dogs-the-dog-perspective" class="section level2">
 <h2>2-9 Soviet space dogs, the dog perspective</h2>
 <p>You’ll be working on an pre-processed sample of the USSR space dogs database compiled by Duncan Geere and pre-loaded for you as space_dogs_df. Each of the 42 rows in this dataset represents a test rocket launch which had one or two very brave dogs on board.</p>
 <p>Your goal is to reshape this dataset so that for each launch, each dog has a row.</p>
 <p>The challenge is that in the column headers (name_1, name_2, gender_1, and gender_2), the part before the _ separator can point to two different variables (name and gender), while the second part always points to the dog ID (1st or 2nd dog).</p>
+<pre class="r"><code>space_dogs_df</code></pre>
+<pre><code>## # A tibble: 42 x 6
+##    date    result                     name_1      name_2       gender_1 gender_2
+##    &lt;chr&gt;   &lt;chr&gt;                      &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   
+##  1 2/22/1~ recovered safely after a ~ Ugolyok / ~ Veterok / B~ Male     Male    
+##  2 3/25/1~ one orbit, recovered safe~ Zvezdochka  &lt;NA&gt;         Female   &lt;NA&gt;    
+##  3 3/9/19~ one orbit, recovered safe~ Chernuskha  &lt;NA&gt;         Female   &lt;NA&gt;    
+##  4 12/22/~ upper stage failed, dogs ~ Shutka      Kometka      Female   Female  
+##  5 12/1/1~ spent one day in orbit, c~ Mushka      Pchyolka     Female   Female  
+##  6 9/22/1~ recovered safely           Kusachka /~ Neva         Female   Female  
+##  7 9/16/1~ recovered safely           Malyok      Palma-2      Male     Female  
+##  8 8/19/1~ spent one day in orbit, r~ Belka       Strelka      Female   Female  
+##  9 7/28/1~ exploded during launch, b~ Lisichka    Bars / Chai~ Female   Female  
+## 10 6/24/1~ recovered safely           Kusachka /~ Snezhinka /~ Female   Female  
+## # ... with 32 more rows</code></pre>
 </div>
 <div id="who-obesity-vs.-life-expectancy" class="section level2">
 <h2>2-10 WHO obesity vs. life expectancy</h2>
