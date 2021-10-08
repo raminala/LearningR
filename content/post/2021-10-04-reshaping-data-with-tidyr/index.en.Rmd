@@ -26,6 +26,8 @@ bond_df <-  read_csv("bond_df.csv")
 bird_df <-  read_csv("bird_df.csv")
 stock_df <-  read_csv("stock_df.csv")
 space_dogs_df <-  read_csv("space_dogs_df.csv")
+who_df <-  read_csv("who_df.csv")
+dog_df <-  read_csv("dog_df.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -343,10 +345,21 @@ Your goal is to reshape this dataset so that for each launch, each dog has a row
 
 The challenge is that in the column headers (name_1, name_2, gender_1, and gender_2), the part before the _ separator can point to two different variables (name and gender), while the second part always points to the dog ID (1st or 2nd dog).
 
+Complete the names_to argument so that the first part of the column headers are reused.
+
 ```{r}
 space_dogs_df
 
-
+space_dogs_df %>% 
+  pivot_longer(
+    # Add the columns to pivot
+    name_1:gender_2,
+    names_sep = "_",
+    # Complete the names_to argument to re-use the first part of the column headers
+    names_to = c(".value", "dog_id"),
+    # Make sure NA values are dropped
+    values_drop_na = TRUE
+  )
 ```
 
 ## 2-10 WHO obesity vs. life expectancy
@@ -358,7 +371,30 @@ However, the data is very messy with four variables hidden in the column names. 
 You'll pivot the data into a tidy format and create the scatterplot.
 
 ```{r}
+who_df
 
+who_df %>% 
+  # Put each variable in its own column
+  pivot_longer(
+    -country,
+    names_to = c("year", "sex", ".value"),
+    names_sep = "_", 
+    names_transform = list("year" = as.integer)
+  )
+```
+
+
+```{r}
+who_df %>% 
+  # Put each variable in its own column
+  pivot_longer(
+    -country,
+    names_to = c("year", "sex", ".value"),
+    names_sep = "_", 
+    names_transform = list("year" = as.integer)
+  ) %>%
+  # Create a plot with life expectancy over obesity
+  ggplot(aes(x=pct.obese, life.exp, color=sex))+geom_point()
 ```
 
 ## 2-11 Uncounting observations
@@ -366,7 +402,11 @@ You'll pivot the data into a tidy format and create the scatterplot.
 You've found the job of your dreams providing technical support for a dog breed beauty contest. The jury members want a spreadsheet with the breed and id of each participating dog so that they can add the scores later on. You've only been given the number of participants per dog breed (dog_df) so you decide to use your tidyr skills to create the desired result.
 
 ```{r}
+dog_df
 
+dog_df %>% 
+  # Create one row for each participant and add the id
+  uncount(n_participants, .id = "dog_id")
 ```
 
 ## 2-13 Soviet space dogs, the flight perspective
@@ -376,7 +416,7 @@ Remember the USSR space dogs dataset1? You changed it to a long format so that f
 You'll reshape and investigate space_dogs_df to find the answer.
 
 ```{r}
-
+space_dogs_df
 ```
 
 ## 2-14 Planet temperature & distance to the Sun

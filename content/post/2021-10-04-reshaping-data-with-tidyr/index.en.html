@@ -521,6 +521,7 @@ ss</code></pre>
 <p>You’ll be working on an pre-processed sample of the USSR space dogs database compiled by Duncan Geere and pre-loaded for you as space_dogs_df. Each of the 42 rows in this dataset represents a test rocket launch which had one or two very brave dogs on board.</p>
 <p>Your goal is to reshape this dataset so that for each launch, each dog has a row.</p>
 <p>The challenge is that in the column headers (name_1, name_2, gender_1, and gender_2), the part before the _ separator can point to two different variables (name and gender), while the second part always points to the dog ID (1st or 2nd dog).</p>
+<p>Complete the names_to argument so that the first part of the column headers are reused.</p>
 <pre class="r"><code>space_dogs_df</code></pre>
 <pre><code>## # A tibble: 42 x 6
 ##    date    result                     name_1      name_2       gender_1 gender_2
@@ -536,21 +537,165 @@ ss</code></pre>
 ##  9 7/28/1~ exploded during launch, b~ Lisichka    Bars / Chai~ Female   Female  
 ## 10 6/24/1~ recovered safely           Kusachka /~ Snezhinka /~ Female   Female  
 ## # ... with 32 more rows</code></pre>
+<pre class="r"><code>space_dogs_df %&gt;% 
+  pivot_longer(
+    # Add the columns to pivot
+    name_1:gender_2,
+    names_sep = &quot;_&quot;,
+    # Complete the names_to argument to re-use the first part of the column headers
+    names_to = c(&quot;.value&quot;, &quot;dog_id&quot;),
+    # Make sure NA values are dropped
+    values_drop_na = TRUE
+  )</code></pre>
+<pre><code>## # A tibble: 81 x 5
+##    date     result                                  dog_id name           gender
+##    &lt;chr&gt;    &lt;chr&gt;                                   &lt;chr&gt;  &lt;chr&gt;          &lt;chr&gt; 
+##  1 2/22/19~ recovered safely after a 22-day flight  1      Ugolyok / Sne~ Male  
+##  2 2/22/19~ recovered safely after a 22-day flight  2      Veterok / Bzd~ Male  
+##  3 3/25/19~ one orbit, recovered safely             1      Zvezdochka     Female
+##  4 3/9/1961 one orbit, recovered safely             1      Chernuskha     Female
+##  5 12/22/1~ upper stage failed, dogs recovered aft~ 1      Shutka         Female
+##  6 12/22/1~ upper stage failed, dogs recovered aft~ 2      Kometka        Female
+##  7 12/1/19~ spent one day in orbit, capsule was de~ 1      Mushka         Female
+##  8 12/1/19~ spent one day in orbit, capsule was de~ 2      Pchyolka       Female
+##  9 9/22/19~ recovered safely                        1      Kusachka / Ot~ Female
+## 10 9/22/19~ recovered safely                        2      Neva           Female
+## # ... with 71 more rows</code></pre>
 </div>
 <div id="who-obesity-vs.-life-expectancy" class="section level2">
 <h2>2-10 WHO obesity vs. life expectancy</h2>
 <p>You’ve been given a sample of WHO data (who_df) with obesity percentages and life expectancy data per country, year, and sex. You want to visually inspect the correlation between obesity and life expectancy.</p>
 <p>However, the data is very messy with four variables hidden in the column names. Each column name is made up of three parts separated by underscores: Values for the year, followed by those for sex, and then values for either pct.obese or life.exp. Since the third part of the column name string holds two variables you’ll need to use the special “.value” value in the names_to argument.</p>
 <p>You’ll pivot the data into a tidy format and create the scatterplot.</p>
+<pre class="r"><code>who_df</code></pre>
+<pre><code>## # A tibble: 180 x 69
+##    country  `2000_male_pct.o~ `2000_male_life~ `2000_female_pc~ `2000_female_li~
+##    &lt;chr&gt;                &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Afghani~               1.2             54.6              3.4             57.3
+##  2 Albania               11.7             70.4             14.7             76  
+##  3 Algeria               10.3             69.4             24.2             72.2
+##  4 Angola                 1.4             45.2              5.6             49.5
+##  5 Antigua~               6.8             69.7             18.2             75.1
+##  6 Argenti~              19.1             70.2             22.1             77.7
+##  7 Armenia               10.9             68.5             16.8             74.6
+##  8 Austral~              19.9             77               20.5             82.3
+##  9 Austria               14.3             75.3             13.5             81.2
+## 10 Azerbai~               9               63.8             15.6             69  
+## # ... with 170 more rows, and 64 more variables: 2001_male_pct.obese &lt;dbl&gt;,
+## #   2001_male_life.exp &lt;dbl&gt;, 2001_female_pct.obese &lt;dbl&gt;,
+## #   2001_female_life.exp &lt;dbl&gt;, 2002_male_pct.obese &lt;dbl&gt;,
+## #   2002_male_life.exp &lt;dbl&gt;, 2002_female_pct.obese &lt;dbl&gt;,
+## #   2002_female_life.exp &lt;dbl&gt;, 2003_male_pct.obese &lt;dbl&gt;,
+## #   2003_male_life.exp &lt;dbl&gt;, 2003_female_pct.obese &lt;dbl&gt;,
+## #   2003_female_life.exp &lt;dbl&gt;, 2004_male_pct.obese &lt;dbl&gt;,
+## #   2004_male_life.exp &lt;dbl&gt;, 2004_female_pct.obese &lt;dbl&gt;,
+## #   2004_female_life.exp &lt;dbl&gt;, 2005_male_pct.obese &lt;dbl&gt;,
+## #   2005_male_life.exp &lt;dbl&gt;, 2005_female_pct.obese &lt;dbl&gt;,
+## #   2005_female_life.exp &lt;dbl&gt;, 2006_male_pct.obese &lt;dbl&gt;,
+## #   2006_male_life.exp &lt;dbl&gt;, 2006_female_pct.obese &lt;dbl&gt;,
+## #   2006_female_life.exp &lt;dbl&gt;, 2007_male_pct.obese &lt;dbl&gt;,
+## #   2007_male_life.exp &lt;dbl&gt;, 2007_female_pct.obese &lt;dbl&gt;,
+## #   2007_female_life.exp &lt;dbl&gt;, 2008_male_pct.obese &lt;dbl&gt;,
+## #   2008_male_life.exp &lt;dbl&gt;, 2008_female_pct.obese &lt;dbl&gt;,
+## #   2008_female_life.exp &lt;dbl&gt;, 2009_male_pct.obese &lt;dbl&gt;,
+## #   2009_male_life.exp &lt;dbl&gt;, 2009_female_pct.obese &lt;dbl&gt;,
+## #   2009_female_life.exp &lt;dbl&gt;, 2010_male_pct.obese &lt;dbl&gt;,
+## #   2010_male_life.exp &lt;dbl&gt;, 2010_female_pct.obese &lt;dbl&gt;,
+## #   2010_female_life.exp &lt;dbl&gt;, 2011_male_pct.obese &lt;dbl&gt;,
+## #   2011_male_life.exp &lt;dbl&gt;, 2011_female_pct.obese &lt;dbl&gt;,
+## #   2011_female_life.exp &lt;dbl&gt;, 2012_male_pct.obese &lt;dbl&gt;,
+## #   2012_male_life.exp &lt;dbl&gt;, 2012_female_pct.obese &lt;dbl&gt;,
+## #   2012_female_life.exp &lt;dbl&gt;, 2013_male_pct.obese &lt;dbl&gt;,
+## #   2013_male_life.exp &lt;dbl&gt;, 2013_female_pct.obese &lt;dbl&gt;,
+## #   2013_female_life.exp &lt;dbl&gt;, 2014_male_pct.obese &lt;dbl&gt;,
+## #   2014_male_life.exp &lt;dbl&gt;, 2014_female_pct.obese &lt;dbl&gt;,
+## #   2014_female_life.exp &lt;dbl&gt;, 2015_male_pct.obese &lt;dbl&gt;,
+## #   2015_male_life.exp &lt;dbl&gt;, 2015_female_pct.obese &lt;dbl&gt;,
+## #   2015_female_life.exp &lt;dbl&gt;, 2016_male_pct.obese &lt;dbl&gt;,
+## #   2016_male_life.exp &lt;dbl&gt;, 2016_female_pct.obese &lt;dbl&gt;,
+## #   2016_female_life.exp &lt;dbl&gt;</code></pre>
+<pre class="r"><code>who_df %&gt;% 
+  # Put each variable in its own column
+  pivot_longer(
+    -country,
+    names_to = c(&quot;year&quot;, &quot;sex&quot;, &quot;.value&quot;),
+    names_sep = &quot;_&quot;, 
+    names_transform = list(&quot;year&quot; = as.integer)
+  )</code></pre>
+<pre><code>## # A tibble: 6,120 x 5
+##    country      year sex    pct.obese life.exp
+##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+##  1 Afghanistan  2000 male         1.2     54.6
+##  2 Afghanistan  2000 female       3.4     57.3
+##  3 Afghanistan  2001 male         1.3     55.3
+##  4 Afghanistan  2001 female       3.6     57.9
+##  5 Afghanistan  2002 male         1.3     56.5
+##  6 Afghanistan  2002 female       3.8     58.5
+##  7 Afghanistan  2003 male         1.4     56.9
+##  8 Afghanistan  2003 female       4       59.1
+##  9 Afghanistan  2004 male         1.5     57.4
+## 10 Afghanistan  2004 female       4.2     59.6
+## # ... with 6,110 more rows</code></pre>
+<pre class="r"><code>who_df %&gt;% 
+  # Put each variable in its own column
+  pivot_longer(
+    -country,
+    names_to = c(&quot;year&quot;, &quot;sex&quot;, &quot;.value&quot;),
+    names_sep = &quot;_&quot;, 
+    names_transform = list(&quot;year&quot; = as.integer)
+  ) %&gt;%
+  # Create a plot with life expectancy over obesity
+  ggplot(aes(x=pct.obese, life.exp, color=sex))+geom_point()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 </div>
 <div id="uncounting-observations" class="section level2">
 <h2>2-11 Uncounting observations</h2>
 <p>You’ve found the job of your dreams providing technical support for a dog breed beauty contest. The jury members want a spreadsheet with the breed and id of each participating dog so that they can add the scores later on. You’ve only been given the number of participants per dog breed (dog_df) so you decide to use your tidyr skills to create the desired result.</p>
+<pre class="r"><code>dog_df</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   breed            n_participants
+##   &lt;chr&gt;                     &lt;dbl&gt;
+## 1 Husky                         5
+## 2 Golden retriever             12
+## 3 Poodle                       13
+## 4 Shiba Inu                     7</code></pre>
+<pre class="r"><code>dog_df %&gt;% 
+  # Create one row for each participant and add the id
+  uncount(n_participants, .id = &quot;dog_id&quot;)</code></pre>
+<pre><code>## # A tibble: 37 x 2
+##    breed            dog_id
+##    &lt;chr&gt;             &lt;int&gt;
+##  1 Husky                 1
+##  2 Husky                 2
+##  3 Husky                 3
+##  4 Husky                 4
+##  5 Husky                 5
+##  6 Golden retriever      1
+##  7 Golden retriever      2
+##  8 Golden retriever      3
+##  9 Golden retriever      4
+## 10 Golden retriever      5
+## # ... with 27 more rows</code></pre>
 </div>
 <div id="soviet-space-dogs-the-flight-perspective" class="section level2">
 <h2>2-13 Soviet space dogs, the flight perspective</h2>
 <p>Remember the USSR space dogs dataset1? You changed it to a long format so that for every dog in every rocket launch, there was a row. Suppose you’re given this tidy dataset and are asked to answer the question, “In what percentage of flights were both dogs of the same gender?”</p>
 <p>You’ll reshape and investigate space_dogs_df to find the answer.</p>
+<pre class="r"><code>space_dogs_df</code></pre>
+<pre><code>## # A tibble: 42 x 6
+##    date    result                     name_1      name_2       gender_1 gender_2
+##    &lt;chr&gt;   &lt;chr&gt;                      &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   
+##  1 2/22/1~ recovered safely after a ~ Ugolyok / ~ Veterok / B~ Male     Male    
+##  2 3/25/1~ one orbit, recovered safe~ Zvezdochka  &lt;NA&gt;         Female   &lt;NA&gt;    
+##  3 3/9/19~ one orbit, recovered safe~ Chernuskha  &lt;NA&gt;         Female   &lt;NA&gt;    
+##  4 12/22/~ upper stage failed, dogs ~ Shutka      Kometka      Female   Female  
+##  5 12/1/1~ spent one day in orbit, c~ Mushka      Pchyolka     Female   Female  
+##  6 9/22/1~ recovered safely           Kusachka /~ Neva         Female   Female  
+##  7 9/16/1~ recovered safely           Malyok      Palma-2      Male     Female  
+##  8 8/19/1~ spent one day in orbit, r~ Belka       Strelka      Female   Female  
+##  9 7/28/1~ exploded during launch, b~ Lisichka    Bars / Chai~ Female   Female  
+## 10 6/24/1~ recovered safely           Kusachka /~ Snezhinka /~ Female   Female  
+## # ... with 32 more rows</code></pre>
 </div>
 <div id="planet-temperature-distance-to-the-sun" class="section level2">
 <h2>2-14 Planet temperature &amp; distance to the Sun</h2>
