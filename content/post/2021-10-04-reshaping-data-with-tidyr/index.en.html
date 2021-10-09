@@ -731,9 +731,107 @@ ss</code></pre>
 <p>The intensity of light radiated by a light source follows an inverse square relationship with the distance it has traveled.</p>
 <p><a href="https://en.wikipedia.org/wiki/Inverse-square_law" class="uri">https://en.wikipedia.org/wiki/Inverse-square_law</a></p>
 <p>You wonder if you could observe this trend in the temperature of the planets in our Solar System given their distance to the Sun. You’ll use the planet_df dataset from the devstronomy project to investigate this.</p>
+<pre class="r"><code>planet_df</code></pre>
+<pre><code>## # A tibble: 24 x 3
+##    planet  metric            value
+##    &lt;chr&gt;   &lt;chr&gt;             &lt;dbl&gt;
+##  1 Mercury diameter         4879  
+##  2 Mercury distance_to_sun    57.9
+##  3 Mercury temperature       167  
+##  4 Venus   diameter        12104  
+##  5 Venus   distance_to_sun   108. 
+##  6 Venus   temperature       464  
+##  7 Earth   diameter        12756  
+##  8 Earth   distance_to_sun   150. 
+##  9 Earth   temperature        15  
+## 10 Mars    diameter         6792  
+## # ... with 14 more rows</code></pre>
+<pre class="r"><code>r &lt;- planet_df %&gt;% 
+  # Give each planet variable its own column
+  pivot_wider(names_from = metric, values_from = value)
+
+r</code></pre>
+<pre><code>## # A tibble: 8 x 4
+##   planet  diameter distance_to_sun temperature
+##   &lt;chr&gt;      &lt;dbl&gt;           &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Mercury     4879            57.9         167
+## 2 Venus      12104           108.          464
+## 3 Earth      12756           150.           15
+## 4 Mars        6792           228.          -65
+## 5 Jupiter   142984           779.         -110
+## 6 Saturn    120536          1434.         -140
+## 7 Uranus     51118          2872.         -195
+## 8 Neptune    49528          4495.         -200</code></pre>
+<pre class="r"><code>r %&gt;% 
+  # Plot planet temperature over distance to sun
+  ggplot(aes(distance_to_sun, temperature)) +
+  geom_point(aes(size = diameter)) +
+  geom_text(aes(label = planet), vjust = -1) +
+  labs(x = &quot;Distance to sun (million km)&quot;, 
+       y = &quot;Mean temperature (°C)&quot;) +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
 <div id="transposing-planet-data" class="section level2">
 <h2>2-15 Transposing planet data</h2>
 <p>You’re again working on a planet dataset derived from the devstronomy project. This time, you’re interested in the correlation between the diameter of a planet and the number of moons circling it.</p>
 <p>However, the dataset (planet_df) has a row for each variable and a column for each planet (observation). You’ll transpose this data in two steps and then create a plot to inspect the correlation.</p>
+<pre class="r"><code>planet_df2 %&gt;%
+  # Pivot all columns except metric to long format
+  pivot_longer(-metric, names_to = &quot;planet&quot;) %&gt;% 
+  # Put each metric in its own column
+  pivot_wider(names_from = metric, values_from = value) %&gt;% 
+  # Plot the number of moons vs planet diameter
+  ggplot(aes(diameter, number_of_moons)) +
+  geom_point(aes(size = diameter)) +
+  geom_text(aes(label = planet), vjust = -1) +
+  labs(x = &quot;Diameter (km)&quot;, y = &quot;Number of moons&quot;) +
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+</div>
+<div id="letters-of-the-genetic-code" class="section level2">
+<h2>3-2 Letters of the genetic code</h2>
+<p>The basic building blocks of RNA are four molecules described by a single letter each: adenine (A), cytosine (C), guanine (G), and uracil (U). The information carried by an RNA strand can be represented as a long sequence of these four letters. To read this code, one has to divide this chain into sequences of three letters each (e.g. GCU, ACG, …). These three letter sequences are known as codons. The concept is illustrated in the image below.</p>
+<p>RNA code</p>
+<p>Your goal for this exercise is to create a data frame with all possible three letter sequences (codons) from a vector with the four letters representing the RNA building blocks.</p>
+</div>
+<div id="when-did-humans-replace-dogs-in-space" class="section level2">
+<h2>3-3 When did humans replace dogs in space?</h2>
+<p>You already know that in the early days of spaceflight, the USSR was testing rockets with dogs. You now wonder when exactly humans started replacing dogs on space flight missions. You’ve been given a dataset space_df with the number of both dogs (compiled by Duncan Geere) and humans in space per year from 1951 till 1970 (collected from Wikipedia).</p>
+<p>Your goal is to create a plot that shows you the number of individuals sent into space per species. Before you can create this plot, you’ll first have to introduce zero values for missing combinations of year and species.</p>
+</div>
+<div id="finding-missing-observations" class="section level2">
+<h2>3-4 Finding missing observations</h2>
+<p>You’re an inspector at a nuclear plant and have to validate whether every reactor has received its daily safety check over the course of a full year. The safety check logs are in reactor_df, a data frame with columns date, reactor, and check.</p>
+<p>Two vectors, dates and reactors, with all dates of the year and reactors at the plant respectively have been created for you. You’ll use the combination of the expand_grid() and anti_join() functions to find dates where particular reactors were not checked.</p>
+</div>
+<div id="completing-the-solar-system" class="section level2">
+<h2>3-6 Completing the Solar System</h2>
+<p>You have been given a data frame (planet_df) from the devstronomy project with the number of moons per planet in our Solar System. However, Mercury and Venus, the two moonless planets, are absent. You want to expand this dataset using the complete() function and a vector planets that contains all eight planet’s names.</p>
+</div>
+<div id="zero-olympic-medals" class="section level2">
+<h2>3-7 Zero Olympic medals</h2>
+<p>Since 1896, athletes from all over the world have been competing in the modern Olympic games. You’ve been given a dataset (medal_df) with observations for all medals won by athletes from the 10 most successful countries in Olympic history. You want to create a visual with the number of medals won per country (team) per year. However, since not all countries won medals each year, you’ll have to introduce zero values before you can make an accurate visual.</p>
+</div>
+<div id="creating-a-sequence-with-full_seq" class="section level2">
+<h2>3-8 Creating a sequence with full_seq()</h2>
+<p>The full_seq() function will look for the minimal and maximal values inside the vector you pass it and will then generate a full sequence of numbers with a fixed period in between them. When used inside the complete() function, full_seq() is a handy tool to make sure there are no missing observations in your data. Before combining these two functions you’ll generate a few sequences with full_seq() on its own to get the hang of this function.</p>
+</div>
+<div id="the-cold-wars-hottest-year" class="section level2">
+<h2>3-9 The Cold War’s hottest year</h2>
+<p>In October 1962, during the Cuban missile crisis, the world came close to a full scale nuclear war. Throughout 1962, the USA, USSR, and France together detonated a record 178 nuclear bombs for military power display and research. You’ve been given a sample of the Nuclear Explosion Database (NEDB) for that year (cumul_nukes_1962_df) with an observation for each date on which a bomb was detonated. The total_bombs variable contains the cumulative number of bombs detonated by a country up to that point in time.</p>
+<p>You’ll complete the dataset to hold the full sequence of dates, and visualize the total number of bombs per country over time. You’ll also use the fill() function from Chapter One to impute missing values.</p>
+</div>
+<div id="olympic-medals-per-continent" class="section level2">
+<h2>3-11 Olympic medals per continent</h2>
+<p>You want to compare Olympic performance of athletes per continent over time, both on the winter and summer Olympics. You’ve been given a dataset medal_df with the average number of medals won per participant of each continent since 1928. You’ll complete this data to introduce zero values for years where a continent did not win any medals.</p>
+</div>
+<div id="tracking-a-virus-outbreak" class="section level2">
+<h2>3-12 Tracking a virus outbreak</h2>
+<p>You’re a doctor in a remote village confronted with a virus outbreak. You have been collecting data on when your patients got infected and recovered in a data frame named patient_df. Your goal is to create a visual with the number of sick patients over time. You’ll first have to reshape the data so that you can count the number of sick patients per day.</p>
+</div>
+<div id="counting-office-occupants" class="section level2">
+<h2>3-13 Counting office occupants</h2>
+<p>Imagine you’re an office facility manager and want to know how many people are present throughout the day. You’ve installed a sensor at the entrance that counts the number of people entering and leaving the building. The sensor sends an update at the end of every 20 minute time slot if at least one person passed.</p>
+<p>To create a dataset ready for visualization, you’ll combine the different techniques you’ve learned so far.</p>
 </div>
