@@ -794,6 +794,32 @@ r</code></pre>
 <p>The basic building blocks of RNA are four molecules described by a single letter each: adenine (A), cytosine (C), guanine (G), and uracil (U). The information carried by an RNA strand can be represented as a long sequence of these four letters. To read this code, one has to divide this chain into sequences of three letters each (e.g. GCU, ACG, …). These three letter sequences are known as codons. The concept is illustrated in the image below.</p>
 <p>RNA code</p>
 <p>Your goal for this exercise is to create a data frame with all possible three letter sequences (codons) from a vector with the four letters representing the RNA building blocks.</p>
+<pre class="r"><code>letters &lt;- c(&quot;A&quot;, &quot;C&quot;, &quot;G&quot;, &quot;U&quot;)
+
+# Create a tibble with all possible 3 way combinations
+codon_df &lt;- expand_grid(
+  letter1 = letters,
+  letter2 = letters,
+  letter3 = letters
+)
+
+codon_df %&gt;% 
+  # Unite these three columns into a &quot;codon&quot; column
+  unite(&quot;codon&quot;, letter1, letter2, letter3, sep = &quot; &quot;)</code></pre>
+<pre><code>## # A tibble: 64 x 1
+##    codon
+##    &lt;chr&gt;
+##  1 A A A
+##  2 A A C
+##  3 A A G
+##  4 A A U
+##  5 A C A
+##  6 A C C
+##  7 A C G
+##  8 A C U
+##  9 A G A
+## 10 A G C
+## # ... with 54 more rows</code></pre>
 </div>
 <div id="when-did-humans-replace-dogs-in-space" class="section level2">
 <h2>3-3 When did humans replace dogs in space?</h2>
