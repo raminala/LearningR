@@ -29,6 +29,7 @@ space_dogs_df <-  read_csv("space_dogs_df.csv")
 who_df <-  read_csv("who_df.csv")
 dog_df <-  read_csv("dog_df.csv")
 space_dogs_df2  <-  read_csv("space_dogs_df2.csv")
+planet_df  <-  read_csv("planet_df.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -445,7 +446,12 @@ https://en.wikipedia.org/wiki/Inverse-square_law
 You wonder if you could observe this trend in the temperature of the planets in our Solar System given their distance to the Sun. You'll use the planet_df dataset from the devstronomy project to investigate this.
 
 ```{r}
-
+planet_df
+```
+```{r}
+planet_df %>% 
+  # Give each planet variable its own column
+  pivot_wider(names_from = metric, values_from = value)
 ```
 
 ## 2-15 Transposing planet data
