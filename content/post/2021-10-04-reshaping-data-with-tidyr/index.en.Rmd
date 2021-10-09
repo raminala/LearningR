@@ -30,6 +30,7 @@ who_df <-  read_csv("who_df.csv")
 dog_df <-  read_csv("dog_df.csv")
 space_dogs_df2  <-  read_csv("space_dogs_df2.csv")
 planet_df  <-  read_csv("planet_df.csv")
+planet_df2 <-  read_csv("planet_df2.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
 
@@ -449,16 +450,132 @@ You wonder if you could observe this trend in the temperature of the planets in 
 planet_df
 ```
 ```{r}
-planet_df %>% 
+r <- planet_df %>% 
   # Give each planet variable its own column
   pivot_wider(names_from = metric, values_from = value)
+
+r
 ```
+
+```{r}
+r %>% 
+  # Plot planet temperature over distance to sun
+  ggplot(aes(distance_to_sun, temperature)) +
+  geom_point(aes(size = diameter)) +
+  geom_text(aes(label = planet), vjust = -1) +
+  labs(x = "Distance to sun (million km)", 
+       y = "Mean temperature (°C)") +
+  theme(legend.position = "none")
+```
+
 
 ## 2-15 Transposing planet data
 
 You're again working on a planet dataset derived from the devstronomy project. This time, you're interested in the correlation between the diameter of a planet and the number of moons circling it.
 
 However, the dataset (planet_df) has a row for each variable and a column for each planet (observation). You'll transpose this data in two steps and then create a plot to inspect the correlation.
+
+```{r}
+planet_df2 %>%
+  # Pivot all columns except metric to long format
+  pivot_longer(-metric, names_to = "planet") %>% 
+  # Put each metric in its own column
+  pivot_wider(names_from = metric, values_from = value) %>% 
+  # Plot the number of moons vs planet diameter
+  ggplot(aes(diameter, number_of_moons)) +
+  geom_point(aes(size = diameter)) +
+  geom_text(aes(label = planet), vjust = -1) +
+  labs(x = "Diameter (km)", y = "Number of moons") +
+  theme(legend.position = "none")
+```
+
+## 3-2 Letters of the genetic code
+
+The basic building blocks of RNA are four molecules described by a single letter each: adenine (A), cytosine (C), guanine (G), and uracil (U). The information carried by an RNA strand can be represented as a long sequence of these four letters. To read this code, one has to divide this chain into sequences of three letters each (e.g. GCU, ACG, …). These three letter sequences are known as codons. The concept is illustrated in the image below.
+
+RNA code
+
+Your goal for this exercise is to create a data frame with all possible three letter sequences (codons) from a vector with the four letters representing the RNA building blocks.
+
+```{r}
+
+```
+
+## 3-3 When did humans replace dogs in space?
+
+You already know that in the early days of spaceflight, the USSR was testing rockets with dogs. You now wonder when exactly humans started replacing dogs on space flight missions. You've been given a dataset space_df with the number of both dogs (compiled by Duncan Geere) and humans in space per year from 1951 till 1970 (collected from Wikipedia).
+
+Your goal is to create a plot that shows you the number of individuals sent into space per species. Before you can create this plot, you'll first have to introduce zero values for missing combinations of year and species.
+
+```{r}
+
+```
+
+## 3-4 Finding missing observations
+
+You're an inspector at a nuclear plant and have to validate whether every reactor has received its daily safety check over the course of a full year. The safety check logs are in reactor_df, a data frame with columns date, reactor, and check.
+
+Two vectors, dates and reactors, with all dates of the year and reactors at the plant respectively have been created for you. You'll use the combination of the expand_grid() and anti_join() functions to find dates where particular reactors were not checked.
+
+```{r}
+
+```
+
+## 3-6 Completing the Solar System
+
+You have been given a data frame (planet_df) from the devstronomy project with the number of moons per planet in our Solar System. However, Mercury and Venus, the two moonless planets, are absent. You want to expand this dataset using the complete() function and a vector planets that contains all eight planet's names.
+
+```{r}
+
+```
+
+## 3-7 Zero Olympic medals
+
+Since 1896, athletes from all over the world have been competing in the modern Olympic games. You've been given a dataset (medal_df) with observations for all medals won by athletes from the 10 most successful countries in Olympic history. You want to create a visual with the number of medals won per country (team) per year. However, since not all countries won medals each year, you'll have to introduce zero values before you can make an accurate visual.
+
+```{r}
+
+```
+
+## 3-8 Creating a sequence with full_seq()
+
+The full_seq() function will look for the minimal and maximal values inside the vector you pass it and will then generate a full sequence of numbers with a fixed period in between them. When used inside the complete() function, full_seq() is a handy tool to make sure there are no missing observations in your data. Before combining these two functions you'll generate a few sequences with full_seq() on its own to get the hang of this function.
+
+```{r}
+
+```
+
+## 3-9 The Cold War's hottest year
+
+In October 1962, during the Cuban missile crisis, the world came close to a full scale nuclear war. Throughout 1962, the USA, USSR, and France together detonated a record 178 nuclear bombs for military power display and research. You've been given a sample of the Nuclear Explosion Database (NEDB) for that year (cumul_nukes_1962_df) with an observation for each date on which a bomb was detonated. The total_bombs variable contains the cumulative number of bombs detonated by a country up to that point in time.
+
+You'll complete the dataset to hold the full sequence of dates, and visualize the total number of bombs per country over time. You'll also use the fill() function from Chapter One to impute missing values.
+
+```{r}
+
+```
+
+## 3-11 Olympic medals per continent
+
+You want to compare Olympic performance of athletes per continent over time, both on the winter and summer Olympics. You've been given a dataset medal_df with the average number of medals won per participant of each continent since 1928. You'll complete this data to introduce zero values for years where a continent did not win any medals.
+
+```{r}
+
+```
+
+## 3-12 Tracking a virus outbreak
+
+You're a doctor in a remote village confronted with a virus outbreak. You have been collecting data on when your patients got infected and recovered in a data frame named patient_df. Your goal is to create a visual with the number of sick patients over time. You'll first have to reshape the data so that you can count the number of sick patients per day.
+
+```{r}
+
+```
+
+## 3-13 Counting office occupants
+
+Imagine you're an office facility manager and want to know how many people are present throughout the day. You've installed a sensor at the entrance that counts the number of people entering and leaving the building. The sensor sends an update at the end of every 20 minute time slot if at least one person passed.
+
+To create a dataset ready for visualization, you'll combine the different techniques you've learned so far.
 
 ```{r}
 
