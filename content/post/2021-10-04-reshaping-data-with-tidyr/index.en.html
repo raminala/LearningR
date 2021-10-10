@@ -213,6 +213,10 @@ tags:
   geom_col()</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
+<div id="from-wide-to-long-and-back" class="section level2">
+<h2>2- From wide to long and back</h2>
+<p>This chapter is all about pivoting data from a wide to long format and back again using the <code>pivot_longer()</code> and <code>pivot_wider()</code> functions. You’ll need these functions when variables are hidden in messy column names or when variables are stored in rows instead of columns. You’ll learn about space dogs, nuclear bombs, and planet temperatures along the way.</p>
+</div>
 <div id="nuclear-bombs-per-country" class="section level2">
 <h2>2-2 Nuclear bombs per country</h2>
 <p>You’ve been given a version of the Nuclear Explosion DataBase (NEDB) where country names are specified in the column headers (nuke_df). You want to visualize how many nukes were detonated per year per country. You’ll need to pivot the data and replace NA values first.</p>
@@ -789,6 +793,10 @@ r</code></pre>
   theme(legend.position = &quot;none&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
+<div id="expanding-data" class="section level2">
+<h2>3- Expanding data</h2>
+<p>Values can often be missing in your data, and sometimes entire observations are absent too. In this chapter, you’ll learn how to complete your dataset with these missing observations. You’ll add observations with zero values to counted data, expand time series to a full sequence of intervals, and more!</p>
+</div>
 <div id="letters-of-the-genetic-code" class="section level2">
 <h2>3-2 Letters of the genetic code</h2>
 <p>The basic building blocks of RNA are four molecules described by a single letter each: adenine (A), cytosine (C), guanine (G), and uracil (U). The information carried by an RNA strand can be represented as a long sequence of these four letters. To read this code, one has to divide this chain into sequences of three letters each (e.g. GCU, ACG, …). These three letter sequences are known as codons. The concept is illustrated in the image below.</p>
@@ -945,4 +953,38 @@ space_df %&gt;%
 <h2>3-13 Counting office occupants</h2>
 <p>Imagine you’re an office facility manager and want to know how many people are present throughout the day. You’ve installed a sensor at the entrance that counts the number of people entering and leaving the building. The sensor sends an update at the end of every 20 minute time slot if at least one person passed.</p>
 <p>To create a dataset ready for visualization, you’ll combine the different techniques you’ve learned so far.</p>
+</div>
+<div id="rectangling-data" class="section level2">
+<h2>4- Rectangling data</h2>
+<p>In the final chapter, you’ll learn how to turn nested data structures such as JSON and XML files into tidy, rectangular data. This skill will enable you to process data from web APIs. You’ll also learn how nested data structures can be used to write elegant modeling pipelines that produce tidy outputs.</p>
+</div>
+<div id="rectangling-star-wars-movies" class="section level2">
+<h2>4-3 Rectangling Star Wars movies</h2>
+<p>Let’s pretend you’re a big Star Wars fan and decided to scrape some data from the Star Wars API. You’ve already loaded the JSON-formatted response into R, and now have two lists of movies named movie_list and movie_planets_list. Your goal is to turn these into rectangular data frames with one row per movie so that you can start crunching those movie stats.</p>
+</div>
+<div id="rectangling-star-wars-planets" class="section level2">
+<h2>4-6 Rectangling Star Wars planets</h2>
+<p>Let’s finish what we started in the last exercise of the previous lesson, exploring Star Wars planets! The movie_planets_list scraped from the Star Wars API has been pre-loaded for you. You’ll need two specific unnesting operations to completely rectangle this data.</p>
+</div>
+<div id="the-solar-systems-biggest-moons" class="section level2">
+<h2>4-7 The Solar System’s biggest moons</h2>
+<p>Most planets in our solar system are accompanied by at least one moon. You now wonder which planets are circled by the biggest moons and want to create a top five based on moon radius. However, you’ll first have to unnest the devstronomy project data in planet_df using the unnest_longer() and unnest_wider() functions.</p>
+</div>
+<div id="hoisting-star-wars-films" class="section level2">
+<h2>4-9 Hoisting Star Wars films</h2>
+<p>You’ve been given a nested data set on Star Wars characters (character_df) and want to explore the films in which they appeared. You’ll first use the unnest_wider() and unnest_longer() functions to explore the data and will then switch to hoist() to select a specific element in the nested data structure directly.</p>
+</div>
+<div id="hoisting-movie-ratings" class="section level2">
+<h2>4-10 Hoisting movie ratings</h2>
+<p>You’ve written a script to scrape data on your favorite movies from the Open Movie DataBase API. Now you want to process the JSON data to extract the Rotten Tomatoes rating for each movie. You’ve been given a data frame named movie_df which holds the JSON respones for five movies. You’ll explore this data with unnest_wider() and unnest_longer() before switching to hoist().</p>
+</div>
+<div id="nesting-tibbles" class="section level2">
+<h2>4-13 Nesting tibbles</h2>
+<p>You’re pre-processing the US army body measurement dataset ANSUR II to train multiple models in a single pipeline. You’ll experiment with the nest() function to create a list column with nested tibbles containing sub-sets of the data.</p>
+</div>
+<div id="modeling-on-nested-data-frames" class="section level2">
+<h2>4-14 Modeling on nested data frames</h2>
+<p>You’ll be working on the US Army ANSUR II body measurement dataset, which has been pre-loaded as ansur_df. The goal is to nest the data for both sexes so that you can simultaneously train two linear models, one for each sex. These models will derive a person’s weight from their stature (height) and waist circumference. You’ll then unnest the data to inspect the model’s statistics produced by the glance() function from the broom package.</p>
+<p>The dplyr, broom, and purrr packages have been pre-loaded for you.</p>
+<p>Side note: In the provided code, the purrr package’s map() function applies functions on each nested data frame. Check out this package if you like using functions inside pipes!</p>
 </div>
