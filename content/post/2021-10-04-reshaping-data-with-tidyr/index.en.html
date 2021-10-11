@@ -955,10 +955,75 @@ full_df %&gt;%
 <div id="completing-the-solar-system" class="section level2">
 <h2>3-6 Completing the Solar System</h2>
 <p>You have been given a data frame (planet_df) from the devstronomy project with the number of moons per planet in our Solar System. However, Mercury and Venus, the two moonless planets, are absent. You want to expand this dataset using the complete() function and a vector planets that contains all eight planet’s names.</p>
+<pre class="r"><code>planet_df3</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   planet  n_moons
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 Earth         1
+## 2 Mars          2
+## 3 Jupiter      79
+## 4 Saturn       62
+## 5 Uranus       27
+## 6 Neptune      14</code></pre>
+<pre class="r"><code>planets = c(&quot;Mercury&quot;, &quot;Venus&quot;, &quot;Earth&quot;, &quot;Mars&quot;, &quot;Jupiter&quot;, &quot;Saturn&quot;, &quot;Uranus&quot;, &quot;Neptune&quot;)
+
+planet_df3 %&gt;% 
+  complete(
+    # Complete the planet variable
+    planet=planets,
+    # Overwrite NA values for n_moons with 0L
+    fill = list(n_moons = 0L)
+  )</code></pre>
+<pre><code>## # A tibble: 8 x 2
+##   planet  n_moons
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 Earth         1
+## 2 Jupiter      79
+## 3 Mars          2
+## 4 Mercury       0
+## 5 Neptune      14
+## 6 Saturn       62
+## 7 Uranus       27
+## 8 Venus         0</code></pre>
 </div>
 <div id="zero-olympic-medals" class="section level2">
 <h2>3-7 Zero Olympic medals</h2>
 <p>Since 1896, athletes from all over the world have been competing in the modern Olympic games. You’ve been given a dataset (medal_df) with observations for all medals won by athletes from the 10 most successful countries in Olympic history. You want to create a visual with the number of medals won per country (team) per year. However, since not all countries won medals each year, you’ll have to introduce zero values before you can make an accurate visual.</p>
+<pre class="r"><code>medal_df</code></pre>
+<pre><code>## # A tibble: 17,137 x 5
+##    name                      sport       year medal  team         
+##    &lt;chr&gt;                     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;        
+##  1 Edward Battel             Cycling     1896 Bronze Great Britain
+##  2 Arthur Charles Blake      Athletics   1896 Silver United States
+##  3 Conrad Helmut Fritz Bcker Gymnastics  1896 Gold   Germany      
+##  4 Conrad Helmut Fritz Bcker Gymnastics  1896 Gold   Germany      
+##  5 John Mary Pius Boland     Tennis      1896 Gold   Great Britain
+##  6 Thomas Edmund Burke       Athletics   1896 Gold   United States
+##  7 Thomas Edmund Burke       Athletics   1896 Gold   United States
+##  8 Eugne Henri Callot        Fencing     1896 Silver France       
+##  9 Ellery Harding Clark      Athletics   1896 Gold   United States
+## 10 Ellery Harding Clark      Athletics   1896 Gold   United States
+## # ... with 17,127 more rows</code></pre>
+<pre class="r"><code>medal_df %&gt;% 
+  # Count the medals won per team and year
+  count(team, year, name = &quot;n_medals&quot;) %&gt;% 
+  # Plot n_medals over year, colored by team
+  ggplot(aes(year, n_medals, color=team)) +
+  geom_line() +
+  scale_color_brewer(palette = &quot;Paired&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<pre class="r"><code>medal_df %&gt;% 
+  # Count the medals won per team and year
+  count(team, year, name = &quot;n_medals&quot;) %&gt;% 
+  # Complete the team and year variables, fill n_medals with zeros
+  complete(team , year,
+     fill = list(n_medals = 0L)
+  ) %&gt;% 
+  # Plot n_medals over year, colored by team
+  ggplot(aes(x = year, y = n_medals, color = team)) +
+  geom_line() +
+  scale_color_brewer(palette = &quot;Paired&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 </div>
 <div id="creating-a-sequence-with-full_seq" class="section level2">
 <h2>3-8 Creating a sequence with full_seq()</h2>
@@ -968,6 +1033,16 @@ full_df %&gt;%
 <h2>3-9 The Cold War’s hottest year</h2>
 <p>In October 1962, during the Cuban missile crisis, the world came close to a full scale nuclear war. Throughout 1962, the USA, USSR, and France together detonated a record 178 nuclear bombs for military power display and research. You’ve been given a sample of the Nuclear Explosion Database (NEDB) for that year (cumul_nukes_1962_df) with an observation for each date on which a bomb was detonated. The total_bombs variable contains the cumulative number of bombs detonated by a country up to that point in time.</p>
 <p>You’ll complete the dataset to hold the full sequence of dates, and visualize the total number of bombs per country over time. You’ll also use the fill() function from Chapter One to impute missing values.</p>
+<pre class="r"><code>cumul_nukes_1962_df</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   planet  n_moons
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 Earth         1
+## 2 Mars          2
+## 3 Jupiter      79
+## 4 Saturn       62
+## 5 Uranus       27
+## 6 Neptune      14</code></pre>
 </div>
 <div id="olympic-medals-per-continent" class="section level2">
 <h2>3-11 Olympic medals per continent</h2>
