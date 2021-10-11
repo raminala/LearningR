@@ -923,6 +923,34 @@ space_df %&gt;%
 <h2>3-4 Finding missing observations</h2>
 <p>You’re an inspector at a nuclear plant and have to validate whether every reactor has received its daily safety check over the course of a full year. The safety check logs are in reactor_df, a data frame with columns date, reactor, and check.</p>
 <p>Two vectors, dates and reactors, with all dates of the year and reactors at the plant respectively have been created for you. You’ll use the combination of the expand_grid() and anti_join() functions to find dates where particular reactors were not checked.</p>
+<pre class="r"><code>reactors &lt;- c(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;)
+
+# Create a tibble with all combinations of dates and reactors
+full_df &lt;- expand_grid(date = dates, reactor = reactors)
+full_df</code></pre>
+<pre><code>## # A tibble: 1,460 x 2
+##    date     reactor
+##    &lt;chr&gt;    &lt;chr&gt;  
+##  1 1/1/1986 A      
+##  2 1/1/1986 B      
+##  3 1/1/1986 C      
+##  4 1/1/1986 D      
+##  5 1/2/1986 A      
+##  6 1/2/1986 B      
+##  7 1/2/1986 C      
+##  8 1/2/1986 D      
+##  9 1/3/1986 A      
+## 10 1/3/1986 B      
+## # ... with 1,450 more rows</code></pre>
+<pre class="r"><code># Find the reactor - date combinations not present in reactor_df
+full_df %&gt;% 
+  anti_join(reactor_df, by = c(&quot;date&quot;, &quot;reactor&quot;))</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   date      reactor
+##   &lt;chr&gt;     &lt;chr&gt;  
+## 1 4/20/1986 B      
+## 2 4/22/1986 A      
+## 3 4/25/1986 B</code></pre>
 </div>
 <div id="completing-the-solar-system" class="section level2">
 <h2>3-6 Completing the Solar System</h2>

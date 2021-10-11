@@ -32,7 +32,8 @@ space_dogs_df2  <-  read_csv("space_dogs_df2.csv")
 planet_df  <-  read_csv("planet_df.csv")
 planet_df2 <-  read_csv("planet_df2.csv")
 space_df <-  read_csv("space_df.csv")
-dates <-  read_csv("dates.csv")
+dates1 <-  read_csv("dates.csv")
+dates <- dates1$x
 reactor_df <-  read_csv("reactor_df.csv")
 olympic <- readRDS("olympic_medals_top_10.rds")
 ```
@@ -596,7 +597,7 @@ reactors <- c("A", "B", "C", "D")
 
 # Create a tibble with all combinations of dates and reactors
 full_df <- expand_grid(date = dates, reactor = reactors)
-
+full_df
 # Find the reactor - date combinations not present in reactor_df
 full_df %>% 
   anti_join(reactor_df, by = c("date", "reactor"))
