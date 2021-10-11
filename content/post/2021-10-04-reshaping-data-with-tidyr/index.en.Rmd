@@ -38,6 +38,7 @@ reactor_df <-  read_csv("reactor_df.csv")
 planet_df3 <-  read_csv("planet_df3.csv")
 medal_df <- readRDS("olympic_medals_top_10.rds")
 cumul_nukes_1962_df <-  read_csv("cumul_nukes_1962_df.csv")
+patient_df <-  read_csv("patient_df.csv")
 ```
 
 
@@ -743,6 +744,37 @@ patient_df %>%
   pivot_longer(c(infected, recovered), names_to= "status", values_to= "date")
 ```
 
+```{r}
+patient_df %>% 
+  # Pivot the infected and recovered columns to long format
+  pivot_longer(-patient, names_to = "status", values_to = "date") %>% 
+  select(-status) %>% 
+  # Group by patient
+  group_by(patient) %>% 
+  # Complete the date range per patient using full_seq()
+  complete(date = full_seq(date, 1)) %>% 
+  # Ungroup the data
+  ungroup()
+```
+
+```{r}
+patient_df %>% 
+  # Pivot the infected and recovered columns to long format
+  pivot_longer(-patient, names_to = "status", values_to = "date") %>% 
+  select(-status) %>% 
+  # Group by patient
+  group_by(patient) %>% 
+  # Complete the date range per patient using full_seq()
+  complete(date = full_seq(date, period = 1)) %>% 
+  # Ungroup the data
+  ungroup() %>% 
+  # Count the dates, the count goes in the n_sick variable
+  count(date, name = "n_sick") %>% 
+  ggplot(aes(x = date, y = n_sick))+
+  geom_line()
+```
+
+
 ## 3-13 Counting office occupants
 
 Imagine you're an office facility manager and want to know how many people are present throughout the day. You've installed a sensor at the entrance that counts the number of people entering and leaving the building. The sensor sends an update at the end of every 20 minute time slot if at least one person passed.
@@ -750,7 +782,48 @@ Imagine you're an office facility manager and want to know how many people are p
 To create a dataset ready for visualization, you'll combine the different techniques you've learned so far.
 
 ```{r}
+sensor_df %>% 
+  # Complete the time column with a 20 minute interval
+  complete(time = seq(from = min(time), to = max(time), by = "20 min"),
+      fill = list(enter = 0L, exit = 0L))
 
+
+
+
+sensor_df %>% 
+  # Complete the time column with a 20 minute interval
+  complete(time = seq(min(time), max(time), by = "20 min"),
+           fill = list(enter = 0L, exit = 0L)) %>%
+  # Calculate the total number of people inside
+  mutate(total_inside = cumsum(enter + exit))
+
+
+
+
+sensor_df %>% 
+  # Complete the time column with a 20 minute interval
+  complete(time = seq(min(time), max(time), by = "20 min"),
+           fill = list(enter = 0L, exit = 0L)) %>%
+  # Calculate the total number of people inside
+  mutate(total_inside = cumsum(enter + exit)) %>% 
+  # Pivot the enter and exit columns to long format
+  pivot_longer(enter:exit, names_to = "direction", values_to = "n_people")
+
+
+
+
+sensor_df %>% 
+  # Complete the time column with a 20 minute interval
+  complete(time = seq(min(time), max(time), by = "20 min"),
+           fill = list(enter = 0L, exit = 0L)) %>%
+  # Calculate the total number of people inside
+  mutate(total_inside = cumsum(enter + exit)) %>% 
+  # Pivot the enter and exit columns to long format
+  pivot_longer(enter:exit, names_to = "direction", values_to = "n_people") %>% 
+  # Plot the number of people over time, fill by direction
+  ggplot(aes(x = time, y = n_people, fill = direction)) +
+  geom_area() +
+  geom_line(aes(y = total_inside))
 ```
 
 ## 4- Rectangling data
