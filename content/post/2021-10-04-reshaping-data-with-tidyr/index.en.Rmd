@@ -863,6 +863,15 @@ tibble(movie = movie_list) %>%
   unnest_wider(movie)
 ```
 
+```{r}
+# Create a tibble with a movie column
+tibble(movie = movie_planets_list) %>% 
+  # Unnest the movie column
+  unnest_wider(movie) %>% 
+  # Unnest the planets column
+  unnest_wider(planets)
+```
+
 
 ## 4-6 Rectangling Star Wars planets
 
