@@ -41,7 +41,8 @@ medal_df2 <- readRDS("olympic_medals_top_10.rds")
 cumul_nukes_1962_df <-  read_csv("cumul_nukes_1962_df.csv") %>% mutate(date=as.Date(date))
 patient_df <-  read_csv("patient_df.csv") %>% mutate(infected=as.Date(infected)) %>% mutate(recovered=as.Date(recovered))
 sensor_df <-  read_csv("sensor_df.csv") %>% mutate(enter=as.integer(enter)) %>% mutate(exit=as.integer(exit))
-
+movie_list <- readRDS("star_wars_movie_list.rds")
+movie_planets_list <- readRDS("star_wars_movie_planet_list.rds")
 ```
 
 
@@ -852,7 +853,12 @@ Let's pretend you're a big Star Wars fan and decided to scrape some data from th
 
 
 ```{r}
+movie_list
+##############################
+movie_planets_list
 
+# Create a movie column from the movie_list
+tibble(movie=movie_list)
 ```
 
 
