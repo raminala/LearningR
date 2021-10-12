@@ -858,7 +858,9 @@ movie_list
 movie_planets_list
 
 # Create a movie column from the movie_list
-tibble(movie=movie_list)
+tibble(movie = movie_list) %>% 
+  # Unnest the movie column
+  unnest_wider(movie)
 ```
 
 
