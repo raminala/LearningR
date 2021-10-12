@@ -36,9 +36,12 @@ dates1 <-  read_csv("dates.csv")
 dates <- dates1$x
 reactor_df <-  read_csv("reactor_df.csv")
 planet_df3 <-  read_csv("planet_df3.csv")
-medal_df <- readRDS("olympic_medals_top_10.rds")
-cumul_nukes_1962_df <-  read_csv("cumul_nukes_1962_df.csv")
-patient_df <-  read_csv("patient_df.csv")
+medal_df <- read_csv("medal_df.csv")
+medal_df2 <- readRDS("olympic_medals_top_10.rds")
+cumul_nukes_1962_df <-  read_csv("cumul_nukes_1962_df.csv") %>% mutate(date=as.Date(date))
+patient_df <-  read_csv("patient_df.csv") %>% mutate(infected=as.Date(infected)) %>% mutate(recovered=as.Date(recovered))
+sensor_df <-  read_csv("sensor_df.csv") %>% mutate(enter=as.integer(enter)) %>% mutate(exit=as.integer(exit))
+
 ```
 
 
@@ -460,6 +463,7 @@ You wonder if you could observe this trend in the temperature of the planets in 
 ```{r}
 planet_df
 ```
+
 ```{r}
 r <- planet_df %>% 
   # Give each planet variable its own column
@@ -553,7 +557,7 @@ space_df %>%
   arrange(year)
 ```
 
-```{r}
+```{r warning=FALSE}
 # Create a tibble with all combinations of years and species
 full_df <- expand_grid(
   year = 1951:1970, 
@@ -633,9 +637,9 @@ planet_df3 %>%
 Since 1896, athletes from all over the world have been competing in the modern Olympic games. You've been given a dataset (medal_df) with observations for all medals won by athletes from the 10 most successful countries in Olympic history. You want to create a visual with the number of medals won per country (team) per year. However, since not all countries won medals each year, you'll have to introduce zero values before you can make an accurate visual.
 
 ```{r}
-medal_df
+medal_df2
 
-medal_df %>% 
+medal_df2 %>% 
   # Count the medals won per team and year
   count(team, year, name = "n_medals") %>% 
   # Plot n_medals over year, colored by team
@@ -645,7 +649,7 @@ medal_df %>%
 ```
 
 ```{r}
-medal_df %>% 
+medal_df2 %>% 
   # Count the medals won per team and year
   count(team, year, name = "n_medals") %>% 
   # Complete the team and year variables, fill n_medals with zeros
@@ -684,6 +688,8 @@ In October 1962, during the Cuban missile crisis, the world came close to a full
 You'll complete the dataset to hold the full sequence of dates, and visualize the total number of bombs per country over time. You'll also use the fill() function from Chapter One to impute missing values.
 
 ```{r}
+cumul_nukes_1962_df
+
 cumul_nukes_1962_df %>% 
   # Complete the dataset
   complete(country, date = full_seq(date, period = 1))
@@ -721,6 +727,8 @@ cumul_nukes_1962_df %>%
 You want to compare Olympic performance of athletes per continent over time, both on the winter and summer Olympics. You've been given a dataset medal_df with the average number of medals won per participant of each continent since 1928. You'll complete this data to introduce zero values for years where a continent did not win any medals.
 
 ```{r}
+medal_df
+
 medal_df %>% 
   # Give each continent an observation at each Olympic event
   complete(
@@ -745,6 +753,8 @@ patient_df %>%
 ```
 
 ```{r}
+patient_df
+
 patient_df %>% 
   # Pivot the infected and recovered columns to long format
   pivot_longer(-patient, names_to = "status", values_to = "date") %>% 
@@ -781,7 +791,10 @@ Imagine you're an office facility manager and want to know how many people are p
 
 To create a dataset ready for visualization, you'll combine the different techniques you've learned so far.
 
-```{r}
+---
+
+sensor_df
+
 sensor_df %>% 
   # Complete the time column with a 20 minute interval
   complete(time = seq(from = min(time), to = max(time), by = "20 min"),
@@ -824,7 +837,8 @@ sensor_df %>%
   ggplot(aes(x = time, y = n_people, fill = direction)) +
   geom_area() +
   geom_line(aes(y = total_inside))
-```
+
+---
 
 ## 4- Rectangling data
 

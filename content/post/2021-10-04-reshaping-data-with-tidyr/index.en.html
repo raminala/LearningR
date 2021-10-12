@@ -901,7 +901,6 @@ space_df %&gt;%
   # Create a line plot with n_in_space over year, color by species
   ggplot(aes(year, n_in_space, color= species)) +
   geom_line()</code></pre>
-<pre><code>## Warning: Removed 14 row(s) containing missing values (geom_path).</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
 <pre class="r"><code># Create a tibble with all combinations of years and species
 full_df &lt;- expand_grid(
@@ -989,7 +988,7 @@ planet_df3 %&gt;%
 <div id="zero-olympic-medals" class="section level2">
 <h2>3-7 Zero Olympic medals</h2>
 <p>Since 1896, athletes from all over the world have been competing in the modern Olympic games. You’ve been given a dataset (medal_df) with observations for all medals won by athletes from the 10 most successful countries in Olympic history. You want to create a visual with the number of medals won per country (team) per year. However, since not all countries won medals each year, you’ll have to introduce zero values before you can make an accurate visual.</p>
-<pre class="r"><code>medal_df</code></pre>
+<pre class="r"><code>medal_df2</code></pre>
 <pre><code>## # A tibble: 17,137 x 5
 ##    name                      sport       year medal  team         
 ##    &lt;chr&gt;                     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;        
@@ -1004,7 +1003,7 @@ planet_df3 %&gt;%
 ##  9 Ellery Harding Clark      Athletics   1896 Gold   United States
 ## 10 Ellery Harding Clark      Athletics   1896 Gold   United States
 ## # ... with 17,127 more rows</code></pre>
-<pre class="r"><code>medal_df %&gt;% 
+<pre class="r"><code>medal_df2 %&gt;% 
   # Count the medals won per team and year
   count(team, year, name = &quot;n_medals&quot;) %&gt;% 
   # Plot n_medals over year, colored by team
@@ -1012,7 +1011,7 @@ planet_df3 %&gt;%
   geom_line() +
   scale_color_brewer(palette = &quot;Paired&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
-<pre class="r"><code>medal_df %&gt;% 
+<pre class="r"><code>medal_df2 %&gt;% 
   # Count the medals won per team and year
   count(team, year, name = &quot;n_medals&quot;) %&gt;% 
   # Complete the team and year variables, fill n_medals with zeros
@@ -1034,28 +1033,217 @@ planet_df3 %&gt;%
 <p>In October 1962, during the Cuban missile crisis, the world came close to a full scale nuclear war. Throughout 1962, the USA, USSR, and France together detonated a record 178 nuclear bombs for military power display and research. You’ve been given a sample of the Nuclear Explosion Database (NEDB) for that year (cumul_nukes_1962_df) with an observation for each date on which a bomb was detonated. The total_bombs variable contains the cumulative number of bombs detonated by a country up to that point in time.</p>
 <p>You’ll complete the dataset to hold the full sequence of dates, and visualize the total number of bombs per country over time. You’ll also use the fill() function from Chapter One to impute missing values.</p>
 <pre class="r"><code>cumul_nukes_1962_df</code></pre>
-<pre><code>## # A tibble: 6 x 2
-##   planet  n_moons
-##   &lt;chr&gt;     &lt;dbl&gt;
-## 1 Earth         1
-## 2 Mars          2
-## 3 Jupiter      79
-## 4 Saturn       62
-## 5 Uranus       27
-## 6 Neptune      14</code></pre>
+<pre><code>## # A tibble: 144 x 4
+##       X1 country            date       total_bombs
+##    &lt;dbl&gt; &lt;chr&gt;              &lt;date&gt;           &lt;dbl&gt;
+##  1     1 France             1962-01-01           0
+##  2     2 France             1962-05-01           1
+##  3     3 Russian Federation 1962-01-01           0
+##  4     4 Russian Federation 1962-02-02           1
+##  5     5 Russian Federation 1962-08-01           2
+##  6     6 Russian Federation 1962-08-03           3
+##  7     7 Russian Federation 1962-08-04           4
+##  8     8 Russian Federation 1962-08-05           5
+##  9     9 Russian Federation 1962-08-07           6
+## 10    10 Russian Federation 1962-08-10           7
+## # ... with 134 more rows</code></pre>
+<pre class="r"><code>cumul_nukes_1962_df %&gt;% 
+  # Complete the dataset
+  complete(country, date = full_seq(date, period = 1))</code></pre>
+<pre><code>## # A tibble: 1,077 x 4
+##    country date          X1 total_bombs
+##    &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 France  1962-01-01     1           0
+##  2 France  1962-01-02    NA          NA
+##  3 France  1962-01-03    NA          NA
+##  4 France  1962-01-04    NA          NA
+##  5 France  1962-01-05    NA          NA
+##  6 France  1962-01-06    NA          NA
+##  7 France  1962-01-07    NA          NA
+##  8 France  1962-01-08    NA          NA
+##  9 France  1962-01-09    NA          NA
+## 10 France  1962-01-10    NA          NA
+## # ... with 1,067 more rows</code></pre>
+<pre class="r"><code>cumul_nukes_1962_df %&gt;% 
+  # Complete the dataset
+  complete(country, date = full_seq(date, period = 1)) %&gt;% 
+  # Group the data by country
+  group_by(country) %&gt;% 
+  # Impute missing values with the last known observation
+  fill(total_bombs)</code></pre>
+<pre><code>## # A tibble: 1,077 x 4
+## # Groups:   country [3]
+##    country date          X1 total_bombs
+##    &lt;chr&gt;   &lt;date&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 France  1962-01-01     1           0
+##  2 France  1962-01-02    NA           0
+##  3 France  1962-01-03    NA           0
+##  4 France  1962-01-04    NA           0
+##  5 France  1962-01-05    NA           0
+##  6 France  1962-01-06    NA           0
+##  7 France  1962-01-07    NA           0
+##  8 France  1962-01-08    NA           0
+##  9 France  1962-01-09    NA           0
+## 10 France  1962-01-10    NA           0
+## # ... with 1,067 more rows</code></pre>
+<pre class="r"><code>cumul_nukes_1962_df %&gt;% 
+  # Complete the dataset
+  complete(country, date = full_seq(date, period = 1)) %&gt;% 
+  # Group the data by country
+  group_by(country) %&gt;% 
+  # Impute missing values with the last known observation
+  fill(total_bombs) %&gt;% 
+  # Plot the number of bombs over time, color by country
+  ggplot(aes(date, total_bombs, color=country)) +
+  # These two lines will mark the Cuban Missile Crisis 
+  geom_rect(xmin = as.Date(&quot;1962-10-16&quot;), xmax = as.Date(&quot;1962-10-29&quot;), ymin = -Inf, ymax = Inf, color = NA)+ 
+  geom_text(x = as.Date(&quot;1962-10-22&quot;), y = 15, label = &quot;Cuban Missile Crisis&quot;, angle = 90, color = &quot;white&quot;)+
+  geom_line()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 </div>
 <div id="olympic-medals-per-continent" class="section level2">
 <h2>3-11 Olympic medals per continent</h2>
 <p>You want to compare Olympic performance of athletes per continent over time, both on the winter and summer Olympics. You’ve been given a dataset medal_df with the average number of medals won per participant of each continent since 1928. You’ll complete this data to introduce zero values for years where a continent did not win any medals.</p>
+<pre class="r"><code>medal_df</code></pre>
+<pre><code>## # A tibble: 187 x 4
+##    continent season  year medals_per_participant
+##    &lt;chr&gt;     &lt;chr&gt;  &lt;dbl&gt;                  &lt;dbl&gt;
+##  1 Africa    Summer  1928                 0.172 
+##  2 Africa    Summer  1932                 0.417 
+##  3 Africa    Summer  1936                 0.0706
+##  4 Africa    Summer  1948                 0.0917
+##  5 Africa    Summer  1952                 0.0806
+##  6 Africa    Summer  1956                 0.0654
+##  7 Africa    Summer  1960                 0.0256
+##  8 Africa    Summer  1964                 0.0209
+##  9 Africa    Summer  1968                 0.0717
+## 10 Africa    Summer  1972                 0.0477
+## # ... with 177 more rows</code></pre>
+<pre class="r"><code>medal_df %&gt;% 
+  # Give each continent an observation at each Olympic event
+  complete(
+    continent, 
+    nesting(season, year), 
+    fill = list(medals_per_participant = 0)
+  ) %&gt;%
+  # Plot the medals_per_participant over time, colored by continent
+  ggplot(aes(x = year, y = medals_per_participant, color = continent)) +
+  geom_line() +
+  facet_grid(season ~ .)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
 </div>
 <div id="tracking-a-virus-outbreak" class="section level2">
 <h2>3-12 Tracking a virus outbreak</h2>
 <p>You’re a doctor in a remote village confronted with a virus outbreak. You have been collecting data on when your patients got infected and recovered in a data frame named patient_df. Your goal is to create a visual with the number of sick patients over time. You’ll first have to reshape the data so that you can count the number of sick patients per day.</p>
+<pre class="r"><code>patient_df %&gt;% 
+  # Pivot the infected and recovered columns to long format
+  pivot_longer(c(infected, recovered), names_to= &quot;status&quot;, values_to= &quot;date&quot;)</code></pre>
+<pre><code>## # A tibble: 52 x 3
+##    patient status    date      
+##    &lt;chr&gt;   &lt;chr&gt;     &lt;date&gt;    
+##  1 A       infected  2020-02-08
+##  2 A       recovered 2020-03-28
+##  3 B       infected  2020-02-19
+##  4 B       recovered 2020-03-04
+##  5 C       infected  2020-02-27
+##  6 C       recovered 2020-03-19
+##  7 D       infected  2020-03-05
+##  8 D       recovered 2020-03-19
+##  9 E       infected  2020-03-06
+## 10 E       recovered 2020-03-29
+## # ... with 42 more rows</code></pre>
+<pre class="r"><code>patient_df</code></pre>
+<pre><code>## # A tibble: 26 x 3
+##    patient infected   recovered 
+##    &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;    
+##  1 A       2020-02-08 2020-03-28
+##  2 B       2020-02-19 2020-03-04
+##  3 C       2020-02-27 2020-03-19
+##  4 D       2020-03-05 2020-03-19
+##  5 E       2020-03-06 2020-03-29
+##  6 F       2020-03-07 2020-03-22
+##  7 G       2020-03-07 2020-03-28
+##  8 H       2020-03-08 2020-04-01
+##  9 I       2020-03-09 2020-05-02
+## 10 J       2020-03-11 2020-03-30
+## # ... with 16 more rows</code></pre>
+<pre class="r"><code>patient_df %&gt;% 
+  # Pivot the infected and recovered columns to long format
+  pivot_longer(-patient, names_to = &quot;status&quot;, values_to = &quot;date&quot;) %&gt;% 
+  select(-status) %&gt;% 
+  # Group by patient
+  group_by(patient) %&gt;% 
+  # Complete the date range per patient using full_seq()
+  complete(date = full_seq(date, 1)) %&gt;% 
+  # Ungroup the data
+  ungroup()</code></pre>
+<pre><code>## # A tibble: 684 x 2
+##    patient date      
+##    &lt;chr&gt;   &lt;date&gt;    
+##  1 A       2020-02-08
+##  2 A       2020-02-09
+##  3 A       2020-02-10
+##  4 A       2020-02-11
+##  5 A       2020-02-12
+##  6 A       2020-02-13
+##  7 A       2020-02-14
+##  8 A       2020-02-15
+##  9 A       2020-02-16
+## 10 A       2020-02-17
+## # ... with 674 more rows</code></pre>
+<pre class="r"><code>patient_df %&gt;% 
+  # Pivot the infected and recovered columns to long format
+  pivot_longer(-patient, names_to = &quot;status&quot;, values_to = &quot;date&quot;) %&gt;% 
+  select(-status) %&gt;% 
+  # Group by patient
+  group_by(patient) %&gt;% 
+  # Complete the date range per patient using full_seq()
+  complete(date = full_seq(date, period = 1)) %&gt;% 
+  # Ungroup the data
+  ungroup() %&gt;% 
+  # Count the dates, the count goes in the n_sick variable
+  count(date, name = &quot;n_sick&quot;) %&gt;% 
+  ggplot(aes(x = date, y = n_sick))+
+  geom_line()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 </div>
 <div id="counting-office-occupants" class="section level2">
 <h2>3-13 Counting office occupants</h2>
 <p>Imagine you’re an office facility manager and want to know how many people are present throughout the day. You’ve installed a sensor at the entrance that counts the number of people entering and leaving the building. The sensor sends an update at the end of every 20 minute time slot if at least one person passed.</p>
 <p>To create a dataset ready for visualization, you’ll combine the different techniques you’ve learned so far.</p>
+<hr />
+<p>sensor_df</p>
+<p>sensor_df %&gt;%
+# Complete the time column with a 20 minute interval
+complete(time = seq(from = min(time), to = max(time), by = “20 min”),
+fill = list(enter = 0L, exit = 0L))</p>
+<p>sensor_df %&gt;%
+# Complete the time column with a 20 minute interval
+complete(time = seq(min(time), max(time), by = “20 min”),
+fill = list(enter = 0L, exit = 0L)) %&gt;%
+# Calculate the total number of people inside
+mutate(total_inside = cumsum(enter + exit))</p>
+<p>sensor_df %&gt;%
+# Complete the time column with a 20 minute interval
+complete(time = seq(min(time), max(time), by = “20 min”),
+fill = list(enter = 0L, exit = 0L)) %&gt;%
+# Calculate the total number of people inside
+mutate(total_inside = cumsum(enter + exit)) %&gt;%
+# Pivot the enter and exit columns to long format
+pivot_longer(enter:exit, names_to = “direction”, values_to = “n_people”)</p>
+<p>sensor_df %&gt;%
+# Complete the time column with a 20 minute interval
+complete(time = seq(min(time), max(time), by = “20 min”),
+fill = list(enter = 0L, exit = 0L)) %&gt;%
+# Calculate the total number of people inside
+mutate(total_inside = cumsum(enter + exit)) %&gt;%
+# Pivot the enter and exit columns to long format
+pivot_longer(enter:exit, names_to = “direction”, values_to = “n_people”) %&gt;%
+# Plot the number of people over time, fill by direction
+ggplot(aes(x = time, y = n_people, fill = direction)) +
+geom_area() +
+geom_line(aes(y = total_inside))</p>
+<hr />
 </div>
 <div id="rectangling-data" class="section level2">
 <h2>4- Rectangling data</h2>

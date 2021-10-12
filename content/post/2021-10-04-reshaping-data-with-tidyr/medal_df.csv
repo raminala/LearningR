@@ -1,0 +1,188 @@
+continent,season,year,medals_per_participant
+Africa,Summer,1928,0.172413793
+Africa,Summer,1932,0.416666667
+Africa,Summer,1936,0.070588235
+Africa,Summer,1948,0.091666667
+Africa,Summer,1952,0.080645161
+Africa,Summer,1956,0.065420561
+Africa,Summer,1960,0.025641026
+Africa,Summer,1964,0.020905923
+Africa,Summer,1968,0.071698113
+Africa,Summer,1972,0.047732697
+Africa,Summer,1980,0.056847545
+Africa,Summer,1984,0.027633851
+Africa,Summer,1988,0.022653722
+Africa,Summer,1992,0.081504702
+Africa,Summer,1996,0.083202512
+Africa,Summer,2000,0.072890026
+Africa,Summer,2004,0.061307902
+Africa,Summer,2008,0.079260238
+Africa,Summer,2012,0.04625
+Africa,Summer,2016,0.083240844
+Asia,Summer,1928,0.369230769
+Asia,Summer,1932,0.264864865
+Asia,Summer,1936,0.125
+Asia,Summer,1948,0.078431373
+Asia,Summer,1952,0.124590164
+Asia,Summer,1956,0.130801688
+Asia,Summer,1960,0.120200334
+Asia,Summer,1964,0.102697095
+Asia,Summer,1968,0.190825688
+Asia,Summer,1972,0.160363086
+Asia,Summer,1976,0.124416796
+Asia,Summer,1980,0.06175772
+Asia,Summer,1984,0.16576087
+Asia,Summer,1988,0.10651289
+Asia,Summer,1992,0.176128093
+Asia,Summer,1996,0.15522771
+Asia,Summer,2000,0.148786718
+Asia,Summer,2004,0.167155425
+Asia,Summer,2008,0.184520759
+Asia,Summer,2012,0.196149218
+Asia,Summer,2016,0.15456035
+Asia,Winter,1956,0.05
+Asia,Winter,1964,0.011235955
+Asia,Winter,1972,0.026785714
+Asia,Winter,1980,0.011111111
+Asia,Winter,1984,0.008547009
+Asia,Winter,1988,0.00877193
+Asia,Winter,1992,0.149350649
+Asia,Winter,1994,0.196581197
+Asia,Winter,1998,0.14028777
+Asia,Winter,2002,0.100401606
+Asia,Winter,2006,0.129411765
+Asia,Winter,2010,0.176706827
+Asia,Winter,2014,0.136029412
+Europe,Summer,1928,0.205197828
+Europe,Summer,1932,0.37540107
+Europe,Summer,1936,0.220219914
+Europe,Summer,1948,0.210470836
+Europe,Summer,1952,0.189858491
+Europe,Summer,1956,0.345657277
+Europe,Summer,1960,0.182898551
+Europe,Summer,1964,0.260100038
+Europe,Summer,1968,0.224782899
+Europe,Summer,1972,0.198026779
+Europe,Summer,1976,0.276117279
+Europe,Summer,1980,0.347648818
+Europe,Summer,1984,0.251693405
+Europe,Summer,1988,0.253956835
+Europe,Summer,1992,0.203742204
+Europe,Summer,1996,0.176615501
+Europe,Summer,2000,0.197017707
+Europe,Summer,2004,0.190326749
+Europe,Summer,2008,0.169501134
+Europe,Summer,2012,0.182230624
+Europe,Summer,2016,0.210103779
+Europe,Winter,1928,0.160305344
+Europe,Winter,1932,0.292307692
+Europe,Winter,1936,0.143115942
+Europe,Winter,1948,0.188065099
+Europe,Winter,1952,0.162408759
+Europe,Winter,1956,0.14992722
+Europe,Winter,1960,0.223476298
+Europe,Winter,1964,0.202863962
+Europe,Winter,1968,0.193912063
+Europe,Winter,1972,0.231707317
+Europe,Winter,1976,0.227745665
+Europe,Winter,1980,0.234177215
+Europe,Winter,1984,0.223896663
+Europe,Winter,1988,0.25304878
+Europe,Winter,1992,0.194267516
+Europe,Winter,1994,0.189892802
+Europe,Winter,1998,0.210351692
+Europe,Winter,2002,0.171244886
+Europe,Winter,2006,0.211428571
+Europe,Winter,2010,0.159955257
+Europe,Winter,2014,0.212643678
+North America,Summer,1928,0.318537859
+North America,Summer,1932,0.350609756
+North America,Summer,1936,0.271255061
+North America,Summer,1948,0.291118421
+North America,Summer,1952,0.264653641
+North America,Summer,1956,0.310638298
+North America,Summer,1960,0.260115607
+North America,Summer,1964,0.270588235
+North America,Summer,1968,0.173451327
+North America,Summer,1972,0.18491921
+North America,Summer,1976,0.169781931
+North America,Summer,1980,0.100609756
+North America,Summer,1984,0.343655589
+North America,Summer,1988,0.204911092
+North America,Summer,1992,0.245889921
+North America,Summer,1996,0.26034713
+North America,Summer,2000,0.272403983
+North America,Summer,2004,0.277735272
+North America,Summer,2008,0.314451707
+North America,Summer,2012,0.311993517
+North America,Summer,2016,0.281771968
+North America,Winter,1928,0.5
+North America,Winter,1932,0.509433962
+North America,Winter,1936,0.345238095
+North America,Winter,1948,0.319587629
+North America,Winter,1952,0.447619048
+North America,Winter,1956,0.450980392
+North America,Winter,1960,0.390243902
+North America,Winter,1964,0.103448276
+North America,Winter,1968,0.162650602
+North America,Winter,1972,0.166666667
+North America,Winter,1976,0.084848485
+North America,Winter,1980,0.198757764
+North America,Winter,1984,0.072625698
+North America,Winter,1988,0.048327138
+North America,Winter,1992,0.163398693
+North America,Winter,1994,0.212121212
+North America,Winter,1998,0.235795455
+North America,Winter,2002,0.427027027
+North America,Winter,2006,0.304785894
+North America,Winter,2010,0.449519231
+North America,Winter,2014,0.337078652
+Oceania,Summer,1928,0.185185185
+Oceania,Summer,1932,0.205882353
+Oceania,Summer,1936,0.051282051
+Oceania,Summer,1948,0.195121951
+Oceania,Summer,1952,0.242105263
+Oceania,Summer,1956,0.200573066
+Oceania,Summer,1960,0.216814159
+Oceania,Summer,1964,0.16286645
+Oceania,Summer,1968,0.322222222
+Oceania,Summer,1972,0.13229572
+Oceania,Summer,1976,0.180451128
+Oceania,Summer,1980,0.10483871
+Oceania,Summer,1984,0.197889182
+Oceania,Summer,1988,0.158602151
+Oceania,Summer,1992,0.16
+Oceania,Summer,1996,0.262569832
+Oceania,Summer,2000,0.236708861
+Oceania,Summer,2004,0.25310559
+Oceania,Summer,2008,0.25308642
+Oceania,Summer,2012,0.223809524
+Oceania,Summer,2016,0.179331307
+Oceania,Winter,1992,0.035714286
+Oceania,Winter,1994,0.125
+Oceania,Winter,1998,0.032258065
+Oceania,Winter,2002,0.057142857
+Oceania,Winter,2006,0.036363636
+Oceania,Winter,2010,0.053571429
+Oceania,Winter,2014,0.040540541
+South America,Summer,1928,0.323529412
+South America,Summer,1932,0.050505051
+South America,Summer,1936,0.044354839
+South America,Summer,1948,0.05733945
+South America,Summer,1952,0.08
+South America,Summer,1956,0.096938776
+South America,Summer,1960,0.061016949
+South America,Summer,1964,0.05204461
+South America,Summer,1968,0.021021021
+South America,Summer,1972,0.01875
+South America,Summer,1976,0.015384615
+South America,Summer,1980,0.051401869
+South America,Summer,1984,0.09010989
+South America,Summer,1988,0.116438356
+South America,Summer,1992,0.04185022
+South America,Summer,1996,0.139072848
+South America,Summer,2000,0.157608696
+South America,Summer,2004,0.189054726
+South America,Summer,2008,0.196480938
+South America,Summer,2012,0.125714286
+South America,Summer,2016,0.078431373
