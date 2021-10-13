@@ -1665,6 +1665,46 @@ tibble(movie = movie_planets_list) %&gt;%
 <div id="nesting-tibbles" class="section level2">
 <h2>4-13 Nesting tibbles</h2>
 <p>You’re pre-processing the US army body measurement dataset ANSUR II to train multiple models in a single pipeline. You’ll experiment with the nest() function to create a list column with nested tibbles containing sub-sets of the data.</p>
+<pre class="r"><code>ansur_df2</code></pre>
+<pre><code>## # A tibble: 6,068 x 6
+##    branch                 component    sex    weight_kg waist_circum_m stature_m
+##    &lt;chr&gt;                  &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Combat Support         Regular Army Female      65.7          0.85       1.56
+##  2 Combat Service Support Regular Army Female      53.4          0.708      1.66
+##  3 Combat Service Support Regular Army Female      66.3          0.727      1.71
+##  4 Combat Service Support Regular Army Female      78.2          0.923      1.66
+##  5 Combat Arms            Regular Army Female      88.6          1.16       1.57
+##  6 Combat Service Support Regular Army Female      83.7          0.968      1.71
+##  7 Combat Service Support Regular Army Female      73.2          0.964      1.64
+##  8 Combat Service Support Regular Army Female      76            0.914      1.67
+##  9 Combat Service Support Regular Army Female      54.5          0.755      1.52
+## 10 Combat Service Support Regular Army Female      68.4          0.944      1.59
+## # ... with 6,058 more rows</code></pre>
+<pre class="r"><code>ansur_df2 %&gt;% 
+  # Group the data by branch, then nest
+  group_by(branch) %&gt;% 
+  nest()</code></pre>
+<pre><code>## # A tibble: 3 x 2
+## # Groups:   branch [3]
+##   branch                 data                
+##   &lt;chr&gt;                  &lt;list&gt;              
+## 1 Combat Support         &lt;tibble [1,312 x 5]&gt;
+## 2 Combat Service Support &lt;tibble [3,174 x 5]&gt;
+## 3 Combat Arms            &lt;tibble [1,582 x 5]&gt;</code></pre>
+<pre class="r"><code>ansur_df2 %&gt;% 
+  # Group the data by branch and sex, then nest
+   group_by(branch, sex) %&gt;% 
+  nest()</code></pre>
+<pre><code>## # A tibble: 6 x 3
+## # Groups:   branch, sex [6]
+##   branch                 sex    data                
+##   &lt;chr&gt;                  &lt;chr&gt;  &lt;list&gt;              
+## 1 Combat Support         Female &lt;tibble [687 x 4]&gt;  
+## 2 Combat Service Support Female &lt;tibble [1,256 x 4]&gt;
+## 3 Combat Arms            Female &lt;tibble [43 x 4]&gt;   
+## 4 Combat Arms            Male   &lt;tibble [1,539 x 4]&gt;
+## 5 Combat Support         Male   &lt;tibble [625 x 4]&gt;  
+## 6 Combat Service Support Male   &lt;tibble [1,918 x 4]&gt;</code></pre>
 </div>
 <div id="modeling-on-nested-data-frames" class="section level2">
 <h2>4-14 Modeling on nested data frames</h2>

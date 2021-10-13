@@ -46,6 +46,7 @@ movie_list <- readRDS("star_wars_movie_list.rds")
 movie_planets_list <- readRDS("star_wars_movie_planet_list.rds")
 planet_df3 <- readRDS("planet_moons_list_df.rds")
 ansur_df <- readRDS("ANSUR_II.rds")
+ansur_df2 <-  read_csv("ansur_df2.csv")
 ```
 
 
@@ -933,8 +934,21 @@ You've written a script to scrape data on your favorite movies from the Open Mov
 You're pre-processing the US army body measurement dataset ANSUR II to train multiple models in a single pipeline. You'll experiment with the nest() function to create a list column with nested tibbles containing sub-sets of the data.
 
 ```{r}
+ansur_df2
 
+ansur_df2 %>% 
+  # Group the data by branch, then nest
+  group_by(branch) %>% 
+  nest()
 ```
+
+```{r}
+ansur_df2 %>% 
+  # Group the data by branch and sex, then nest
+   group_by(branch, sex) %>% 
+  nest()
+```
+
 
 ## 4-14 Modeling on nested data frames
 
