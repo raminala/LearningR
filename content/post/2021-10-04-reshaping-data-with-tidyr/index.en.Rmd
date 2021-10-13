@@ -11,6 +11,7 @@ tags:
 
 ```{r include=FALSE}
 library(tidyverse)
+library(broom)
 
 netflix_df <- read_csv("netflix_df.csv")
 phone_nr_df <- read_csv("phone_nr_df.csv")
@@ -43,6 +44,8 @@ patient_df <-  read_csv("patient_df.csv") %>% mutate(infected=as.Date(infected))
 sensor_df <-  read_csv("sensor_df.csv") %>% mutate(enter=as.integer(enter)) %>% mutate(exit=as.integer(exit))
 movie_list <- readRDS("star_wars_movie_list.rds")
 movie_planets_list <- readRDS("star_wars_movie_planet_list.rds")
+planet_df3 <- readRDS("planet_moons_list_df.rds")
+ansur_df <- readRDS("ANSUR_II.rds")
 ```
 
 
@@ -878,7 +881,14 @@ tibble(movie = movie_planets_list) %>%
 Let's finish what we started in the last exercise of the previous lesson, exploring Star Wars planets! The movie_planets_list scraped from the Star Wars API has been pre-loaded for you. You'll need two specific unnesting operations to completely rectangle this data.
 
 ```{r}
+movie_planets_list
 
+# Create a tibble from movie_planets_list
+tibble(movie = movie_planets_list) %>% 
+  # Unnest the movie column in the correct direction
+  unnest_wider(movie) %>% 
+  # Unnest the planets column in the correct direction
+  unnest_longer(planets)
 ```
 
 ## 4-7 The Solar System's biggest moons
@@ -886,7 +896,17 @@ Let's finish what we started in the last exercise of the previous lesson, explor
 Most planets in our solar system are accompanied by at least one moon. You now wonder which planets are circled by the biggest moons and want to create a top five based on moon radius. However, you'll first have to unnest the devstronomy project data in planet_df using the unnest_longer() and unnest_wider() functions.
 
 ```{r}
+planet_df3
 
+planet_df3 %>% 
+  # Unnest the moons list column over observations
+  unnest_longer(moons) %>% 
+  # Further unnest the moons column
+  unnest_wider(moons) %>% 
+  # Unnest the moon_data column
+  unnest_wider(moon_data) %>% 
+  # Get the top five largest moons by radius
+  slice_max(radius, n = 5)
 ```
 
 ## 4-9 Hoisting Star Wars films
@@ -894,6 +914,7 @@ Most planets in our solar system are accompanied by at least one moon. You now w
 You've been given a nested data set on Star Wars characters (character_df) and want to explore the films in which they appeared. You'll first use the unnest_wider() and unnest_longer() functions to explore the data and will then switch to hoist() to select a specific element in the nested data structure directly.
 
 ```{r}
+
 
 ```
 
@@ -924,6 +945,16 @@ The dplyr, broom, and purrr packages have been pre-loaded for you.
 Side note: In the provided code, the purrr package's map() function applies functions on each nested data frame. Check out this package if you like using functions inside pipes!
 
 ```{r}
-
+ansur_df %>%
+  # Group the data by sex
+  group_by(sex) %>% 
+  # Nest the data
+  nest() %>%
+  mutate(
+    fit = map(data, function(df) lm(weight_kg ~ waist_circum_m + stature_m, data = df)),
+    glanced = map(fit, glance)
+  ) %>% 
+  # Unnest the glanced column
+  unnest(glanced)
 ```
 

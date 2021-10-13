@@ -955,15 +955,17 @@ full_df %&gt;%
 <h2>3-6 Completing the Solar System</h2>
 <p>You have been given a data frame (planet_df) from the devstronomy project with the number of moons per planet in our Solar System. However, Mercury and Venus, the two moonless planets, are absent. You want to expand this dataset using the complete() function and a vector planets that contains all eight planet’s names.</p>
 <pre class="r"><code>planet_df3</code></pre>
-<pre><code>## # A tibble: 6 x 2
-##   planet  n_moons
-##   &lt;chr&gt;     &lt;dbl&gt;
-## 1 Earth         1
-## 2 Mars          2
-## 3 Jupiter      79
-## 4 Saturn       62
-## 5 Uranus       27
-## 6 Neptune      14</code></pre>
+<pre><code>## # A tibble: 8 x 2
+##   planet  moons      
+##   &lt;chr&gt;   &lt;list&gt;     
+## 1 Mercury &lt;NULL&gt;     
+## 2 Venus   &lt;NULL&gt;     
+## 3 Earth   &lt;list [1]&gt; 
+## 4 Jupiter &lt;list [67]&gt;
+## 5 Mars    &lt;list [2]&gt; 
+## 6 Neptune &lt;list [14]&gt;
+## 7 Saturn  &lt;list [61]&gt;
+## 8 Uranus  &lt;list [27]&gt;</code></pre>
 <pre class="r"><code>planets = c(&quot;Mercury&quot;, &quot;Venus&quot;, &quot;Earth&quot;, &quot;Mars&quot;, &quot;Jupiter&quot;, &quot;Saturn&quot;, &quot;Uranus&quot;, &quot;Neptune&quot;)
 
 planet_df3 %&gt;% 
@@ -974,16 +976,16 @@ planet_df3 %&gt;%
     fill = list(n_moons = 0L)
   )</code></pre>
 <pre><code>## # A tibble: 8 x 2
-##   planet  n_moons
-##   &lt;chr&gt;     &lt;dbl&gt;
-## 1 Earth         1
-## 2 Jupiter      79
-## 3 Mars          2
-## 4 Mercury       0
-## 5 Neptune      14
-## 6 Saturn       62
-## 7 Uranus       27
-## 8 Venus         0</code></pre>
+##   planet  moons      
+##   &lt;chr&gt;   &lt;list&gt;     
+## 1 Earth   &lt;list [1]&gt; 
+## 2 Jupiter &lt;list [67]&gt;
+## 3 Mars    &lt;list [2]&gt; 
+## 4 Mercury &lt;NULL&gt;     
+## 5 Neptune &lt;list [14]&gt;
+## 6 Saturn  &lt;list [61]&gt;
+## 7 Uranus  &lt;list [27]&gt;
+## 8 Venus   &lt;NULL&gt;</code></pre>
 </div>
 <div id="zero-olympic-medals" class="section level2">
 <h2>3-7 Zero Olympic medals</h2>
@@ -1519,10 +1521,138 @@ tibble(movie = movie_planets_list) %&gt;%
 <div id="rectangling-star-wars-planets" class="section level2">
 <h2>4-6 Rectangling Star Wars planets</h2>
 <p>Let’s finish what we started in the last exercise of the previous lesson, exploring Star Wars planets! The movie_planets_list scraped from the Star Wars API has been pre-loaded for you. You’ll need two specific unnesting operations to completely rectangle this data.</p>
+<pre class="r"><code>movie_planets_list</code></pre>
+<pre><code>## [[1]]
+## [[1]]$title
+## [1] &quot;A New Hope&quot;
+## 
+## [[1]]$release_date
+## [1] &quot;1977-05-25&quot;
+## 
+## [[1]]$planets
+## [1] &quot;Alderaan&quot; &quot;Yavin IV&quot; &quot;Tatooine&quot;
+## 
+## 
+## [[2]]
+## [[2]]$title
+## [1] &quot;The Empire Strikes Back&quot;
+## 
+## [[2]]$release_date
+## [1] &quot;1980-05-17&quot;
+## 
+## [[2]]$planets
+## [1] &quot;Hoth&quot;        &quot;Dagobah&quot;     &quot;Bespin&quot;      &quot;Ord Mantell&quot;
+## 
+## 
+## [[3]]
+## [[3]]$title
+## [1] &quot;Return of the Jedi&quot;
+## 
+## [[3]]$release_date
+## [1] &quot;1983-05-25&quot;
+## 
+## [[3]]$planets
+## [1] &quot;Dagobah&quot;   &quot;Endor&quot;     &quot;Naboo&quot;     &quot;Coruscant&quot; &quot;Tatooine&quot; 
+## 
+## 
+## [[4]]
+## [[4]]$title
+## [1] &quot;The Phantom Menace&quot;
+## 
+## [[4]]$release_date
+## [1] &quot;1999-05-19&quot;
+## 
+## [[4]]$planets
+## [1] &quot;Naboo&quot;     &quot;Coruscant&quot; &quot;Tatooine&quot; 
+## 
+## 
+## [[5]]
+## [[5]]$title
+## [1] &quot;Attack of the Clones&quot;
+## 
+## [[5]]$release_date
+## [1] &quot;2002-05-16&quot;
+## 
+## [[5]]$planets
+## [1] &quot;Naboo&quot;     &quot;Coruscant&quot; &quot;Kamino&quot;    &quot;Geonosis&quot;  &quot;Tatooine&quot; 
+## 
+## 
+## [[6]]
+## [[6]]$title
+## [1] &quot;Revenge of the Sith&quot;
+## 
+## [[6]]$release_date
+## [1] &quot;2005-05-19&quot;
+## 
+## [[6]]$planets
+##  [1] &quot;Alderaan&quot;       &quot;Dagobah&quot;        &quot;Naboo&quot;          &quot;Coruscant&quot;     
+##  [5] &quot;Utapau&quot;         &quot;Mustafar&quot;       &quot;Kashyyyk&quot;       &quot;Polis Massa&quot;   
+##  [9] &quot;Mygeeto&quot;        &quot;Felucia&quot;        &quot;Cato Neimoidia&quot; &quot;Saleucami&quot;     
+## [13] &quot;Tatooine&quot;      
+## 
+## 
+## [[7]]
+## [[7]]$title
+## [1] &quot;The Force Awakens&quot;
+## 
+## [[7]]$release_date
+## [1] &quot;2015-12-11&quot;
+## 
+## [[7]]$planets
+## [1] &quot;Jakku&quot;</code></pre>
+<pre class="r"><code># Create a tibble from movie_planets_list
+tibble(movie = movie_planets_list) %&gt;% 
+  # Unnest the movie column in the correct direction
+  unnest_wider(movie) %&gt;% 
+  # Unnest the planets column in the correct direction
+  unnest_longer(planets)</code></pre>
+<pre><code>## # A tibble: 34 x 3
+##    title                   release_date planets    
+##    &lt;chr&gt;                   &lt;chr&gt;        &lt;chr&gt;      
+##  1 A New Hope              1977-05-25   Alderaan   
+##  2 A New Hope              1977-05-25   Yavin IV   
+##  3 A New Hope              1977-05-25   Tatooine   
+##  4 The Empire Strikes Back 1980-05-17   Hoth       
+##  5 The Empire Strikes Back 1980-05-17   Dagobah    
+##  6 The Empire Strikes Back 1980-05-17   Bespin     
+##  7 The Empire Strikes Back 1980-05-17   Ord Mantell
+##  8 Return of the Jedi      1983-05-25   Dagobah    
+##  9 Return of the Jedi      1983-05-25   Endor      
+## 10 Return of the Jedi      1983-05-25   Naboo      
+## # ... with 24 more rows</code></pre>
 </div>
 <div id="the-solar-systems-biggest-moons" class="section level2">
 <h2>4-7 The Solar System’s biggest moons</h2>
 <p>Most planets in our solar system are accompanied by at least one moon. You now wonder which planets are circled by the biggest moons and want to create a top five based on moon radius. However, you’ll first have to unnest the devstronomy project data in planet_df using the unnest_longer() and unnest_wider() functions.</p>
+<pre class="r"><code>planet_df3</code></pre>
+<pre><code>## # A tibble: 8 x 2
+##   planet  moons      
+##   &lt;chr&gt;   &lt;list&gt;     
+## 1 Mercury &lt;NULL&gt;     
+## 2 Venus   &lt;NULL&gt;     
+## 3 Earth   &lt;list [1]&gt; 
+## 4 Jupiter &lt;list [67]&gt;
+## 5 Mars    &lt;list [2]&gt; 
+## 6 Neptune &lt;list [14]&gt;
+## 7 Saturn  &lt;list [61]&gt;
+## 8 Uranus  &lt;list [27]&gt;</code></pre>
+<pre class="r"><code>planet_df3 %&gt;% 
+  # Unnest the moons list column over observations
+  unnest_longer(moons) %&gt;% 
+  # Further unnest the moons column
+  unnest_wider(moons) %&gt;% 
+  # Unnest the moon_data column
+  unnest_wider(moon_data) %&gt;% 
+  # Get the top five largest moons by radius
+  slice_max(radius, n = 5)</code></pre>
+<pre><code>## # A tibble: 5 x 4
+##   planet  moon_name radius density
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Jupiter Ganymede   2631.    1.94
+## 2 Saturn  Titan      2575.    1.88
+## 3 Jupiter Callisto   2410.    1.83
+## 4 Jupiter Io         1822.    3.53
+## 5 Earth   Moon       1738.    3.34</code></pre>
 </div>
 <div id="hoisting-star-wars-films" class="section level2">
 <h2>4-9 Hoisting Star Wars films</h2>
@@ -1541,4 +1671,23 @@ tibble(movie = movie_planets_list) %&gt;%
 <p>You’ll be working on the US Army ANSUR II body measurement dataset, which has been pre-loaded as ansur_df. The goal is to nest the data for both sexes so that you can simultaneously train two linear models, one for each sex. These models will derive a person’s weight from their stature (height) and waist circumference. You’ll then unnest the data to inspect the model’s statistics produced by the glance() function from the broom package.</p>
 <p>The dplyr, broom, and purrr packages have been pre-loaded for you.</p>
 <p>Side note: In the provided code, the purrr package’s map() function applies functions on each nested data frame. Check out this package if you like using functions inside pipes!</p>
+<pre class="r"><code>ansur_df %&gt;%
+  # Group the data by sex
+  group_by(sex) %&gt;% 
+  # Nest the data
+  nest() %&gt;%
+  mutate(
+    fit = map(data, function(df) lm(weight_kg ~ waist_circum_m + stature_m, data = df)),
+    glanced = map(fit, glance)
+  ) %&gt;% 
+  # Unnest the glanced column
+  unnest(glanced)</code></pre>
+<pre><code>## # A tibble: 2 x 15
+## # Groups:   sex [2]
+##   sex    data        fit   r.squared adj.r.squared sigma statistic p.value    df
+##   &lt;chr&gt;  &lt;list&gt;      &lt;lis&gt;     &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+## 1 Female &lt;tibble [1~ &lt;lm&gt;      0.822         0.822  4.63     4585.       0     2
+## 2 Male   &lt;tibble [4~ &lt;lm&gt;      0.873         0.873  5.06    14076.       0     2
+## # ... with 6 more variables: logLik &lt;dbl&gt;, AIC &lt;dbl&gt;, BIC &lt;dbl&gt;,
+## #   deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
 </div>
