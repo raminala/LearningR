@@ -8,18 +8,125 @@ tags:
   - Inference
 ---
 
+```{r include=FALSE}
+library(tidyverse)
+```
+
 One of the foundational aspects of statistical analysis is inference, or the process of drawing conclusions about a larger population from a sample of data. Although counter intuitive, the standard practice is to attempt to disprove a research claim that is not of interest. For example, to show that one medical treatment is better than another, we can assume that the two treatments lead to equal survival rates only to then be disproved by the data. Additionally, we introduce the idea of a p-value, or the degree of disagreement between the data and the hypothesis. We also dive into confidence intervals, which measure the magnitude of the effect of interest (e.g. how much better one treatment is than another).
 
 ## 1- Introduction to ideas of inference
 
 In this chapter, you will investigate how repeated samples taken from a population can vary. It is the variability in samples that allow you to make claims about the population of interest. It is important to remember that the research claims of interest focus on the population while the information available comes only from the sample data.
 
-## 1-2- 
+## 1-5 Working with the NHANES data
+
+Throughout this chapter, you will use the NHANES dataset from the NHANES R package. The data are collected by the Center for Disease Control (CDC, the national public health institute in the United States) and can be thought of as a random sample of US residents.
+
+Before moving on to investigate particular variables, you'll have an opportunity to briefly explore the data in this exercise.
 
 
 ```{r}
+library(NHANES)
 
+# What are the variables in the NHANES dataset?
+colnames(NHANES)
+
+# Create bar plot for Home Ownership by Gender
+ggplot(NHANES, aes(x = Gender, fill = HomeOwn)) + 
+  # Set the position to fill
+  geom_bar(position = "fill") +
+  ylab("Relative frequencies")
+
+
+# Density plot of SleepHrsNight colored by SleepTrouble
+ggplot(NHANES, aes(x = SleepHrsNight, color = SleepTrouble)) + 
+  # Adjust by 2
+  geom_density(adjust = 2) + 
+  # Facet by HealthGen
+  facet_wrap(~ HealthGen)
 ```
+
+## 1-6 Calculating statistic of interest
+
+Using the NHANES dataset, let's investigate the relationship between gender and home ownership. Remember, more information about the dataset can be found here: 
+
+https://www.rdocumentation.org/packages/NHANES/versions/2.1.0/topics/NHANES
+
+As seen in the video, natural variability can be modeled from shuffling observations around to remove any relationships that might exist in the population. However, before you permute the data, you need to calculate the original observed statistic. In this exercise, you will calculate the difference in proportion of home owners who are men versus women.
+
+Recall that:
+
+%in% returns a logical vector that is TRUE when values on the left hand side are listed on the right hand side.
+The mean of a logical vector is the proportion of cases where that vector is TRUE.
+fruits <- c("apple", "banana", "cherry")
+fruits %in% c("banana", "cherry")
+mean(fruits %in% c("banana", "cherry"))
+
+```{r}
+# From previous step
+homes <- NHANES %>%
+# Select Gender and HomeOwn
+  select(Gender, HomeOwn) %>%
+# Filter for HomeOwn equal to "Own" or "Rent"
+  filter(HomeOwn %in% c("Own", "Rent"))
+
+diff_orig <- homes %>%   
+  # Group by gender
+  group_by(Gender ) %>%
+  # Summarize proportion of homeowners
+  summarize(prop_own = mean(HomeOwn=="Own")) %>%
+  # Summarize difference in proportion of homeowners
+  summarize(obs_diff_prop = diff(prop_own)) # male - female
+  
+# See the result
+diff_orig
+```
+
+## 1-7 Randomized data under null model of independence
+
+The infer package will allow you to model a particular null hypothesis and then randomize the data to calculate permuted statistics. In this exercise, after specifying your null hypothesis you will permute the home ownership variable 10 times. By doing so, you will ensure that there is no relationship between home ownership and gender, so any difference in home ownership proportion for female versus male will be due only to natural variability.
+
+This exercise will demonstrate the first three steps from the infer package:
+
+specify will specify the response and explanatory variables.
+hypothesize will declare the null hypothesis.
+generate will generate resamples, permutations, or simulations.
+The dplyr, ggplot2, NHANES, and infer packages have been loaded for you and the homes dataset you created in the last exercise is available in your workspace.
+
+```{r}
+# Specify variables
+homeown_perm <- homes %>%
+  specify(HomeOwn ~ Gender, success = "Own")
+
+# Print results to console
+homeown_perm
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 2- Completing a randomization test: gender discrimination
 
