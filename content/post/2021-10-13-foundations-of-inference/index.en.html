@@ -16,27 +16,149 @@ tags:
 <h2>1- Introduction to ideas of inference</h2>
 <p>In this chapter, you will investigate how repeated samples taken from a population can vary. It is the variability in samples that allow you to make claims about the population of interest. It is important to remember that the research claims of interest focus on the population while the information available comes only from the sample data.</p>
 </div>
-<div id="section" class="section level2">
-<h2>1-2-</h2>
+<div id="working-with-the-nhanes-data" class="section level2">
+<h2>1-5 Working with the NHANES data</h2>
+<p>Throughout this chapter, you will use the NHANES dataset from the NHANES R package. The data are collected by the Center for Disease Control (CDC, the national public health institute in the United States) and can be thought of as a random sample of US residents.</p>
+<p>Before moving on to investigate particular variables, you’ll have an opportunity to briefly explore the data in this exercise.</p>
+<pre class="r"><code>library(NHANES)</code></pre>
+<pre><code>## Warning: package &#39;NHANES&#39; was built under R version 4.1.1</code></pre>
+<pre class="r"><code># What are the variables in the NHANES dataset?
+colnames(NHANES)</code></pre>
+<pre><code>##  [1] &quot;ID&quot;               &quot;SurveyYr&quot;         &quot;Gender&quot;           &quot;Age&quot;             
+##  [5] &quot;AgeDecade&quot;        &quot;AgeMonths&quot;        &quot;Race1&quot;            &quot;Race3&quot;           
+##  [9] &quot;Education&quot;        &quot;MaritalStatus&quot;    &quot;HHIncome&quot;         &quot;HHIncomeMid&quot;     
+## [13] &quot;Poverty&quot;          &quot;HomeRooms&quot;        &quot;HomeOwn&quot;          &quot;Work&quot;            
+## [17] &quot;Weight&quot;           &quot;Length&quot;           &quot;HeadCirc&quot;         &quot;Height&quot;          
+## [21] &quot;BMI&quot;              &quot;BMICatUnder20yrs&quot; &quot;BMI_WHO&quot;          &quot;Pulse&quot;           
+## [25] &quot;BPSysAve&quot;         &quot;BPDiaAve&quot;         &quot;BPSys1&quot;           &quot;BPDia1&quot;          
+## [29] &quot;BPSys2&quot;           &quot;BPDia2&quot;           &quot;BPSys3&quot;           &quot;BPDia3&quot;          
+## [33] &quot;Testosterone&quot;     &quot;DirectChol&quot;       &quot;TotChol&quot;          &quot;UrineVol1&quot;       
+## [37] &quot;UrineFlow1&quot;       &quot;UrineVol2&quot;        &quot;UrineFlow2&quot;       &quot;Diabetes&quot;        
+## [41] &quot;DiabetesAge&quot;      &quot;HealthGen&quot;        &quot;DaysPhysHlthBad&quot;  &quot;DaysMentHlthBad&quot; 
+## [45] &quot;LittleInterest&quot;   &quot;Depressed&quot;        &quot;nPregnancies&quot;     &quot;nBabies&quot;         
+## [49] &quot;Age1stBaby&quot;       &quot;SleepHrsNight&quot;    &quot;SleepTrouble&quot;     &quot;PhysActive&quot;      
+## [53] &quot;PhysActiveDays&quot;   &quot;TVHrsDay&quot;         &quot;CompHrsDay&quot;       &quot;TVHrsDayChild&quot;   
+## [57] &quot;CompHrsDayChild&quot;  &quot;Alcohol12PlusYr&quot;  &quot;AlcoholDay&quot;       &quot;AlcoholYear&quot;     
+## [61] &quot;SmokeNow&quot;         &quot;Smoke100&quot;         &quot;Smoke100n&quot;        &quot;SmokeAge&quot;        
+## [65] &quot;Marijuana&quot;        &quot;AgeFirstMarij&quot;    &quot;RegularMarij&quot;     &quot;AgeRegMarij&quot;     
+## [69] &quot;HardDrugs&quot;        &quot;SexEver&quot;          &quot;SexAge&quot;           &quot;SexNumPartnLife&quot; 
+## [73] &quot;SexNumPartYear&quot;   &quot;SameSex&quot;          &quot;SexOrientation&quot;   &quot;PregnantNow&quot;</code></pre>
+<pre class="r"><code># Create bar plot for Home Ownership by Gender
+ggplot(NHANES, aes(x = Gender, fill = HomeOwn)) + 
+  # Set the position to fill
+  geom_bar(position = &quot;fill&quot;) +
+  ylab(&quot;Relative frequencies&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># Density plot of SleepHrsNight colored by SleepTrouble
+ggplot(NHANES, aes(x = SleepHrsNight, color = SleepTrouble)) + 
+  # Adjust by 2
+  geom_density(adjust = 2) + 
+  # Facet by HealthGen
+  facet_wrap(~ HealthGen)</code></pre>
+<pre><code>## Warning: Removed 2245 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+</div>
+<div id="calculating-statistic-of-interest" class="section level2">
+<h2>1-6 Calculating statistic of interest</h2>
+<p>Using the NHANES dataset, let’s investigate the relationship between gender and home ownership. Remember, more information about the dataset can be found here:</p>
+<p><a href="https://www.rdocumentation.org/packages/NHANES/versions/2.1.0/topics/NHANES" class="uri">https://www.rdocumentation.org/packages/NHANES/versions/2.1.0/topics/NHANES</a></p>
+<p>As seen in the video, natural variability can be modeled from shuffling observations around to remove any relationships that might exist in the population. However, before you permute the data, you need to calculate the original observed statistic. In this exercise, you will calculate the difference in proportion of home owners who are men versus women.</p>
+<p>Recall that:</p>
+<p>%in% returns a logical vector that is TRUE when values on the left hand side are listed on the right hand side.
+The mean of a logical vector is the proportion of cases where that vector is TRUE.
+fruits &lt;- c(“apple”, “banana”, “cherry”)
+fruits %in% c(“banana”, “cherry”)
+mean(fruits %in% c(“banana”, “cherry”))</p>
+<pre class="r"><code># From previous step
+homes &lt;- NHANES %&gt;%
+# Select Gender and HomeOwn
+  select(Gender, HomeOwn) %&gt;%
+# Filter for HomeOwn equal to &quot;Own&quot; or &quot;Rent&quot;
+  filter(HomeOwn %in% c(&quot;Own&quot;, &quot;Rent&quot;))
+
+diff_orig &lt;- homes %&gt;%   
+  # Group by gender
+  group_by(Gender ) %&gt;%
+  # Summarize proportion of homeowners
+  summarize(prop_own = mean(HomeOwn==&quot;Own&quot;)) %&gt;%
+  # Summarize difference in proportion of homeowners
+  summarize(obs_diff_prop = diff(prop_own)) # male - female
+  
+# See the result
+diff_orig</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   obs_diff_prop
+##           &lt;dbl&gt;
+## 1      -0.00783</code></pre>
+</div>
+<div id="randomized-data-under-null-model-of-independence" class="section level2">
+<h2>1-7 Randomized data under null model of independence</h2>
+<p>The infer package will allow you to model a particular null hypothesis and then randomize the data to calculate permuted statistics. In this exercise, after specifying your null hypothesis you will permute the home ownership variable 10 times. By doing so, you will ensure that there is no relationship between home ownership and gender, so any difference in home ownership proportion for female versus male will be due only to natural variability.</p>
+<p>This exercise will demonstrate the first three steps from the infer package:</p>
+<p>specify will specify the response and explanatory variables.
+hypothesize will declare the null hypothesis.
+generate will generate resamples, permutations, or simulations.
+The dplyr, ggplot2, NHANES, and infer packages have been loaded for you and the homes dataset you created in the last exercise is available in your workspace.</p>
+</div>
+<div id="randomized-statistics-and-dotplot" class="section level2">
+<h2>1-8 Randomized statistics and dotplot</h2>
+<p>By permuting the home ownership variable multiple times, you generate differences in proportions that are consistent with the assumption that the variables are unrelated. The statistic of interest is the difference in proportions given by stat = “diff in props”. After calculating the randomized statistics, you will plot them in a dotplot.</p>
+<p>This exercise shows all four steps from the infer package:</p>
+<p>specify will specify the response and explanatory variables.
+hypothesize will declare the null hypothesis.
+generate will generate resamples, permutations, or simulations.
+calculate will calculate summary statistics.
+Each step will be covered throughout the course; in this exercise you’ll write code for calculate().</p>
+<p>The dplyr, ggplot2, NHANES, and infer packages have been loaded for you. Repeat the permuting and plotting with 100 differences in proportions generated by shuffling the HomeOwn variable.</p>
+</div>
+<div id="randomization-density" class="section level2">
+<h2>1-9 Randomization density</h2>
+<p>Using 100 repetitions allows you to understand the mechanism of permuting. However, 100 is not enough to observe the full range of likely values for the null differences in proportions.</p>
+<p>Recall the four steps of inference. These are the same four steps that will be used in all inference exercises in this course and future statistical inference courses. Use the names of the functions to help you recall the analysis process.</p>
+<p>specify will specify the response and explanatory variables.
+hypothesize will declare the null hypothesis.
+generate will generate resamples, permutations, or simulations.
+calculate will calculate summary statistics.
+In this exercise, you’ll repeat the process 1000 times to get a sense for the complete distribution of null differences in proportions.</p>
+<pre class="r"><code># Perform 1000 permutations
+homeown_perm &lt;- homes %&gt;%
+  # Specify HomeOwn vs. Gender, with `&quot;Own&quot; as success
+  specify(HomeOwn ~ Gender, success = &quot;Own&quot;) %&gt;%
+  # Use a null hypothesis of independence
+  hypothesize(null = &quot;independence&quot;) %&gt;% 
+  # Generate 1000 repetitions (by permutation)
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;% 
+  # Calculate the difference in proportions (male then female)
+  calculate(stat = &quot;diff in props&quot;, order = c(&quot;male&quot;, &quot;female&quot;))
+
+# Density plot of 1000 permuted differences in proportions
+ggplot(homeown_perm, aes(x = stat)) + 
+  geom_density()</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="do-the-data-come-from-the-population" class="section level2">
+<h2>1-11 Do the data come from the population?</h2>
+<p>Recall that the observed difference (i.e. the difference in proportions in the homes dataset, shown as the red vertical line) was around -0.0078, which seems to fall below the bulk of the density of shuffled differences. It is important to know, however, whether any of the randomly permuted differences were as extreme as the observed difference.</p>
+<p>In this exercise, you’ll re-create this dotplot as a density plot and count the number of permuted differences that were to the left of the observed difference.</p>
 </div>
 <div id="completing-a-randomization-test-gender-discrimination" class="section level2">
 <h2>2- Completing a randomization test: gender discrimination</h2>
 <p>In this chapter, you will gain the tools and knowledge to complete a full hypothesis test. That is, given a dataset, you will know whether or not is appropriate to reject the null hypothesis in favor of the research claim of interest.</p>
 </div>
-<div id="section-1" class="section level2">
+<div id="section" class="section level2">
 <h2>2-2-</h2>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
 <p>You will continue learning about hypothesis testing with a new example and the same structure of randomization tests. In this chapter, however, the focus will be on different errors (type I and type II), how they are made, when one is worse than another, and how things like sample size and effect size impact the error rates.</p>
 </div>
-<div id="section-2" class="section level2">
+<div id="section-1" class="section level2">
 <h2>3-2-</h2>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4- Confidence intervals</h2>
 <p>As a complement to hypothesis testing, confidence intervals allow you to estimate a population parameter. Recall that your interest is always in some characteristic of the population, but you only have incomplete information to estimate the parameter using sample data. Here, the parameter is the true proportion of successes in a population. Bootstrapping is used to estimate the variability needed to form the confidence interval.</p>
 </div>
-<div id="section-3" class="section level2">
+<div id="section-2" class="section level2">
 <h2>4-2-</h2>
 </div>
