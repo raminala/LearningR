@@ -39,7 +39,8 @@ library(NHANES)
 
 # What are the variables in the NHANES dataset?
 colnames(NHANES)
-
+nrow(NHANES)
+levels(NHANES$HealthGen)
 # Create bar plot for Home Ownership by Gender
 ggplot(NHANES, aes(x = Gender, fill = HomeOwn)) + 
   # Set the position to fill
@@ -67,8 +68,11 @@ Recall that:
 
 %in% returns a logical vector that is TRUE when values on the left hand side are listed on the right hand side.
 The mean of a logical vector is the proportion of cases where that vector is TRUE.
+
 fruits <- c("apple", "banana", "cherry")
+
 fruits %in% c("banana", "cherry")
+
 mean(fruits %in% c("banana", "cherry"))
 
 ```{r}
@@ -97,10 +101,13 @@ The infer package will allow you to model a particular null hypothesis and then 
 
 This exercise will demonstrate the first three steps from the infer package:
 
-specify will specify the response and explanatory variables.
-hypothesize will declare the null hypothesis.
-generate will generate resamples, permutations, or simulations.
-The dplyr, ggplot2, NHANES, and infer packages have been loaded for you and the homes dataset you created in the last exercise is available in your workspace.
+*specify* will specify the response and explanatory variables.
+
+*hypothesize* will declare the null hypothesis.
+
+*generate* will generate resamples, permutations, or simulations.
+
+The homes dataset you created in the last exercise is available in your workspace.
 
 ```{r}
 # Specify variables

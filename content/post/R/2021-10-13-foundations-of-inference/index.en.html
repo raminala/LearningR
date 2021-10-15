@@ -43,6 +43,10 @@ colnames(NHANES)</code></pre>
 ## [65] &quot;Marijuana&quot;        &quot;AgeFirstMarij&quot;    &quot;RegularMarij&quot;     &quot;AgeRegMarij&quot;     
 ## [69] &quot;HardDrugs&quot;        &quot;SexEver&quot;          &quot;SexAge&quot;           &quot;SexNumPartnLife&quot; 
 ## [73] &quot;SexNumPartYear&quot;   &quot;SameSex&quot;          &quot;SexOrientation&quot;   &quot;PregnantNow&quot;</code></pre>
+<pre class="r"><code>nrow(NHANES)</code></pre>
+<pre><code>## [1] 10000</code></pre>
+<pre class="r"><code>levels(NHANES$HealthGen)</code></pre>
+<pre><code>## [1] &quot;Excellent&quot; &quot;Vgood&quot;     &quot;Good&quot;      &quot;Fair&quot;      &quot;Poor&quot;</code></pre>
 <pre class="r"><code># Create bar plot for Home Ownership by Gender
 ggplot(NHANES, aes(x = Gender, fill = HomeOwn)) + 
   # Set the position to fill
@@ -64,10 +68,10 @@ ggplot(NHANES, aes(x = SleepHrsNight, color = SleepTrouble)) +
 <p>As seen in the video, natural variability can be modeled from shuffling observations around to remove any relationships that might exist in the population. However, before you permute the data, you need to calculate the original observed statistic. In this exercise, you will calculate the difference in proportion of home owners who are men versus women.</p>
 <p>Recall that:</p>
 <p>%in% returns a logical vector that is TRUE when values on the left hand side are listed on the right hand side.
-The mean of a logical vector is the proportion of cases where that vector is TRUE.
-fruits &lt;- c(“apple”, “banana”, “cherry”)
-fruits %in% c(“banana”, “cherry”)
-mean(fruits %in% c(“banana”, “cherry”))</p>
+The mean of a logical vector is the proportion of cases where that vector is TRUE.</p>
+<p>fruits &lt;- c(“apple”, “banana”, “cherry”)</p>
+<p>fruits %in% c(“banana”, “cherry”)</p>
+<p>mean(fruits %in% c(“banana”, “cherry”))</p>
 <pre class="r"><code># From previous step
 homes &lt;- NHANES %&gt;%
 # Select Gender and HomeOwn
@@ -94,10 +98,10 @@ diff_orig</code></pre>
 <h2>1-7 Randomized data under null model of independence</h2>
 <p>The infer package will allow you to model a particular null hypothesis and then randomize the data to calculate permuted statistics. In this exercise, after specifying your null hypothesis you will permute the home ownership variable 10 times. By doing so, you will ensure that there is no relationship between home ownership and gender, so any difference in home ownership proportion for female versus male will be due only to natural variability.</p>
 <p>This exercise will demonstrate the first three steps from the infer package:</p>
-<p>specify will specify the response and explanatory variables.
-hypothesize will declare the null hypothesis.
-generate will generate resamples, permutations, or simulations.
-The dplyr, ggplot2, NHANES, and infer packages have been loaded for you and the homes dataset you created in the last exercise is available in your workspace.</p>
+<p><em>specify</em> will specify the response and explanatory variables.</p>
+<p><em>hypothesize</em> will declare the null hypothesis.</p>
+<p><em>generate</em> will generate resamples, permutations, or simulations.</p>
+<p>The homes dataset you created in the last exercise is available in your workspace.</p>
 <pre class="r"><code># Specify variables
 homeown_perm &lt;- homes %&gt;%
   specify(HomeOwn ~ Gender, success = &quot;Own&quot;)
@@ -161,15 +165,15 @@ homeown_perm</code></pre>
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
 ##  1 Own     male           1
-##  2 Rent    male           1
-##  3 Own     male           1
+##  2 Own     male           1
+##  3 Rent    male           1
 ##  4 Own     male           1
-##  5 Own     female         1
-##  6 Rent    male           1
+##  5 Rent    female         1
+##  6 Own     male           1
 ##  7 Own     male           1
 ##  8 Own     female         1
-##  9 Rent    female         1
-## 10 Rent    female         1
+##  9 Own     female         1
+## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -194,16 +198,16 @@ homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
 ##    replicate     stat
 ##        &lt;int&gt;    &lt;dbl&gt;
-##  1         1 -0.0222 
-##  2         2  0.00865
-##  3         3  0.00823
-##  4         4 -0.00289
-##  5         5  0.00247
-##  6         6  0.00700
-##  7         7 -0.0202 
-##  8         8 -0.00783
-##  9         9  0.00700
-## 10        10 -0.00165
+##  1         1 -0.00824
+##  2         2 -0.00206
+##  3         3 -0.00247
+##  4         4  0.00782
+##  5         5  0.00453
+##  6         6  0.00412
+##  7         7  0.00288
+##  8         8  0.00123
+##  9         9  0.00947
+## 10        10  0.0136 
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
