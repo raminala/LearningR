@@ -124,8 +124,6 @@ homeown_perm <- homes %>%
   specify(HomeOwn ~ Gender, success = "Own") %>%
   hypothesize(null = "independence")  
 
-# Print results to console
-homeown_perm
 ```
 
 ```{r}
