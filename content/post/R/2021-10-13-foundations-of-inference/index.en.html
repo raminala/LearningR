@@ -164,13 +164,13 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Own     male           1
-##  2 Own     male           1
-##  3 Rent    male           1
+##  1 Rent    male           1
+##  2 Rent    male           1
+##  3 Own     male           1
 ##  4 Own     male           1
-##  5 Rent    female         1
+##  5 Own     female         1
 ##  6 Own     male           1
-##  7 Own     male           1
+##  7 Rent    male           1
 ##  8 Own     female         1
 ##  9 Own     female         1
 ## 10 Own     female         1
@@ -196,18 +196,18 @@ homeown_perm &lt;- homes %&gt;%
 # Print results to console
 homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
-##    replicate     stat
-##        &lt;int&gt;    &lt;dbl&gt;
-##  1         1 -0.00824
-##  2         2 -0.00206
-##  3         3 -0.00247
-##  4         4  0.00782
-##  5         5  0.00453
-##  6         6  0.00412
-##  7         7  0.00288
-##  8         8  0.00123
-##  9         9  0.00947
-## 10        10  0.0136 
+##    replicate        stat
+##        &lt;int&gt;       &lt;dbl&gt;
+##  1         1 -0.0119    
+##  2         2 -0.0239    
+##  3         3 -0.00000297
+##  4         4  0.00329   
+##  5         5 -0.00495   
+##  6         6 -0.00453   
+##  7         7  0.00494   
+##  8         8 -0.00453   
+##  9         9 -0.00247   
+## 10        10  0.000409  
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
