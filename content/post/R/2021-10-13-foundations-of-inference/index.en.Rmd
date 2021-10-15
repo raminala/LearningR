@@ -16,7 +16,7 @@ homeown_perm1 <- read.csv("homeown_perm.csv")
 
 a <- readRDS("all_polls.rds")
 b <- readRDS("disc_big.rds")
-c <- readRDS("disc_new.rds")
+disc <- readRDS("disc_new.rds")
 d <- readRDS("disc_small.rds")
 load("all_polls.RData")
 ```
@@ -238,11 +238,52 @@ A) We have learned that our data is consistent with the hypothesis of no differe
 
 In this chapter, you will gain the tools and knowledge to complete a full hypothesis test. That is, given a dataset, you will know whether or not is appropriate to reject the null hypothesis in favor of the research claim of interest.
 
-## 2-2- 
+## 2-3 Summarizing gender discrimination
+
+As the first step of any analysis, you should look at and summarize the data. Categorical variables are often summarized using proportions, and it is always important to understand the denominator of the proportion.
+
+Do you want the proportion of women who were promoted or the proportion of promoted individuals who were women? Here, you want the first of these, so in your R code it's necessary to group_by() the sex variable.
 
 ```{r}
+disc
 
+# Create a contingency table summarizing the data
+disc %>%
+  # Count the rows by sex, promote
+  count(sex, promote)
+
+# Find proportion of each sex who were promoted
+disc %>%
+  # Group by sex
+  group_by(sex) %>%
+  # Calculate proportion promoted summary stat
+  summarise(promoted_prop=mean(promote=="promoted"))
 ```
+
+## 2-4 Step-by-step through the permutation
+
+To help you understand the code used to create the randomization distribution, this exercise will walk you through the steps of the infer framework. In particular, you'll see how differences in the generated replicates affect the calculated statistics.
+
+After running the infer steps, be sure to notice that the numbers are slightly different for each replicate.
+
+```{r}
+# Replicate the entire data frame, permuting the promote variable
+disc_perm <- disc %>%
+  specify(promote ~ sex, success = "promoted") %>%
+  hypothesize(null = "independence") %>%
+  generate(reps = 5, type = "permute")
+
+disc_perm %>%
+  # Group by replicate
+  group_by(replicate) %>%
+  # Count per group
+  count(promote)
+
+disc_perm %>%
+  # Calculate difference in proportion, male then female
+  calculate(stat= "diff in props", order= c("male", "female"))
+```
+
 
 ## 3- Hypothesis testing errors: opportunity cost
 

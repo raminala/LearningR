@@ -144,14 +144,14 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Rent    male           1
+##  1 Own     male           1
 ##  2 Own     male           1
 ##  3 Own     male           1
-##  4 Own     male           1
+##  4 Rent    male           1
 ##  5 Own     female         1
-##  6 Own     male           1
-##  7 Own     male           1
-##  8 Own     female         1
+##  6 Rent    male           1
+##  7 Rent    male           1
+##  8 Rent    female         1
 ##  9 Own     female         1
 ## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
@@ -176,18 +176,18 @@ homeown_perm &lt;- homes %&gt;%
 # Print results to console
 homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
-##    replicate        stat
-##        &lt;int&gt;       &lt;dbl&gt;
-##  1         1 -0.0124    
-##  2         2  0.0115    
-##  3         3  0.0136    
-##  4         4 -0.00783   
-##  5         5 -0.00536   
-##  6         6  0.00206   
-##  7         7  0.00288   
-##  8         8 -0.00000297
-##  9         9 -0.00453   
-## 10        10 -0.00124   
+##    replicate      stat
+##        &lt;int&gt;     &lt;dbl&gt;
+##  1         1  0.00164 
+##  2         2  0.00247 
+##  3         3  0.00659 
+##  4         4 -0.00165 
+##  5         5  0.00329 
+##  6         6 -0.00742 
+##  7         7 -0.00247 
+##  8         8  0.000821
+##  9         9 -0.000415
+## 10        10  0.00123 
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -259,20 +259,133 @@ homeown_perm1 %&gt;%
 <h2>2- Completing a randomization test: gender discrimination</h2>
 <p>In this chapter, you will gain the tools and knowledge to complete a full hypothesis test. That is, given a dataset, you will know whether or not is appropriate to reject the null hypothesis in favor of the research claim of interest.</p>
 </div>
-<div id="section" class="section level2">
-<h2>2-2-</h2>
+<div id="summarizing-gender-discrimination" class="section level2">
+<h2>2-3 Summarizing gender discrimination</h2>
+<p>As the first step of any analysis, you should look at and summarize the data. Categorical variables are often summarized using proportions, and it is always important to understand the denominator of the proportion.</p>
+<p>Do you want the proportion of women who were promoted or the proportion of promoted individuals who were women? Here, you want the first of these, so in your R code it’s necessary to group_by() the sex variable.</p>
+<pre class="r"><code>disc</code></pre>
+<pre><code>##         promote    sex
+## 1      promoted   male
+## 2      promoted   male
+## 3      promoted   male
+## 4      promoted   male
+## 5      promoted   male
+## 6      promoted   male
+## 7      promoted   male
+## 8      promoted   male
+## 9      promoted   male
+## 10     promoted   male
+## 11     promoted   male
+## 12     promoted   male
+## 13     promoted   male
+## 14     promoted   male
+## 15     promoted   male
+## 16     promoted   male
+## 17     promoted   male
+## 18     promoted   male
+## 19     promoted female
+## 20     promoted female
+## 21     promoted female
+## 22     promoted female
+## 23     promoted female
+## 24     promoted female
+## 25     promoted female
+## 26     promoted female
+## 27     promoted female
+## 28     promoted female
+## 29     promoted female
+## 30     promoted female
+## 31     promoted female
+## 32     promoted female
+## 33     promoted female
+## 34     promoted female
+## 35     promoted female
+## 36 not_promoted   male
+## 37 not_promoted   male
+## 38 not_promoted   male
+## 39 not_promoted   male
+## 40 not_promoted   male
+## 41 not_promoted   male
+## 42 not_promoted female
+## 43 not_promoted female
+## 44 not_promoted female
+## 45 not_promoted female
+## 46 not_promoted female
+## 47 not_promoted female
+## 48 not_promoted female</code></pre>
+<pre class="r"><code># Create a contingency table summarizing the data
+disc %&gt;%
+  # Count the rows by sex, promote
+  count(sex, promote)</code></pre>
+<pre><code>##      sex      promote  n
+## 1 female not_promoted  7
+## 2 female     promoted 17
+## 3   male not_promoted  6
+## 4   male     promoted 18</code></pre>
+<pre class="r"><code># Find proportion of each sex who were promoted
+disc %&gt;%
+  # Group by sex
+  group_by(sex) %&gt;%
+  # Calculate proportion promoted summary stat
+  summarise(promoted_prop=mean(promote==&quot;promoted&quot;))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   sex    promoted_prop
+##   &lt;fct&gt;          &lt;dbl&gt;
+## 1 female         0.708
+## 2 male           0.75</code></pre>
+</div>
+<div id="step-by-step-through-the-permutation" class="section level2">
+<h2>2-4 Step-by-step through the permutation</h2>
+<p>To help you understand the code used to create the randomization distribution, this exercise will walk you through the steps of the infer framework. In particular, you’ll see how differences in the generated replicates affect the calculated statistics.</p>
+<p>After running the infer steps, be sure to notice that the numbers are slightly different for each replicate.</p>
+<pre class="r"><code># Replicate the entire data frame, permuting the promote variable
+disc_perm &lt;- disc %&gt;%
+  specify(promote ~ sex, success = &quot;promoted&quot;) %&gt;%
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  generate(reps = 5, type = &quot;permute&quot;)
+
+disc_perm %&gt;%
+  # Group by replicate
+  group_by(replicate) %&gt;%
+  # Count per group
+  count(promote)</code></pre>
+<pre><code>## # A tibble: 10 x 3
+## # Groups:   replicate [5]
+##    replicate promote          n
+##        &lt;int&gt; &lt;fct&gt;        &lt;int&gt;
+##  1         1 not_promoted    13
+##  2         1 promoted        35
+##  3         2 not_promoted    13
+##  4         2 promoted        35
+##  5         3 not_promoted    13
+##  6         3 promoted        35
+##  7         4 not_promoted    13
+##  8         4 promoted        35
+##  9         5 not_promoted    13
+## 10         5 promoted        35</code></pre>
+<pre class="r"><code>disc_perm %&gt;%
+  # Calculate difference in proportion, male then female
+  calculate(stat= &quot;diff in props&quot;, order= c(&quot;male&quot;, &quot;female&quot;))</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   replicate    stat
+##       &lt;int&gt;   &lt;dbl&gt;
+## 1         1 -0.125 
+## 2         2  0.208 
+## 3         3  0.125 
+## 4         4  0.0417
+## 5         5 -0.0417</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
 <p>You will continue learning about hypothesis testing with a new example and the same structure of randomization tests. In this chapter, however, the focus will be on different errors (type I and type II), how they are made, when one is worse than another, and how things like sample size and effect size impact the error rates.</p>
 </div>
-<div id="section-1" class="section level2">
+<div id="section" class="section level2">
 <h2>3-2-</h2>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4- Confidence intervals</h2>
 <p>As a complement to hypothesis testing, confidence intervals allow you to estimate a population parameter. Recall that your interest is always in some characteristic of the population, but you only have incomplete information to estimate the parameter using sample data. Here, the parameter is the true proportion of successes in a population. Bootstrapping is used to estimate the variability needed to form the confidence interval.</p>
 </div>
-<div id="section-2" class="section level2">
+<div id="section-1" class="section level2">
 <h2>4-2-</h2>
 </div>
