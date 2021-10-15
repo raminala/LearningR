@@ -144,16 +144,16 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Own     male           1
-##  2 Own     male           1
-##  3 Own     male           1
+##  1 Rent    male           1
+##  2 Rent    male           1
+##  3 Rent    male           1
 ##  4 Rent    male           1
-##  5 Own     female         1
-##  6 Rent    male           1
+##  5 Rent    female         1
+##  6 Own     male           1
 ##  7 Rent    male           1
 ##  8 Rent    female         1
 ##  9 Own     female         1
-## 10 Own     female         1
+## 10 Rent    female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -178,16 +178,16 @@ homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
 ##    replicate      stat
 ##        &lt;int&gt;     &lt;dbl&gt;
-##  1         1  0.00164 
-##  2         2  0.00247 
-##  3         3  0.00659 
-##  4         4 -0.00165 
-##  5         5  0.00329 
-##  6         6 -0.00742 
-##  7         7 -0.00247 
-##  8         8  0.000821
-##  9         9 -0.000415
-## 10        10  0.00123 
+##  1         1 -0.0144  
+##  2         2 -0.000827
+##  3         3 -0.00618 
+##  4         4 -0.000827
+##  5         5  0.00412 
+##  6         6 -0.00247 
+##  7         7 -0.0136  
+##  8         8  0.0235  
+##  9         9 -0.00700 
+## 10        10  0.00288 
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -367,13 +367,13 @@ disc_perm %&gt;%
   # Calculate difference in proportion, male then female
   calculate(stat= &quot;diff in props&quot;, order= c(&quot;male&quot;, &quot;female&quot;))</code></pre>
 <pre><code>## # A tibble: 5 x 2
-##   replicate    stat
-##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1 -0.125 
-## 2         2  0.208 
-## 3         3  0.125 
-## 4         4  0.0417
-## 5         5 -0.0417</code></pre>
+##   replicate   stat
+##       &lt;int&gt;  &lt;dbl&gt;
+## 1         1 -0.125
+## 2         2  0.125
+## 3         3  0.292
+## 4         4 -0.125
+## 5         5  0.208</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
