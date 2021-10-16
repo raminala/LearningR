@@ -146,14 +146,14 @@ homeown_perm</code></pre>
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
 ##  1 Rent    male           1
 ##  2 Rent    male           1
-##  3 Rent    male           1
-##  4 Rent    male           1
+##  3 Own     male           1
+##  4 Own     male           1
 ##  5 Rent    female         1
-##  6 Own     male           1
+##  6 Rent    male           1
 ##  7 Rent    male           1
-##  8 Rent    female         1
-##  9 Own     female         1
-## 10 Rent    female         1
+##  8 Own     female         1
+##  9 Rent    female         1
+## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -176,18 +176,18 @@ homeown_perm &lt;- homes %&gt;%
 # Print results to console
 homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
-##    replicate      stat
-##        &lt;int&gt;     &lt;dbl&gt;
-##  1         1 -0.0144  
-##  2         2 -0.000827
-##  3         3 -0.00618 
-##  4         4 -0.000827
-##  5         5  0.00412 
-##  6         6 -0.00247 
-##  7         7 -0.0136  
-##  8         8  0.0235  
-##  9         9 -0.00700 
-## 10        10  0.00288 
+##    replicate     stat
+##        &lt;int&gt;    &lt;dbl&gt;
+##  1         1  0.00123
+##  2         2  0.00535
+##  3         3 -0.00948
+##  4         4 -0.00989
+##  5         5  0.00865
+##  6         6 -0.0107 
+##  7         7 -0.00495
+##  8         8  0.00576
+##  9         9  0.00123
+## 10        10  0.00618
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -367,13 +367,99 @@ disc_perm %&gt;%
   # Calculate difference in proportion, male then female
   calculate(stat= &quot;diff in props&quot;, order= c(&quot;male&quot;, &quot;female&quot;))</code></pre>
 <pre><code>## # A tibble: 5 x 2
-##   replicate   stat
-##       &lt;int&gt;  &lt;dbl&gt;
-## 1         1 -0.125
-## 2         2  0.125
-## 3         3  0.292
-## 4         4 -0.125
-## 5         5  0.208</code></pre>
+##   replicate    stat
+##       &lt;int&gt;   &lt;dbl&gt;
+## 1         1  0.292 
+## 2         2 -0.208 
+## 3         3 -0.125 
+## 4         4  0.0417
+## 5         5 -0.0417</code></pre>
+</div>
+<div id="randomizing-gender-discrimination" class="section level2">
+<h2>2-5 Randomizing gender discrimination</h2>
+<p>Recall that we are considering a situation where the number of men and women are fixed (representing the resumes) and the number of people promoted is fixed (the managers were able to promote only 35 individuals).</p>
+<p>In this exercise, you’ll create a randomization distribution of the null statistic with 1000 replicates as opposed to just 5 in the previous exercise. As a reminder, the statistic of interest is the difference in proportions promoted between genders (i.e. proportion for males minus proportion for females). From the original dataset, you can calculate how the promotion rates differ between males and females. Using the specify-hypothesis-generate-calculate workflow in infer, you can calculate the same statistic, but instead of getting a single number, you get a whole distribution. In this exercise, you’ll compare that single number from the original dataset to the distribution made by the simulation.</p>
+<pre class="r"><code># Calculate the observed difference in promotion rate
+diff_orig &lt;- disc %&gt;%
+  # Group by sex
+  group_by(sex) %&gt;%
+  # Summarize to calculate fraction promoted
+  summarize(prop_prom = mean(promote == &quot;promoted&quot;)) %&gt;%
+  # Summarize to calculate difference
+  summarize(stat = diff(prop_prom)) %&gt;% 
+  pull()
+    
+# See the result
+diff_orig</code></pre>
+<pre><code>## [1] 0.04166667</code></pre>
+<pre class="r"><code># Create data frame of permuted differences in promotion rates
+disc_perm &lt;- disc %&gt;%
+  # Specify promote vs. sex
+  specify(promote~sex, success = &quot;promoted&quot;) %&gt;%
+  # Set null hypothesis as independence
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  # Generate 1000 permutations
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
+  # Calculate difference in proportions
+  calculate(stat = &quot;diff in props&quot;, order = c(&quot;male&quot;, &quot;female&quot;))</code></pre>
+<pre class="r"><code># From previous steps
+diff_orig &lt;- disc %&gt;%
+  group_by(sex) %&gt;%
+  summarize(prop_prom = mean(promote == &quot;promoted&quot;)) %&gt;%
+  summarize(stat = diff(prop_prom)) %&gt;% 
+  pull()
+disc_perm &lt;- disc %&gt;%
+  specify(promote ~ sex, success = &quot;promoted&quot;) %&gt;%
+  hypothesize(null = &quot;independence&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;permute&quot;) %&gt;%
+  calculate(stat = &quot;diff in props&quot;, order = c(&quot;male&quot;, &quot;female&quot;))
+  
+# Using permutation data, plot stat
+ggplot(disc_perm, aes(x = stat)) + 
+  # Add a histogram layer
+  geom_histogram(binwidth = 0.01) +
+  # Add a vertical line at diff_orig
+  geom_vline(aes(xintercept = diff_orig), color = &quot;red&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="critical-region" class="section level2">
+<h2>2-8 Critical region</h2>
+<p>It seems as though the statistic—a difference in promotion rates of 0.2917—is on the extreme end of the permutation distribution. That is, there are very few permuted differences which are as extreme as the observed difference.</p>
+<p>To quantify the extreme permuted (null) differences, we use the quantile() function.</p>
+<pre class="r"><code>disc_perm %&gt;% 
+  summarize(
+    # Find the 0.9 quantile of diff_perm&#39;s stat
+    q.90 = quantile(stat, p = 0.9),
+    # ... and the 0.95 quantile
+    q.95 = quantile(stat, p = 0.95),
+    # ... and the 0.99 quantile
+    q.99 = quantile(stat, p = 0.99)
+  )</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##    q.90  q.95  q.99
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.125 0.208 0.292</code></pre>
+</div>
+<div id="two-sided-critical-region" class="section level2">
+<h2>2-8 Two-sided critical region</h2>
+<p>For the discrimination data, the question at hand is whether or not women were promoted less often than men. However, there are often scenarios where the research question centers around a difference without directionality.</p>
+<p>For example, you might be interested in whether the rate of promotion for men and women is different. In that case, a difference in proportions of -0.29 is just as “extreme” as a difference of positive 0.29.</p>
+<p>If you had seen that women were promoted more often, what would the other side of the distribution of permuted differences look like? That is, what are the smallest (negative) values of the distribution of permuted differences?</p>
+<pre class="r"><code># Use disc_perm
+disc_perm %&gt;% 
+  # ... to calculate summary stats
+  summarize(
+    # Find the 0.01 quantile of stat
+    q.01 = quantile(stat, p = 0.01),
+    # ... and 0.05
+    q.05 = quantile(stat, p = 0.05),
+    # ... and 0.1 
+    q.10 = quantile(stat, p = 0.1)
+  )</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##     q.01   q.05   q.10
+##    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1 -0.292 -0.208 -0.125</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
