@@ -144,15 +144,15 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Rent    male           1
+##  1 Own     male           1
 ##  2 Rent    male           1
 ##  3 Own     male           1
 ##  4 Own     male           1
-##  5 Rent    female         1
+##  5 Own     female         1
 ##  6 Rent    male           1
 ##  7 Rent    male           1
 ##  8 Own     female         1
-##  9 Rent    female         1
+##  9 Own     female         1
 ## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
@@ -179,15 +179,15 @@ homeown_perm</code></pre>
 ##    replicate     stat
 ##        &lt;int&gt;    &lt;dbl&gt;
 ##  1         1  0.00123
-##  2         2  0.00535
-##  3         3 -0.00948
-##  4         4 -0.00989
-##  5         5  0.00865
-##  6         6 -0.0107 
-##  7         7 -0.00495
-##  8         8  0.00576
+##  2         2 -0.00371
+##  3         3  0.0268 
+##  4         4  0.00370
+##  5         5  0.0161 
+##  6         6 -0.00330
+##  7         7  0.0119 
+##  8         8  0.00370
 ##  9         9  0.00123
-## 10        10  0.00618
+## 10        10 -0.00824
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -369,10 +369,10 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 5 x 2
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1  0.292 
-## 2         2 -0.208 
+## 1         1  0.0417
+## 2         2 -0.0417
 ## 3         3 -0.125 
-## 4         4  0.0417
+## 4         4 -0.125 
 ## 5         5 -0.0417</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
@@ -441,7 +441,7 @@ ggplot(disc_perm, aes(x = stat)) +
 ## 1 0.125 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
-<h2>2-8 Two-sided critical region</h2>
+<h2>2-9 Two-sided critical region</h2>
 <p>For the discrimination data, the question at hand is whether or not women were promoted less often than men. However, there are often scenarios where the research question centers around a difference without directionality.</p>
 <p>For example, you might be interested in whether the rate of promotion for men and women is different. In that case, a difference in proportions of -0.29 is just as “extreme” as a difference of positive 0.29.</p>
 <p>If you had seen that women were promoted more often, what would the other side of the distribution of permuted differences look like? That is, what are the smallest (negative) values of the distribution of permuted differences?</p>
@@ -459,7 +459,36 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 3
 ##     q.01   q.05   q.10
 ##    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 -0.292 -0.208 -0.125</code></pre>
+## 1 -0.292 -0.208 -0.208</code></pre>
+</div>
+<div id="sample-size-in-randomization-distribution" class="section level2">
+<h2>2-12 Sample size in randomization distribution</h2>
+<p>We’ve created two new datasets for you with essentially the same difference in proportions as the original discrimination data. However, one of the datasets (disc_small) is one third the size of the original dataset and the other (disc_big) is 10 times larger than the original dataset.</p>
+<p>Additionally, the same permutation code used previously has been run on the small and big datasets to create small and big distributions of permuted differences in promotion rates (disc_small_perm and disc_big_perm, respectively).</p>
+<p>In this exercise, you’ll use these two new distributions to get a sense for how the differences vary given widely different sample sizes. In particular, notice the range of variability on the x-axis of each plot.</p>
+</div>
+<div id="sample-size-for-critical-region" class="section level2">
+<h2>2-13 Sample size for critical region</h2>
+<p>Using the randomization distributions with the small and big datasets, calculate different cutoffs for significance. Remember, you are most interested in a large positive difference in promotion rates, so you are calculating the upper quantiles of 0.90, 0.95, and 0.99.</p>
+</div>
+<div id="calculating-the-p-values" class="section level2">
+<h2>2- 15 Calculating the p-values</h2>
+<p>In the video, you learned that a p-value measures the degree of disagreement between the data and the null hypothesis. Here, you will calculate the p-value for the original discrimination dataset as well as the small and big versions, disc_small and disc_big.</p>
+<p>The original differences in proportions are available in your workspace, diff_orig, diff_orig_small, and diff_orig_big, as are the permuted datasets, disc_perm, disc_perm_small, and disc_perm_big.</p>
+<p>Recall that you’re only interested in the one-sided hypothesis test here. That is, you’re trying to answer the question, “Are men more likely to be promoted than women?”</p>
+</div>
+<div id="practice-calculating-p-values" class="section level2">
+<h2>2- 16 Practice calculating p-values</h2>
+<p>In the original dataset, 87.5% of the men were promoted and 58.3% of the women were promoted.</p>
+<p>Consider a situation where there are 24 men, 24 women, and 35 people are still promoted. But in this new scenario, 75% of the men are promoted and 70.8% of the women are promoted. Does the difference in promotion rates still appear to be statistically significant? That is, could this difference in promotion rates have come from random chance?</p>
+<p>You’ll analyze these new data, contained in disc_new, using the same permutation algorithm from before.</p>
+</div>
+<div id="calculating-two-sided-p-values" class="section level2">
+<h2>2- 17 Calculating two-sided p-values</h2>
+<p>What if the original research hypothesis had focused on any difference in promotion rates between men and women instead of focusing on whether men are more likely to be promoted than women? In this case, a difference like the one observed would occur twice as often (by chance) because sometimes the difference would be positive and sometimes it would be negative.</p>
+<p>When there is no directionality to the alternative hypothesis, the hypothesis and p-value are considered to be two-sided. In a two-sided setting, the p-value is double the one-sided p-value.</p>
+<p>In this exercise, you’ll calculate a two-sided p-value given the original randomization distribution and dataset.</p>
+<p>The observed difference is stored in diff_orig and the difference in each permutation is the stat column of disc_perm.</p>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>

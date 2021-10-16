@@ -357,7 +357,7 @@ disc_perm %>%
   )
 ```
 
-## 2-8 Two-sided critical region
+## 2-9 Two-sided critical region
 
 For the discrimination data, the question at hand is whether or not women were promoted less often than men. However, there are often scenarios where the research question centers around a difference without directionality.
 
@@ -378,6 +378,69 @@ disc_perm %>%
     q.10 = quantile(stat, p = 0.1)
   )
 ```
+
+## 2-12 Sample size in randomization distribution
+
+We've created two new datasets for you with essentially the same difference in proportions as the original discrimination data. However, one of the datasets (disc_small) is one third the size of the original dataset and the other (disc_big) is 10 times larger than the original dataset.
+
+Additionally, the same permutation code used previously has been run on the small and big datasets to create small and big distributions of permuted differences in promotion rates (disc_small_perm and disc_big_perm, respectively).
+
+In this exercise, you'll use these two new distributions to get a sense for how the differences vary given widely different sample sizes. In particular, notice the range of variability on the x-axis of each plot.
+
+```{r}
+
+```
+
+## 2-13 Sample size for critical region
+
+Using the randomization distributions with the small and big datasets, calculate different cutoffs for significance. Remember, you are most interested in a large positive difference in promotion rates, so you are calculating the upper quantiles of 0.90, 0.95, and 0.99.
+
+```{r}
+
+```
+
+
+## 2- 15 Calculating the p-values
+
+In the video, you learned that a p-value measures the degree of disagreement between the data and the null hypothesis. Here, you will calculate the p-value for the original discrimination dataset as well as the small and big versions, disc_small and disc_big.
+
+The original differences in proportions are available in your workspace, diff_orig, diff_orig_small, and diff_orig_big, as are the permuted datasets, disc_perm, disc_perm_small, and disc_perm_big.
+
+Recall that you're only interested in the one-sided hypothesis test here. That is, you're trying to answer the question, "Are men more likely to be promoted than women?"
+
+```{r}
+
+```
+
+
+## 2- 16 Practice calculating p-values
+
+In the original dataset, 87.5% of the men were promoted and 58.3% of the women were promoted.
+
+Consider a situation where there are 24 men, 24 women, and 35 people are still promoted. But in this new scenario, 75% of the men are promoted and 70.8% of the women are promoted. Does the difference in promotion rates still appear to be statistically significant? That is, could this difference in promotion rates have come from random chance?
+
+You'll analyze these new data, contained in disc_new, using the same permutation algorithm from before.
+
+```{r}
+
+```
+
+
+## 2- 17 Calculating two-sided p-values
+
+What if the original research hypothesis had focused on any difference in promotion rates between men and women instead of focusing on whether men are more likely to be promoted than women? In this case, a difference like the one observed would occur twice as often (by chance) because sometimes the difference would be positive and sometimes it would be negative.
+
+When there is no directionality to the alternative hypothesis, the hypothesis and p-value are considered to be two-sided. In a two-sided setting, the p-value is double the one-sided p-value.
+
+In this exercise, you'll calculate a two-sided p-value given the original randomization distribution and dataset.
+
+The observed difference is stored in diff_orig and the difference in each permutation is the stat column of disc_perm.
+
+```{r}
+
+```
+
+
 
 ## 3- Hypothesis testing errors: opportunity cost
 
