@@ -457,7 +457,26 @@ The original differences in proportions are available in your workspace, diff_or
 Recall that you're only interested in the one-sided hypothesis test here. That is, you're trying to answer the question, "Are men more likely to be promoted than women?"
 
 ```{r}
+# Visualize and calculate the p-value for the original dataset
+disc_perm %>%
+  visualize(obs_stat = diff_orig, direction = "greater")
 
+disc_perm %>%
+  get_p_value(obs_stat = diff_orig, direction = "greater")
+
+# Visualize and calculate the p-value for the small dataset
+disc_perm_small %>%
+  visualize(obs_stat = diff_orig_small, direction = "greater")
+
+disc_perm_small %>%
+  get_p_value(obs_stat = diff_orig_small, direction = "greater")
+
+# Visualize and calculate the p-value for the big dataset
+disc_perm_big %>%
+  visualize(obs_stat = diff_orig_big, direction = "greater")
+
+disc_perm_big %>%
+  get_p_value(obs_stat = diff_orig_big, direction = "greater")
 ```
 
 
