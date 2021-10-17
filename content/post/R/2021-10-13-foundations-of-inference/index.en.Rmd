@@ -21,6 +21,7 @@ disc_small <- readRDS("disc_small.rds")
 load("all_polls.RData")
 disc_perm_small <- read.csv("disc_perm_small.csv")
 disc_perm_big <- read.csv("disc_perm_big.csv")
+disc_perm_new <- read.csv("disc_perm_new.csv")
 a <- readRDS("all_polls.rds")
 ```
 
@@ -479,6 +480,15 @@ disc_perm_big %>%
   get_p_value(obs_stat = diff_orig_big, direction = "greater")
 ```
 
+```{r}
+# Recall the p-value from the original data
+disc_perm %>%
+  summarize(p_value = mean(diff_orig <= stat))
+
+# Find the p-value from the new data
+disc_perm_new %>%
+  summarize(p_value = mean(diff_orig_new <= stat))
+```
 
 ## 2- 16 Practice calculating p-values
 
@@ -489,9 +499,28 @@ Consider a situation where there are 24 men, 24 women, and 35 people are still p
 You'll analyze these new data, contained in disc_new, using the same permutation algorithm from before.
 
 ```{r}
+# Recall the original data
+disc %>% 
+  count(sex, promote)
 
+# Tabulate the new data
+table(disc)
 ```
 
+```{r}
+
+diff_orig_new <- 0.04166667
+
+# Recall the distribution of the original permuted differences
+ggplot(disc_perm, aes(x = stat)) + 
+  geom_histogram() +
+  geom_vline(aes(xintercept = diff_orig), color = "red")
+
+# Plot the distribution of the new permuted differences
+ggplot(disc_perm_new, aes(x = stat))+ 
+  geom_histogram() +
+  geom_vline(aes(xintercept = diff_orig_new), color = "red")
+```
 
 ## 2- 17 Calculating two-sided p-values
 

@@ -147,10 +147,10 @@ homeown_perm</code></pre>
 ##  1 Own     male           1
 ##  2 Rent    male           1
 ##  3 Own     male           1
-##  4 Own     male           1
+##  4 Rent    male           1
 ##  5 Own     female         1
-##  6 Own     male           1
-##  7 Rent    male           1
+##  6 Rent    male           1
+##  7 Own     male           1
 ##  8 Rent    female         1
 ##  9 Rent    female         1
 ## 10 Own     female         1
@@ -178,16 +178,16 @@ homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
 ##    replicate        stat
 ##        &lt;int&gt;       &lt;dbl&gt;
-##  1         1  0.000409  
-##  2         2  0.00288   
-##  3         3  0.00329   
-##  4         4  0.00206   
-##  5         5  0.00865   
-##  6         6  0.00206   
-##  7         7  0.0218    
-##  8         8  0.00247   
-##  9         9 -0.00000297
-## 10        10 -0.0132    
+##  1         1  0.0107    
+##  2         2 -0.00124   
+##  3         3 -0.00495   
+##  4         4  0.00494   
+##  5         5 -0.00000297
+##  6         6 -0.00289   
+##  7         7  0.0177    
+##  8         8  0.00329   
+##  9         9  0.00865   
+## 10        10 -0.00618   
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -370,10 +370,10 @@ disc_perm %&gt;%
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
 ## 1         1 -0.0417
-## 2         2 -0.0417
-## 3         3 -0.208 
-## 4         4  0.292 
-## 5         5  0.125</code></pre>
+## 2         2  0.0417
+## 3         3  0.292 
+## 4         4  0.0417
+## 5         5  0.0417</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
 <h2>2-5 Randomizing gender discrimination</h2>
@@ -438,7 +438,7 @@ ggplot(disc_perm, aes(x = stat)) +
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
 <h2>2-9 Two-sided critical region</h2>
@@ -459,7 +459,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 3
 ##     q.01   q.05   q.10
 ##    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 -0.292 -0.208 -0.125</code></pre>
+## 1 -0.292 -0.208 -0.208</code></pre>
 </div>
 <div id="sample-size-in-randomization-distribution" class="section level2">
 <h2>2-12 Sample size in randomization distribution</h2>
@@ -519,7 +519,7 @@ calc_upper_quantiles(disc_perm)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 <pre class="r"><code># Calculate the quantiles associated with the small dataset
 calc_upper_quantiles(disc_perm_small)</code></pre>
 <pre><code>##   q.90 q.95 q.99
@@ -546,7 +546,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.481</code></pre>
+## 1   0.516</code></pre>
 <pre class="r"><code># Visualize and calculate the p-value for the small dataset
 #disc_perm_small %&gt;%
 #  visualize(obs_stat = diff_orig_small, direction = &quot;greater&quot;)
@@ -576,6 +576,20 @@ disc_perm_big %&gt;%
 <p>In the original dataset, 87.5% of the men were promoted and 58.3% of the women were promoted.</p>
 <p>Consider a situation where there are 24 men, 24 women, and 35 people are still promoted. But in this new scenario, 75% of the men are promoted and 70.8% of the women are promoted. Does the difference in promotion rates still appear to be statistically significant? That is, could this difference in promotion rates have come from random chance?</p>
 <p>You’ll analyze these new data, contained in disc_new, using the same permutation algorithm from before.</p>
+<pre class="r"><code># Recall the original data
+disc %&gt;% 
+  count(sex, promote)</code></pre>
+<pre><code>##      sex      promote  n
+## 1 female not_promoted  7
+## 2 female     promoted 17
+## 3   male not_promoted  6
+## 4   male     promoted 18</code></pre>
+<pre class="r"><code># Tabulate the new data
+table(disc)</code></pre>
+<pre><code>##               sex
+## promote        female male
+##   not_promoted      7    6
+##   promoted         17   18</code></pre>
 </div>
 <div id="calculating-two-sided-p-values" class="section level2">
 <h2>2- 17 Calculating two-sided p-values</h2>
