@@ -144,16 +144,16 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Own     male           1
-##  2 Rent    male           1
-##  3 Own     male           1
-##  4 Own     male           1
+##  1 Rent    male           1
+##  2 Own     male           1
+##  3 Rent    male           1
+##  4 Rent    male           1
 ##  5 Own     female         1
-##  6 Rent    male           1
-##  7 Rent    male           1
-##  8 Own     female         1
+##  6 Own     male           1
+##  7 Own     male           1
+##  8 Rent    female         1
 ##  9 Own     female         1
-## 10 Own     female         1
+## 10 Rent    female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -178,16 +178,16 @@ homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
 ##    replicate     stat
 ##        &lt;int&gt;    &lt;dbl&gt;
-##  1         1  0.00123
-##  2         2 -0.00371
-##  3         3  0.0268 
-##  4         4  0.00370
-##  5         5  0.0161 
-##  6         6 -0.00330
-##  7         7  0.0119 
-##  8         8  0.00370
-##  9         9  0.00123
-## 10        10 -0.00824
+##  1         1  0.00659
+##  2         2  0.00288
+##  3         3  0.0136 
+##  4         4 -0.00618
+##  5         5 -0.0177 
+##  6         6 -0.0124 
+##  7         7 -0.0103 
+##  8         8 -0.00330
+##  9         9  0.00659
+## 10        10 -0.00124
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -369,10 +369,10 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 5 x 2
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1  0.0417
+## 1         1 -0.208 
 ## 2         2 -0.0417
-## 3         3 -0.125 
-## 4         4 -0.125 
+## 3         3 -0.208 
+## 4         4 -0.0417
 ## 5         5 -0.0417</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
@@ -438,7 +438,7 @@ ggplot(disc_perm, aes(x = stat)) +
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
 <h2>2-9 Two-sided critical region</h2>
@@ -466,10 +466,68 @@ disc_perm %&gt;%
 <p>We’ve created two new datasets for you with essentially the same difference in proportions as the original discrimination data. However, one of the datasets (disc_small) is one third the size of the original dataset and the other (disc_big) is 10 times larger than the original dataset.</p>
 <p>Additionally, the same permutation code used previously has been run on the small and big datasets to create small and big distributions of permuted differences in promotion rates (disc_small_perm and disc_big_perm, respectively).</p>
 <p>In this exercise, you’ll use these two new distributions to get a sense for how the differences vary given widely different sample sizes. In particular, notice the range of variability on the x-axis of each plot.</p>
+<pre class="r"><code># Tabulate the small dataset
+disc_small %&gt;% 
+  # Select sex and promote
+  count(sex, promote)</code></pre>
+<pre><code>##      sex      promote n
+## 1 female not_promoted 3
+## 2 female     promoted 5
+## 3   male not_promoted 1
+## 4   male     promoted 7</code></pre>
+<pre class="r"><code># Do the same for disc_big
+disc_big %&gt;% 
+  # Select sex and promote
+  count(sex, promote)</code></pre>
+<pre><code>##      sex      promote   n
+## 1 female not_promoted 100
+## 2 female     promoted 140
+## 3   male not_promoted  30
+## 4   male     promoted 210</code></pre>
+<pre class="r"><code>diff_orig_small &lt;- 0.25
+
+# Using disc_perm_small, plot stat
+ggplot(disc_perm_small, aes(x = stat)) + 
+  # Add a histogram layer with binwidth 0.01
+  geom_histogram(binwidth = 0.01) +
+  # Add a vline layer, crossing x-axis at diff_orig_small
+  geom_vline(aes(xintercept = diff_orig_small), color = &quot;red&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre class="r"><code>diff_orig_big &lt;- 0.2916667
+
+# Swap the dataset to disc_perm_big
+ggplot(disc_perm_big, aes(x = stat)) + 
+  geom_histogram(binwidth = 0.01) +
+  # Change the x-axis intercept to diff_orig_big
+  geom_vline(aes(xintercept = diff_orig_big), color = &quot;red&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 </div>
 <div id="sample-size-for-critical-region" class="section level2">
 <h2>2-13 Sample size for critical region</h2>
 <p>Using the randomization distributions with the small and big datasets, calculate different cutoffs for significance. Remember, you are most interested in a large positive difference in promotion rates, so you are calculating the upper quantiles of 0.90, 0.95, and 0.99.</p>
+<pre class="r"><code>calc_upper_quantiles &lt;- function(dataset) {
+  dataset %&gt;% 
+    summarize(
+      q.90 = quantile(stat, p = 0.90),
+      q.95 = quantile(stat, p = 0.95),
+      q.99 = quantile(stat, p = 0.99)
+    )
+}
+
+# Recall the quantiles associated with the original dataset
+calc_upper_quantiles(disc_perm)</code></pre>
+<pre><code>## # A tibble: 1 x 3
+##    q.90  q.95  q.99
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.208 0.208 0.292</code></pre>
+<pre class="r"><code># Calculate the quantiles associated with the small dataset
+calc_upper_quantiles(disc_perm_small)</code></pre>
+<pre><code>##   q.90 q.95 q.99
+## 1 0.25 0.25  0.5</code></pre>
+<pre class="r"><code># Calculate the quantiles associated with the big dataset
+calc_upper_quantiles(disc_perm_big)</code></pre>
+<pre><code>##   q.90       q.95 q.99
+## 1 0.05 0.06666667  0.1</code></pre>
 </div>
 <div id="calculating-the-p-values" class="section level2">
 <h2>2- 15 Calculating the p-values</h2>

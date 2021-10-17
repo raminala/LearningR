@@ -14,11 +14,14 @@ library(infer)
 
 homeown_perm1 <- read.csv("homeown_perm.csv")
 
-a <- readRDS("all_polls.rds")
-b <- readRDS("disc_big.rds")
+
 disc <- readRDS("disc_new.rds")
-d <- readRDS("disc_small.rds")
+disc_big <- readRDS("disc_big.rds")
+disc_small <- readRDS("disc_small.rds")
 load("all_polls.RData")
+disc_perm_small <- read.csv("disc_perm_small.csv")
+disc_perm_big <- read.csv("disc_perm_big.csv")
+a <- readRDS("all_polls.rds")
 ```
 
 One of the foundational aspects of statistical analysis is inference, or the process of drawing conclusions about a larger population from a sample of data. Although counter intuitive, the standard practice is to attempt to disprove a research claim that is not of interest. For example, to show that one medical treatment is better than another, we can assume that the two treatments lead to equal survival rates only to then be disproved by the data. Additionally, we introduce the idea of a p-value, or the degree of disagreement between the data and the hypothesis. We also dive into confidence intervals, which measure the magnitude of the effect of interest (e.g. how much better one treatment is than another).
@@ -388,7 +391,36 @@ Additionally, the same permutation code used previously has been run on the smal
 In this exercise, you'll use these two new distributions to get a sense for how the differences vary given widely different sample sizes. In particular, notice the range of variability on the x-axis of each plot.
 
 ```{r}
+# Tabulate the small dataset
+disc_small %>% 
+  # Select sex and promote
+  count(sex, promote)
+  
+# Do the same for disc_big
+disc_big %>% 
+  # Select sex and promote
+  count(sex, promote)
+```
 
+```{r}
+diff_orig_small <- 0.25
+
+# Using disc_perm_small, plot stat
+ggplot(disc_perm_small, aes(x = stat)) + 
+  # Add a histogram layer with binwidth 0.01
+  geom_histogram(binwidth = 0.01) +
+  # Add a vline layer, crossing x-axis at diff_orig_small
+  geom_vline(aes(xintercept = diff_orig_small), color = "red")
+```
+
+```{r}
+diff_orig_big <- 0.2916667
+
+# Swap the dataset to disc_perm_big
+ggplot(disc_perm_big, aes(x = stat)) + 
+  geom_histogram(binwidth = 0.01) +
+  # Change the x-axis intercept to diff_orig_big
+  geom_vline(aes(xintercept = diff_orig_big), color = "red")
 ```
 
 ## 2-13 Sample size for critical region
@@ -396,7 +428,23 @@ In this exercise, you'll use these two new distributions to get a sense for how 
 Using the randomization distributions with the small and big datasets, calculate different cutoffs for significance. Remember, you are most interested in a large positive difference in promotion rates, so you are calculating the upper quantiles of 0.90, 0.95, and 0.99.
 
 ```{r}
+calc_upper_quantiles <- function(dataset) {
+  dataset %>% 
+    summarize(
+      q.90 = quantile(stat, p = 0.90),
+      q.95 = quantile(stat, p = 0.95),
+      q.99 = quantile(stat, p = 0.99)
+    )
+}
 
+# Recall the quantiles associated with the original dataset
+calc_upper_quantiles(disc_perm)
+
+# Calculate the quantiles associated with the small dataset
+calc_upper_quantiles(disc_perm_small)
+
+# Calculate the quantiles associated with the big dataset
+calc_upper_quantiles(disc_perm_big)
 ```
 
 
