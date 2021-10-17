@@ -557,7 +557,7 @@ You will continue learning about hypothesis testing with a new example and the s
 ## 3-2- 
 
 ```{r}
-disc_perm
+
 ```
 
 ## 4- Confidence intervals
