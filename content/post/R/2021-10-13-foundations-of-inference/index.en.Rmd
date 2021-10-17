@@ -286,6 +286,8 @@ disc_perm %>%
 disc_perm %>%
   # Calculate difference in proportion, male then female
   calculate(stat= "diff in props", order= c("male", "female"))
+
+
 ```
 
 ## 2-5 Randomizing gender discrimination
@@ -359,6 +361,7 @@ disc_perm %>%
     # ... and the 0.99 quantile
     q.99 = quantile(stat, p = 0.99)
   )
+
 ```
 
 ## 2-9 Two-sided critical region
@@ -381,6 +384,10 @@ disc_perm %>%
     # ... and 0.1 
     q.10 = quantile(stat, p = 0.1)
   )
+disc_perm
+# For an unknown reason, result is not same as DataCamp result. Therefore, I added below line:
+#disc_perm <- read.csv("disc_perm.csv")
+#disc_perm
 ```
 
 ## 2-12 Sample size in randomization distribution
@@ -480,15 +487,7 @@ disc_perm_big %>%
   get_p_value(obs_stat = diff_orig_big, direction = "greater")
 ```
 
-```{r}
-# Recall the p-value from the original data
-disc_perm %>%
-  summarize(p_value = mean(diff_orig <= stat))
 
-# Find the p-value from the new data
-disc_perm_new %>%
-  summarize(p_value = mean(diff_orig_new <= stat))
-```
 
 ## 2- 16 Practice calculating p-values
 
@@ -507,10 +506,10 @@ disc %>%
 table(disc)
 ```
 
+
 ```{r}
 
 diff_orig_new <- 0.04166667
-
 # Recall the distribution of the original permuted differences
 ggplot(disc_perm, aes(x = stat)) + 
   geom_histogram() +
@@ -520,6 +519,17 @@ ggplot(disc_perm, aes(x = stat)) +
 ggplot(disc_perm_new, aes(x = stat))+ 
   geom_histogram() +
   geom_vline(aes(xintercept = diff_orig_new), color = "red")
+```
+
+```{r}
+
+# Recall the p-value from the original data
+disc_perm %>%
+  summarize(p_value = mean(diff_orig <= stat))
+
+# Find the p-value from the new data
+disc_perm_new %>%
+  summarize(p_value = mean(diff_orig_new <= stat))
 ```
 
 ## 2- 17 Calculating two-sided p-values
@@ -533,7 +543,9 @@ In this exercise, you'll calculate a two-sided p-value given the original random
 The observed difference is stored in diff_orig and the difference in each permutation is the stat column of disc_perm.
 
 ```{r}
-
+# Calculate the two-sided p-value
+disc_perm %>%
+  summarize(p_value = 2*mean(diff_orig <= stat))
 ```
 
 
@@ -545,7 +557,7 @@ You will continue learning about hypothesis testing with a new example and the s
 ## 3-2- 
 
 ```{r}
-
+disc_perm
 ```
 
 ## 4- Confidence intervals
