@@ -144,16 +144,16 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Rent    male           1
-##  2 Own     male           1
-##  3 Rent    male           1
-##  4 Rent    male           1
+##  1 Own     male           1
+##  2 Rent    male           1
+##  3 Own     male           1
+##  4 Own     male           1
 ##  5 Own     female         1
 ##  6 Own     male           1
-##  7 Own     male           1
+##  7 Rent    male           1
 ##  8 Rent    female         1
-##  9 Own     female         1
-## 10 Rent    female         1
+##  9 Rent    female         1
+## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -176,18 +176,18 @@ homeown_perm &lt;- homes %&gt;%
 # Print results to console
 homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
-##    replicate     stat
-##        &lt;int&gt;    &lt;dbl&gt;
-##  1         1  0.00659
-##  2         2  0.00288
-##  3         3  0.0136 
-##  4         4 -0.00618
-##  5         5 -0.0177 
-##  6         6 -0.0124 
-##  7         7 -0.0103 
-##  8         8 -0.00330
-##  9         9  0.00659
-## 10        10 -0.00124
+##    replicate        stat
+##        &lt;int&gt;       &lt;dbl&gt;
+##  1         1  0.000409  
+##  2         2  0.00288   
+##  3         3  0.00329   
+##  4         4  0.00206   
+##  5         5  0.00865   
+##  6         6  0.00206   
+##  7         7  0.0218    
+##  8         8  0.00247   
+##  9         9 -0.00000297
+## 10        10 -0.0132    
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -369,11 +369,11 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 5 x 2
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1 -0.208 
+## 1         1 -0.0417
 ## 2         2 -0.0417
 ## 3         3 -0.208 
-## 4         4 -0.0417
-## 5         5 -0.0417</code></pre>
+## 4         4  0.292 
+## 5         5  0.125</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
 <h2>2-5 Randomizing gender discrimination</h2>
@@ -438,7 +438,7 @@ ggplot(disc_perm, aes(x = stat)) +
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.208 0.208 0.292</code></pre>
+## 1 0.125 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
 <h2>2-9 Two-sided critical region</h2>
@@ -459,7 +459,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 3
 ##     q.01   q.05   q.10
 ##    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1 -0.292 -0.208 -0.208</code></pre>
+## 1 -0.292 -0.208 -0.125</code></pre>
 </div>
 <div id="sample-size-in-randomization-distribution" class="section level2">
 <h2>2-12 Sample size in randomization distribution</h2>
@@ -519,7 +519,7 @@ calc_upper_quantiles(disc_perm)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.208 0.208 0.292</code></pre>
+## 1 0.125 0.208 0.292</code></pre>
 <pre class="r"><code># Calculate the quantiles associated with the small dataset
 calc_upper_quantiles(disc_perm_small)</code></pre>
 <pre><code>##   q.90 q.95 q.99
@@ -534,6 +534,42 @@ calc_upper_quantiles(disc_perm_big)</code></pre>
 <p>In the video, you learned that a p-value measures the degree of disagreement between the data and the null hypothesis. Here, you will calculate the p-value for the original discrimination dataset as well as the small and big versions, disc_small and disc_big.</p>
 <p>The original differences in proportions are available in your workspace, diff_orig, diff_orig_small, and diff_orig_big, as are the permuted datasets, disc_perm, disc_perm_small, and disc_perm_big.</p>
 <p>Recall that you’re only interested in the one-sided hypothesis test here. That is, you’re trying to answer the question, “Are men more likely to be promoted than women?”</p>
+<pre class="r"><code># Visualize and calculate the p-value for the original dataset
+disc_perm %&gt;%
+  visualize(obs_stat = diff_orig, direction = &quot;greater&quot;)</code></pre>
+<pre><code>## Warning: `visualize()` should no longer be used to plot a p-value. Arguments
+## `obs_stat`, `obs_stat_color`, `pvalue_fill`, and `direction` are deprecated. Use
+## `shade_p_value()` instead.</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<pre class="r"><code>disc_perm %&gt;%
+  get_p_value(obs_stat = diff_orig, direction = &quot;greater&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1   0.481</code></pre>
+<pre class="r"><code># Visualize and calculate the p-value for the small dataset
+#disc_perm_small %&gt;%
+#  visualize(obs_stat = diff_orig_small, direction = &quot;greater&quot;)
+
+disc_perm_small %&gt;%
+  get_p_value(obs_stat = diff_orig_small, direction = &quot;greater&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1   0.282</code></pre>
+<pre class="r"><code># Visualize and calculate the p-value for the big dataset
+#disc_perm_big %&gt;%
+#  visualize(obs_stat = diff_orig_big, direction = &quot;greater&quot;)
+
+disc_perm_big %&gt;%
+  get_p_value(obs_stat = diff_orig_big, direction = &quot;greater&quot;)</code></pre>
+<pre><code>## Warning: Please be cautious in reporting a p-value of 0. This result is an
+## approximation based on the number of `reps` chosen in the `generate()` step. See `?
+## get_p_value()` for more information.</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1       0</code></pre>
 </div>
 <div id="practice-calculating-p-values" class="section level2">
 <h2>2- 16 Practice calculating p-values</h2>
