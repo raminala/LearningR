@@ -144,16 +144,16 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Rent    male           1
+##  1 Own     male           1
 ##  2 Own     male           1
-##  3 Rent    male           1
-##  4 Rent    male           1
+##  3 Own     male           1
+##  4 Own     male           1
 ##  5 Own     female         1
-##  6 Rent    male           1
+##  6 Own     male           1
 ##  7 Own     male           1
 ##  8 Own     female         1
 ##  9 Own     female         1
-## 10 Rent    female         1
+## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -178,16 +178,16 @@ homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
 ##    replicate      stat
 ##        &lt;int&gt;     &lt;dbl&gt;
-##  1         1 -0.0103  
-##  2         2  0.0140  
-##  3         3  0.000821
-##  4         4  0.00659 
-##  5         5  0.0119  
-##  6         6 -0.00165 
-##  7         7  0.0107  
-##  8         8  0.00453 
-##  9         9 -0.0152  
-## 10        10  0.00535 
+##  1         1 -0.00495 
+##  2         2  0.000409
+##  3         3 -0.00495 
+##  4         4  0.0148  
+##  5         5 -0.00577 
+##  6         6 -0.00700 
+##  7         7 -0.0202  
+##  8         8 -0.00289 
+##  9         9 -0.00206 
+## 10        10  0.00906 
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -370,10 +370,10 @@ disc_perm %&gt;%
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
 ## 1         1  0.125 
-## 2         2 -0.0417
-## 3         3 -0.208 
-## 4         4 -0.0417
-## 5         5  0.0417</code></pre>
+## 2         2  0.208 
+## 3         3 -0.0417
+## 4         4  0.292 
+## 5         5 -0.208</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
 <h2>2-5 Randomizing gender discrimination</h2>
@@ -438,7 +438,7 @@ ggplot(disc_perm, aes(x = stat)) +
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
 <h2>2-9 Two-sided critical region</h2>
@@ -464,16 +464,16 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1  0.125 
-##  2         2  0.0417
+##  1         1 -0.125 
+##  2         2  0.125 
 ##  3         3 -0.125 
 ##  4         4  0.125 
 ##  5         5  0.125 
-##  6         6 -0.0417
-##  7         7  0.0417
+##  6         6  0.208 
+##  7         7 -0.125 
 ##  8         8 -0.125 
-##  9         9  0.125 
-## 10        10 -0.125 
+##  9         9  0.0417
+## 10        10  0.0417
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># For an unknown reason, result is not same as DataCamp result. Therefore, I added below line:
 #disc_perm &lt;- read.csv(&quot;disc_perm.csv&quot;)
@@ -537,7 +537,7 @@ calc_upper_quantiles(disc_perm)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 <pre class="r"><code># Calculate the quantiles associated with the small dataset
 calc_upper_quantiles(disc_perm_small)</code></pre>
 <pre><code>##   q.90 q.95 q.99
@@ -564,7 +564,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.498</code></pre>
+## 1   0.504</code></pre>
 <pre class="r"><code># Visualize and calculate the p-value for the small dataset
 #disc_perm_small %&gt;%
 #  visualize(obs_stat = diff_orig_small, direction = &quot;greater&quot;)
@@ -627,7 +627,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.498</code></pre>
+## 1   0.504</code></pre>
 <pre class="r"><code># Find the p-value from the new data
 disc_perm_new %&gt;%
   summarize(p_value = mean(diff_orig_new &lt;= stat))</code></pre>
@@ -646,19 +646,217 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.996</code></pre>
+## 1    1.01</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
 <p>You will continue learning about hypothesis testing with a new example and the same structure of randomization tests. In this chapter, however, the focus will be on different errors (type I and type II), how they are made, when one is worse than another, and how things like sample size and effect size impact the error rates.</p>
 </div>
-<div id="section" class="section level2">
-<h2>3-2-</h2>
+<div id="summarizing-opportunity-cost-1" class="section level2">
+<h2>3-2- Summarizing opportunity cost (1)</h2>
+<p>As you saw in the video, we’re interested in whether the treatment and control groups were equally likely to buy a DVD after reading the experimental statements.</p>
+<p>In this exercise, you’ll use the data from the study to find the sample statistics (here: proportions) that are needed for the analysis.</p>
+<pre class="r"><code>opportunity</code></pre>
+<pre><code>##     decision     group
+## 1     buyDVD   control
+## 2     buyDVD   control
+## 3     buyDVD   control
+## 4     buyDVD   control
+## 5     buyDVD   control
+## 6     buyDVD   control
+## 7     buyDVD   control
+## 8     buyDVD   control
+## 9     buyDVD   control
+## 10    buyDVD   control
+## 11    buyDVD   control
+## 12    buyDVD   control
+## 13    buyDVD   control
+## 14    buyDVD   control
+## 15    buyDVD   control
+## 16    buyDVD   control
+## 17    buyDVD   control
+## 18    buyDVD   control
+## 19    buyDVD   control
+## 20    buyDVD   control
+## 21    buyDVD   control
+## 22    buyDVD   control
+## 23    buyDVD   control
+## 24    buyDVD   control
+## 25    buyDVD   control
+## 26    buyDVD   control
+## 27    buyDVD   control
+## 28    buyDVD   control
+## 29    buyDVD   control
+## 30    buyDVD   control
+## 31    buyDVD   control
+## 32    buyDVD   control
+## 33    buyDVD   control
+## 34    buyDVD   control
+## 35    buyDVD   control
+## 36    buyDVD   control
+## 37    buyDVD   control
+## 38    buyDVD   control
+## 39    buyDVD   control
+## 40    buyDVD   control
+## 41    buyDVD   control
+## 42    buyDVD   control
+## 43    buyDVD   control
+## 44    buyDVD   control
+## 45    buyDVD   control
+## 46    buyDVD   control
+## 47    buyDVD   control
+## 48    buyDVD   control
+## 49    buyDVD   control
+## 50    buyDVD   control
+## 51    buyDVD   control
+## 52    buyDVD   control
+## 53    buyDVD   control
+## 54    buyDVD   control
+## 55    buyDVD   control
+## 56    buyDVD   control
+## 57    buyDVD treatment
+## 58    buyDVD treatment
+## 59    buyDVD treatment
+## 60    buyDVD treatment
+## 61    buyDVD treatment
+## 62    buyDVD treatment
+## 63    buyDVD treatment
+## 64    buyDVD treatment
+## 65    buyDVD treatment
+## 66    buyDVD treatment
+## 67    buyDVD treatment
+## 68    buyDVD treatment
+## 69    buyDVD treatment
+## 70    buyDVD treatment
+## 71    buyDVD treatment
+## 72    buyDVD treatment
+## 73    buyDVD treatment
+## 74    buyDVD treatment
+## 75    buyDVD treatment
+## 76    buyDVD treatment
+## 77    buyDVD treatment
+## 78    buyDVD treatment
+## 79    buyDVD treatment
+## 80    buyDVD treatment
+## 81    buyDVD treatment
+## 82    buyDVD treatment
+## 83    buyDVD treatment
+## 84    buyDVD treatment
+## 85    buyDVD treatment
+## 86    buyDVD treatment
+## 87    buyDVD treatment
+## 88    buyDVD treatment
+## 89    buyDVD treatment
+## 90    buyDVD treatment
+## 91    buyDVD treatment
+## 92    buyDVD treatment
+## 93    buyDVD treatment
+## 94    buyDVD treatment
+## 95    buyDVD treatment
+## 96    buyDVD treatment
+## 97    buyDVD treatment
+## 98  nobuyDVD   control
+## 99  nobuyDVD   control
+## 100 nobuyDVD   control
+## 101 nobuyDVD   control
+## 102 nobuyDVD   control
+## 103 nobuyDVD   control
+## 104 nobuyDVD   control
+## 105 nobuyDVD   control
+## 106 nobuyDVD   control
+## 107 nobuyDVD   control
+## 108 nobuyDVD   control
+## 109 nobuyDVD   control
+## 110 nobuyDVD   control
+## 111 nobuyDVD   control
+## 112 nobuyDVD   control
+## 113 nobuyDVD   control
+## 114 nobuyDVD   control
+## 115 nobuyDVD   control
+## 116 nobuyDVD   control
+## 117 nobuyDVD treatment
+## 118 nobuyDVD treatment
+## 119 nobuyDVD treatment
+## 120 nobuyDVD treatment
+## 121 nobuyDVD treatment
+## 122 nobuyDVD treatment
+## 123 nobuyDVD treatment
+## 124 nobuyDVD treatment
+## 125 nobuyDVD treatment
+## 126 nobuyDVD treatment
+## 127 nobuyDVD treatment
+## 128 nobuyDVD treatment
+## 129 nobuyDVD treatment
+## 130 nobuyDVD treatment
+## 131 nobuyDVD treatment
+## 132 nobuyDVD treatment
+## 133 nobuyDVD treatment
+## 134 nobuyDVD treatment
+## 135 nobuyDVD treatment
+## 136 nobuyDVD treatment
+## 137 nobuyDVD treatment
+## 138 nobuyDVD treatment
+## 139 nobuyDVD treatment
+## 140 nobuyDVD treatment
+## 141 nobuyDVD treatment
+## 142 nobuyDVD treatment
+## 143 nobuyDVD treatment
+## 144 nobuyDVD treatment
+## 145 nobuyDVD treatment
+## 146 nobuyDVD treatment
+## 147 nobuyDVD treatment
+## 148 nobuyDVD treatment
+## 149 nobuyDVD treatment
+## 150 nobuyDVD treatment</code></pre>
+<pre class="r"><code># Tabulate the data
+opportunity %&gt;%
+  count(decision, group)</code></pre>
+<pre><code>##   decision     group  n
+## 1   buyDVD   control 56
+## 2   buyDVD treatment 41
+## 3 nobuyDVD   control 19
+## 4 nobuyDVD treatment 34</code></pre>
+<pre class="r"><code># Find the proportion who bought the DVD in each group
+opportunity %&gt;%
+  group_by(group) %&gt;%
+  summarize(buy_prop = mean(decision==&quot;buyDVD&quot;))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   group     buy_prop
+##   &lt;chr&gt;        &lt;dbl&gt;
+## 1 control      0.747
+## 2 treatment    0.547</code></pre>
+</div>
+<div id="plotting-opportunity-cost" class="section level2">
+<h2>3-3- Plotting opportunity cost</h2>
+<p>Again, interest is in whether the treatment and control groups were equally likely to buy a DVD after reading the experimental statements. Here, you’ll create a barplot to visualize the difference in proportions between the treatment and control groups.</p>
+<pre class="r"><code># Plot group, filled by decision
+ggplot(opportunity, aes(x = group, fill = decision)) + 
+  # Add a bar layer, with position &quot;fill&quot;
+  geom_bar(position=&quot;fill&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+</div>
+<div id="randomizing-opportunity-cost" class="section level2">
+<h2>3-4- Randomizing opportunity cost</h2>
+<p>As in Chapter 2 Exercise 5, you will permute the data to generate a distribution of differences as if the null hypothesis were true.</p>
+<p>In the study, the number of individuals in each of the control and treatment groups is fixed. Additionally, when you assume that the null hypothesis is true—that is, the experiment had no effect on the outcome of buying a DVD—it is reasonable to infer that the number of individuals who would buy a DVD is also fixed. That is, 97 people were going to buy a DVD regardless of which treatment group they were in.</p>
+<p>Using the new data and the methods from the previous chapter, create a randomization distribution of the difference in proportions calculated on permuted data.</p>
+</div>
+<div id="summarizing-opportunity-cost-2" class="section level2">
+<h2>3-5- Summarizing opportunity cost (2)</h2>
+<p>Now that you’ve created the randomization distribution, you’ll use it to assess whether the observed difference in proportions is consistent with the null difference. You will measure this consistency (or lack thereof) with a p-value, or the proportion of permuted differences less than or equal to the observed difference.</p>
+<p>The permuted dataset and the original observed statistic are available in your workspace as opp_perm and diff_orig respectively.</p>
+<p>visualize and get_p_value using the built in infer functions. Remember that the null statistics are above the original difference, so the p-value (which represents how often a null value is more extreme) is calculated by counting the number of null values which are less than the original difference.</p>
+</div>
+<div id="p-value-for-two-sided-hypotheses-opportunity-costs" class="section level2">
+<h2>3-10- p-value for two-sided hypotheses: opportunity costs</h2>
+<p>The p-value measures the likelihood of data as or more extreme than the observed data, given the null hypothesis is true. Therefore, the appropriate p-value for a two-sided alternative hypothesis is a two-sided p-value.</p>
+<p>To find a two-sided p-value, you simply double the one sided p-value. That is, you want to find two times the proportion of permuted differences that are less than or equal to the observed difference.</p>
+<p>The opp_perm data frame, containing the differences in permuted proportions, and the original observed statistic, diff_orig, are available in your workspace.</p>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4- Confidence intervals</h2>
 <p>As a complement to hypothesis testing, confidence intervals allow you to estimate a population parameter. Recall that your interest is always in some characteristic of the population, but you only have incomplete information to estimate the parameter using sample data. Here, the parameter is the true proportion of successes in a population. Bootstrapping is used to estimate the variability needed to form the confidence interval.</p>
 </div>
-<div id="section-1" class="section level2">
+<div id="section" class="section level2">
 <h2>4-2-</h2>
 </div>
