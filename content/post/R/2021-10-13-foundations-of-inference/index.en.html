@@ -145,15 +145,15 @@ homeown_perm</code></pre>
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
 ##  1 Own     male           1
-##  2 Rent    male           1
+##  2 Own     male           1
 ##  3 Own     male           1
 ##  4 Own     male           1
 ##  5 Own     female         1
-##  6 Rent    male           1
-##  7 Rent    male           1
+##  6 Own     male           1
+##  7 Own     male           1
 ##  8 Own     female         1
-##  9 Rent    female         1
-## 10 Own     female         1
+##  9 Own     female         1
+## 10 Rent    female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -178,16 +178,16 @@ homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
 ##    replicate      stat
 ##        &lt;int&gt;     &lt;dbl&gt;
-##  1         1  0.000821
-##  2         2  0.00988 
-##  3         3  0.0115  
-##  4         4 -0.0119  
-##  5         5  0.00370 
-##  6         6  0.0152  
-##  7         7  0.0173  
-##  8         8  0.00576 
-##  9         9  0.0152  
-## 10        10  0.000821
+##  1         1 -0.00536 
+##  2         2  0.0115  
+##  3         3 -0.0115  
+##  4         4  0.00453 
+##  5         5  0.000409
+##  6         6  0.000409
+##  7         7 -0.0103  
+##  8         8  0.00823 
+##  9         9  0.0177  
+## 10        10  0.00823 
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -369,11 +369,11 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 5 x 2
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1 -0.0417
-## 2         2 -0.0417
-## 3         3 -0.125 
-## 4         4 -0.0417
-## 5         5 -0.0417</code></pre>
+## 1         1  0.208 
+## 2         2  0.208 
+## 3         3  0.0417
+## 4         4  0.0417
+## 5         5 -0.125</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
 <h2>2-5 Randomizing gender discrimination</h2>
@@ -464,16 +464,16 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1 -0.208 
+##  1         1  0.125 
 ##  2         2  0.0417
-##  3         3  0.0417
-##  4         4 -0.0417
-##  5         5 -0.125 
-##  6         6  0.125 
+##  3         3 -0.125 
+##  4         4 -0.125 
+##  5         5  0.0417
+##  6         6  0.0417
 ##  7         7  0.0417
-##  8         8 -0.0417
-##  9         9 -0.0417
-## 10        10 -0.0417
+##  8         8 -0.125 
+##  9         9 -0.125 
+## 10        10  0.0417
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># For an unknown reason, result is not same as DataCamp result. Therefore, I added below line:
 #disc_perm &lt;- read.csv(&quot;disc_perm.csv&quot;)
@@ -564,7 +564,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.488</code></pre>
+## 1   0.458</code></pre>
 <pre class="r"><code># Visualize and calculate the p-value for the small dataset
 #disc_perm_small %&gt;%
 #  visualize(obs_stat = diff_orig_small, direction = &quot;greater&quot;)
@@ -582,8 +582,8 @@ disc_perm_small %&gt;%
 disc_perm_big %&gt;%
   get_p_value(obs_stat = diff_orig_big, direction = &quot;greater&quot;)</code></pre>
 <pre><code>## Warning: Please be cautious in reporting a p-value of 0. This result is an
-## approximation based on the number of `reps` chosen in the `generate()` step. See `?
-## get_p_value()` for more information.</code></pre>
+## approximation based on the number of `reps` chosen in the `generate()` step. See
+## `?get_p_value()` for more information.</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
@@ -627,7 +627,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.488</code></pre>
+## 1   0.458</code></pre>
 <pre class="r"><code># Find the p-value from the new data
 disc_perm_new %&gt;%
   summarize(p_value = mean(diff_orig_new &lt;= stat))</code></pre>
@@ -646,7 +646,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.976</code></pre>
+## 1   0.916</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
@@ -865,16 +865,16 @@ opp_perm</code></pre>
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1  0.0667
-##  2         2 -0.0667
-##  3         3  0.0133
+##  1         1  0.12  
+##  2         2  0.12  
+##  3         3 -0.0667
 ##  4         4 -0.0400
-##  5         5 -0.12  
-##  6         6 -0.0133
-##  7         7  0.0133
+##  5         5 -0.0133
+##  6         6  0.0667
+##  7         7  0.0400
 ##  8         8 -0.0667
-##  9         9 -0.147 
-## 10        10 -0.0133
+##  9         9  0.0133
+## 10        10 -0.0667
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># From previous steps
 diff_obs &lt;- opportunity %&gt;%
@@ -911,25 +911,67 @@ opp_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.741</code></pre>
+## 1   0.754</code></pre>
 <pre class="r"><code># Calculate the p-value using `summarize`
 opp_perm %&gt;%
   summarize(p_value = mean(stat &lt;= diff_orig))</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.741</code></pre>
+## 1   0.754</code></pre>
+<p>Q: In the last exercise, you computed the p-value, or the proportion of permuted differences less than or equal to the observed difference:</p>
+<p>opp_perm %&gt;%
+summarize(p_value = mean(stat &lt;= diff_orig))</p>
+<p>Based on this result of 0.017, what can you conclude from the study about the effect of reminding students to save money?</p>
+<p>A: Reminding them causes them to be less likely to buy the DVD.</p>
+<div id="section" class="section level38">
+<p class="heading"></p>
+<p>Q: (Different choice of error rate) Consider again a situation where the task is to differentiate the proportion of successes across two different groups. What decision should be made if the goal is to never make a type II error (false negative)?</p>
+<p>A: Always claim there is a difference in proportions.</p>
+</div>
+<div id="section-1" class="section level38">
+<p class="heading"></p>
+<p>Q:Errors for two-sided hypotheses
+Sometimes you’ll be interested in identifying any difference in proportions (as opposed to one larger proportion). Consider these slightly adjusted hypotheses for the opportunity cost example:</p>
+<p>H0: Reminding students that they can save money for later purchases will not have any impact on students’ spending decisions.</p>
+<p>HA: Reminding students that they can save money for later purchases will change the chance they will continue with a purchase.
+What are type I (false positive) and type II (false negative) errors for the two-sided hypotheses related to the opportunity costs example?</p>
+<p>A: Type I: There is not a difference in proportions, but the observed difference is big enough to indicate that the proportions are different.</p>
+<p>Type II: There is a difference in proportions, but the observed difference is not large enough to indicate that the proportions are different.</p>
+</div>
 </div>
 <div id="p-value-for-two-sided-hypotheses-opportunity-costs" class="section level2">
 <h2>3-10- p-value for two-sided hypotheses: opportunity costs</h2>
 <p>The p-value measures the likelihood of data as or more extreme than the observed data, given the null hypothesis is true. Therefore, the appropriate p-value for a two-sided alternative hypothesis is a two-sided p-value.</p>
 <p>To find a two-sided p-value, you simply double the one sided p-value. That is, you want to find two times the proportion of permuted differences that are less than or equal to the observed difference.</p>
 <p>The opp_perm data frame, containing the differences in permuted proportions, and the original observed statistic, diff_orig, are available in your workspace.</p>
+<pre class="r"><code>opp_perm</code></pre>
+<pre><code>## # A tibble: 1,000 x 2
+##    replicate    stat
+##        &lt;int&gt;   &lt;dbl&gt;
+##  1         1 -0.0667
+##  2         2 -0.0667
+##  3         3 -0.0400
+##  4         4  0.2   
+##  5         5  0.0933
+##  6         6  0.0133
+##  7         7 -0.0400
+##  8         8  0.0933
+##  9         9  0.0400
+## 10        10  0.0400
+## # ... with 990 more rows</code></pre>
+<pre class="r"><code># Calculate the two-sided p-value
+opp_perm %&gt;%
+  summarize(p_value = 2* mean(stat &lt;= diff_orig))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   p_value
+##     &lt;dbl&gt;
+## 1    1.51</code></pre>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4- Confidence intervals</h2>
 <p>As a complement to hypothesis testing, confidence intervals allow you to estimate a population parameter. Recall that your interest is always in some characteristic of the population, but you only have incomplete information to estimate the parameter using sample data. Here, the parameter is the true proportion of successes in a population. Bootstrapping is used to estimate the variability needed to form the confidence interval.</p>
 </div>
-<div id="section" class="section level2">
+<div id="section-2" class="section level2">
 <h2>4-2-</h2>
 </div>

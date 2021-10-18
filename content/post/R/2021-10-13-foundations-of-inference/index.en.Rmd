@@ -664,6 +664,35 @@ opp_perm %>%
   summarize(p_value = mean(stat <= diff_orig))
 ```
 
+Q: In the last exercise, you computed the p-value, or the proportion of permuted differences less than or equal to the observed difference:
+
+opp_perm %>%
+  summarize(p_value = mean(stat <= diff_orig))
+  
+Based on this result of 0.017, what can you conclude from the study about the effect of reminding students to save money?
+
+A: Reminding them causes them to be less likely to buy the DVD.
+
+######################################
+
+Q: (Different choice of error rate) Consider again a situation where the task is to differentiate the proportion of successes across two different groups. What decision should be made if the goal is to never make a type II error (false negative)?
+
+A: Always claim there is a difference in proportions.
+
+######################################
+
+Q:Errors for two-sided hypotheses
+Sometimes you'll be interested in identifying any difference in proportions (as opposed to one larger proportion). Consider these slightly adjusted hypotheses for the opportunity cost example:
+
+H0: Reminding students that they can save money for later purchases will not have any impact on students' spending decisions.
+
+HA: Reminding students that they can save money for later purchases will change the chance they will continue with a purchase.
+What are type I (false positive) and type II (false negative) errors for the two-sided hypotheses related to the opportunity costs example?
+
+A: Type I: There is not a difference in proportions, but the observed difference is big enough to indicate that the proportions are different.
+
+Type II: There is a difference in proportions, but the observed difference is not large enough to indicate that the proportions are different.
+
 ## 3-10- p-value for two-sided hypotheses: opportunity costs
 
 The p-value measures the likelihood of data as or more extreme than the observed data, given the null hypothesis is true. Therefore, the appropriate p-value for a two-sided alternative hypothesis is a two-sided p-value.
@@ -673,7 +702,11 @@ To find a two-sided p-value, you simply double the one sided p-value. That is, y
 The opp_perm data frame, containing the differences in permuted proportions, and the original observed statistic, diff_orig, are available in your workspace.
 
 ```{r}
+opp_perm
 
+# Calculate the two-sided p-value
+opp_perm %>%
+  summarize(p_value = 2* mean(stat <= diff_orig))
 ```
 
 ## 4- Confidence intervals
