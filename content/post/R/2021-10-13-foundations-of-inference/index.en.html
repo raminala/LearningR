@@ -144,16 +144,16 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Own     male           1
+##  1 Rent    male           1
 ##  2 Own     male           1
 ##  3 Own     male           1
 ##  4 Own     male           1
 ##  5 Own     female         1
-##  6 Own     male           1
+##  6 Rent    male           1
 ##  7 Own     male           1
 ##  8 Own     female         1
 ##  9 Own     female         1
-## 10 Rent    female         1
+## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
 <div id="randomized-statistics-and-dotplot" class="section level2">
@@ -176,18 +176,18 @@ homeown_perm &lt;- homes %&gt;%
 # Print results to console
 homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
-##    replicate      stat
-##        &lt;int&gt;     &lt;dbl&gt;
-##  1         1 -0.00536 
-##  2         2  0.0115  
-##  3         3 -0.0115  
-##  4         4  0.00453 
-##  5         5  0.000409
-##  6         6  0.000409
-##  7         7 -0.0103  
-##  8         8  0.00823 
-##  9         9  0.0177  
-## 10        10  0.00823 
+##    replicate        stat
+##        &lt;int&gt;       &lt;dbl&gt;
+##  1         1  0.00329   
+##  2         2 -0.00000297
+##  3         3 -0.0169    
+##  4         4 -0.00247   
+##  5         5  0.00412   
+##  6         6 -0.0165    
+##  7         7  0.00618   
+##  8         8 -0.00247   
+##  9         9  0.00123   
+## 10        10 -0.0157    
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -369,10 +369,10 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 5 x 2
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1  0.208 
-## 2         2  0.208 
-## 3         3  0.0417
-## 4         4  0.0417
+## 1         1  0.0417
+## 2         2 -0.208 
+## 3         3  0.125 
+## 4         4 -0.125 
 ## 5         5 -0.125</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
@@ -438,7 +438,7 @@ ggplot(disc_perm, aes(x = stat)) +
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
 <h2>2-9 Two-sided critical region</h2>
@@ -464,16 +464,16 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1  0.125 
-##  2         2  0.0417
-##  3         3 -0.125 
-##  4         4 -0.125 
-##  5         5  0.0417
-##  6         6  0.0417
+##  1         1  0.0417
+##  2         2  0.208 
+##  3         3 -0.0417
+##  4         4 -0.0417
+##  5         5 -0.0417
+##  6         6 -0.0417
 ##  7         7  0.0417
-##  8         8 -0.125 
-##  9         9 -0.125 
-## 10        10  0.0417
+##  8         8 -0.292 
+##  9         9  0.125 
+## 10        10 -0.125 
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># For an unknown reason, result is not same as DataCamp result. Therefore, I added below line:
 #disc_perm &lt;- read.csv(&quot;disc_perm.csv&quot;)
@@ -537,7 +537,7 @@ calc_upper_quantiles(disc_perm)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.125 0.208 0.292</code></pre>
+## 1 0.208 0.208 0.292</code></pre>
 <pre class="r"><code># Calculate the quantiles associated with the small dataset
 calc_upper_quantiles(disc_perm_small)</code></pre>
 <pre><code>##   q.90 q.95 q.99
@@ -564,7 +564,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.458</code></pre>
+## 1   0.481</code></pre>
 <pre class="r"><code># Visualize and calculate the p-value for the small dataset
 #disc_perm_small %&gt;%
 #  visualize(obs_stat = diff_orig_small, direction = &quot;greater&quot;)
@@ -582,8 +582,8 @@ disc_perm_small %&gt;%
 disc_perm_big %&gt;%
   get_p_value(obs_stat = diff_orig_big, direction = &quot;greater&quot;)</code></pre>
 <pre><code>## Warning: Please be cautious in reporting a p-value of 0. This result is an
-## approximation based on the number of `reps` chosen in the `generate()` step. See
-## `?get_p_value()` for more information.</code></pre>
+## approximation based on the number of `reps` chosen in the `generate()` step. See `?
+## get_p_value()` for more information.</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
@@ -627,7 +627,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.458</code></pre>
+## 1   0.481</code></pre>
 <pre class="r"><code># Find the p-value from the new data
 disc_perm_new %&gt;%
   summarize(p_value = mean(diff_orig_new &lt;= stat))</code></pre>
@@ -646,14 +646,14 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.916</code></pre>
+## 1   0.962</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
 <p>You will continue learning about hypothesis testing with a new example and the same structure of randomization tests. In this chapter, however, the focus will be on different errors (type I and type II), how they are made, when one is worse than another, and how things like sample size and effect size impact the error rates.</p>
 </div>
 <div id="summarizing-opportunity-cost-1" class="section level2">
-<h2>3-2- Summarizing opportunity cost (1)</h2>
+<h2>3-2 Summarizing opportunity cost (1)</h2>
 <p>As you saw in the video, we’re interested in whether the treatment and control groups were equally likely to buy a DVD after reading the experimental statements.</p>
 <p>In this exercise, you’ll use the data from the study to find the sample statistics (here: proportions) that are needed for the analysis.</p>
 <pre class="r"><code>opportunity</code></pre>
@@ -827,7 +827,7 @@ opportunity %&gt;%
 ## 2 treatment    0.547</code></pre>
 </div>
 <div id="plotting-opportunity-cost" class="section level2">
-<h2>3-3- Plotting opportunity cost</h2>
+<h2>3-3 Plotting opportunity cost</h2>
 <p>Again, interest is in whether the treatment and control groups were equally likely to buy a DVD after reading the experimental statements. Here, you’ll create a barplot to visualize the difference in proportions between the treatment and control groups.</p>
 <pre class="r"><code># Plot group, filled by decision
 ggplot(opportunity, aes(x = group, fill = decision)) + 
@@ -836,7 +836,7 @@ ggplot(opportunity, aes(x = group, fill = decision)) +
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 </div>
 <div id="randomizing-opportunity-cost" class="section level2">
-<h2>3-4- Randomizing opportunity cost</h2>
+<h2>3-4 Randomizing opportunity cost</h2>
 <p>As in Chapter 2 Exercise 5, you will permute the data to generate a distribution of differences as if the null hypothesis were true.</p>
 <p>In the study, the number of individuals in each of the control and treatment groups is fixed. Additionally, when you assume that the null hypothesis is true—that is, the experiment had no effect on the outcome of buying a DVD—it is reasonable to infer that the number of individuals who would buy a DVD is also fixed. That is, 97 people were going to buy a DVD regardless of which treatment group they were in.</p>
 <p>Using the new data and the methods from the previous chapter, create a randomization distribution of the difference in proportions calculated on permuted data.</p>
@@ -865,16 +865,16 @@ opp_perm</code></pre>
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1  0.12  
-##  2         2  0.12  
-##  3         3 -0.0667
-##  4         4 -0.0400
-##  5         5 -0.0133
-##  6         6  0.0667
-##  7         7  0.0400
-##  8         8 -0.0667
-##  9         9  0.0133
-## 10        10 -0.0667
+##  1         1 -0.0133
+##  2         2 -0.173 
+##  3         3  0.0933
+##  4         4  0.0133
+##  5         5  0.0933
+##  6         6  0.0133
+##  7         7  0.0933
+##  8         8  0.0667
+##  9         9 -0.0400
+## 10        10  0.0933
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># From previous steps
 diff_obs &lt;- opportunity %&gt;%
@@ -897,7 +897,7 @@ ggplot(opp_perm, aes(x = stat)) +
 <p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 </div>
 <div id="summarizing-opportunity-cost-2" class="section level2">
-<h2>3-5- Summarizing opportunity cost (2)</h2>
+<h2>3-5 Summarizing opportunity cost (2)</h2>
 <p>Now that you’ve created the randomization distribution, you’ll use it to assess whether the observed difference in proportions is consistent with the null difference. You will measure this consistency (or lack thereof) with a p-value, or the proportion of permuted differences less than or equal to the observed difference.</p>
 <p>The permuted dataset and the original observed statistic are available in your workspace as opp_perm and diff_orig respectively.</p>
 <p>visualize and get_p_value using the built in infer functions. Remember that the null statistics are above the original difference, so the p-value (which represents how often a null value is more extreme) is calculated by counting the number of null values which are less than the original difference.</p>
@@ -911,14 +911,14 @@ opp_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.754</code></pre>
+## 1   0.744</code></pre>
 <pre class="r"><code># Calculate the p-value using `summarize`
 opp_perm %&gt;%
   summarize(p_value = mean(stat &lt;= diff_orig))</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.754</code></pre>
+## 1   0.744</code></pre>
 <p>Q: In the last exercise, you computed the p-value, or the proportion of permuted differences less than or equal to the observed difference:</p>
 <p>opp_perm %&gt;%
 summarize(p_value = mean(stat &lt;= diff_orig))</p>
@@ -941,7 +941,7 @@ What are type I (false positive) and type II (false negative) errors for the two
 </div>
 </div>
 <div id="p-value-for-two-sided-hypotheses-opportunity-costs" class="section level2">
-<h2>3-10- p-value for two-sided hypotheses: opportunity costs</h2>
+<h2>3-10 p-value for two-sided hypotheses: opportunity costs</h2>
 <p>The p-value measures the likelihood of data as or more extreme than the observed data, given the null hypothesis is true. Therefore, the appropriate p-value for a two-sided alternative hypothesis is a two-sided p-value.</p>
 <p>To find a two-sided p-value, you simply double the one sided p-value. That is, you want to find two times the proportion of permuted differences that are less than or equal to the observed difference.</p>
 <p>The opp_perm data frame, containing the differences in permuted proportions, and the original observed statistic, diff_orig, are available in your workspace.</p>
@@ -949,16 +949,16 @@ What are type I (false positive) and type II (false negative) errors for the two
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1 -0.0667
-##  2         2 -0.0667
-##  3         3 -0.0400
-##  4         4  0.2   
-##  5         5  0.0933
-##  6         6  0.0133
-##  7         7 -0.0400
-##  8         8  0.0933
-##  9         9  0.0400
-## 10        10  0.0400
+##  1         1  0.0400
+##  2         2  0.0667
+##  3         3  0.0133
+##  4         4  0.0667
+##  5         5 -0.0933
+##  6         6  0.12  
+##  7         7  0.0667
+##  8         8 -0.12  
+##  9         9  0.0667
+## 10        10 -0.0400
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># Calculate the two-sided p-value
 opp_perm %&gt;%
@@ -966,12 +966,91 @@ opp_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1    1.51</code></pre>
+## 1    1.49</code></pre>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4- Confidence intervals</h2>
 <p>As a complement to hypothesis testing, confidence intervals allow you to estimate a population parameter. Recall that your interest is always in some characteristic of the population, but you only have incomplete information to estimate the parameter using sample data. Here, the parameter is the true proportion of successes in a population. Bootstrapping is used to estimate the variability needed to form the confidence interval.</p>
+<p>Q: What is the parameter?</p>
+<p>In November 2016, the voters elected a new president of the United States. Prior to the election, thousands of polls were taken to gauge the popularity of each of the candidates. Leaving aside the idea that popular opinion changes over time, a poll can be thought of as a sample of individuals measured so as to estimate the proportion of all voters who will vote for each candiate (i.e. the population parameter).</p>
+<p>Consider an election in your home town that will take place in a week’s time. You poll a randomly selected subset of the voters in your town and ask them if they plan to vote for Candidate X or Candidate Y. In this chapter, we will focus on sampling variability—the variability in sample proportions due to polling different randomly selected individuals from the population.</p>
+<p>Before investigating the sampling variability, what is the population parameter of interest?</p>
+<p>A: The proportion of all voters in your town who will vote for Candidate X on election day.</p>
+<p>Q:Hypothesis test or confidence interval?</p>
+<p>A university is trying to determine whether parking is a problem on its campus. The student newspaper contacts a random sample of 200 students and asks whether or not they are frustrated with the parking situation. They want to estimate the proportion of students at the college who are frustrated with the parking situation.</p>
+<p>In this setting, which is more appropriate, a hypothesis test or a confidence interval?</p>
+<p>A:Confidence interval because the goal is to estimate a population parameter.</p>
 </div>
-<div id="section-2" class="section level2">
-<h2>4-2-</h2>
+<div id="resampling-from-a-sample" class="section level2">
+<h2>4-5 Resampling from a sample</h2>
+<p>To investigate how much the estimates of a population proportion change from sample to sample, you will set up two sampling experiments.</p>
+<p>In the first experiment, you will simulate repeated samples from a population. In the second, you will choose a single sample from the first experiment and repeatedly resample from that sample: a method called bootstrapping. More specifically:</p>
+<p>Experiment 1: Assume the true proportion of people who will vote for Candidate X is 0.6. Repeatedly sample 30 people from the population and measure the variability of
+(the sample proportion).</p>
+<p>Experiment 2: Take one sample of size 30 from the same population. Repeatedly sample 30 people (with replacement!) from the original sample and measure the variability of
+(the resample proportion).</p>
+<p>It’s important to realize that the first experiment relies on knowing the population and is typically impossible in practice. The second relies only on the sample of data and is therefore easy to implement for any statistic. Fortunately, as you will see, the variability in
+, or the proportion of “successes” in a sample, is approximately the same whether we sample from the population or resample from a sample.</p>
+<p>We have created 1000 random samples, each of size 30, from the population. The resulting data frame, all_polls, is available in your workspace. Take a look before getting started.</p>
+</div>
+<div id="visualizing-the-variability-of-p-hat" class="section level2">
+<h2>4-6 Visualizing the variability of p-hat</h2>
+<p>In order to compare the variability of the sampled
+and
+values in the previous exercises, it is valuable to visualize their distributions. To recall, the exercises walked through two different experiments for investigating the variability of P and P*:</p>
+<p>Experiment 1: Sample () repeatedly from an extremely large population (gold standard, but unrealistic)</p>
+<p>Experiment 2: Resample () repeatedly with replacement from a single sample of size 30</p>
+</div>
+<div id="empirical-rule" class="section level2">
+<h2>4-9 Empirical Rule</h2>
+<p>Many statistics we use in data analysis (including both the sample average and sample proportion) have nice properties that are used to better understand the population parameter(s) of interest.</p>
+<p>One such property is that if the variability of the sample proportion (called the standard error, or ) is known, then approximately 95% of
+values (from different samples) will be within of the true population proportion.</p>
+<p>To check whether that holds in the situation at hand, let’s go back to the polls generated by taking many samples from the same population.</p>
+<p>The all_polls dataset contains 1000 samples of size 30 from a population with a probability of voting for Candidate X equal to 0.6.</p>
+<p>Note that you will use the R function sd() which calculates the variability of any set of numbers. In statistics, when sd() is applied to a variable (e.g., price of house) we call it the standard deviation. When sd() is applied to a statistic (e.g., set of sample proportions) we call it the standard error.</p>
+</div>
+<div id="bootstrap-t-confidence-interval" class="section level2">
+<h2>4-10 Bootstrap t-confidence interval</h2>
+<p>The previous exercises told you two things:</p>
+<p>You can measure the variability associated with
+by resampling from the original sample.
+Once you know the variability of
+, you can use it as a way to measure how far away the true proportion is.
+Note that the rate of closeness (here 95%) refers to how often a sample is chosen so that it is close to the population parameter. You won’t ever know if a particular dataset is close to the parameter or far from it, but you do know that over your lifetime, 95% of the samples you collect should give you estimates that are within of the true population parameter.</p>
+<p>The votes from a single poll, one_poll, and the data from 1000 bootstrap resamples, one_poll_boot are available in your workspace. These are based on Experiment 2 from earlier in the chapter.</p>
+<p>As in the previous exercise, when discussing the variability of a statistic, the number is referred to as the standard error.</p>
+</div>
+<div id="bootstrap-percentile-interval" class="section level2">
+<h2>4-11 Bootstrap percentile interval</h2>
+<p>The main idea in the previous exercise was that the distance between the original sample
+and the resampled (or bootstrapped)
+values gives a measure for how far the original
+is from the true population proportion.</p>
+<p>The same variability can be measured through a different mechanism. As before, if
+is sufficiently close to the true parameter, then the resampled (bootstrapped)
+values will vary in such a way that they overlap with the true parameter.</p>
+<p>Instead of using as a way to measure the middle 95% of the sampled
+values, you can find the middle of the resampled
+values by removing the upper and lower 2.5%. Note that this second method of constructing bootstrap intervals also gives an intuitive way for making 90% or 99% confidence intervals as well as 95% intervals.</p>
+<p>The bootstrapped resamples, one_poll_boot, and the proportion of yes votes, p_hat are available in your workspace.</p>
+</div>
+<div id="sample-size-effects-on-bootstrap-cis" class="section level2">
+<h2>4-13 Sample size effects on bootstrap CIs</h2>
+<p>In a previous multiple choice exercise, you realized that if you resampled the data with the wrong size (e.g. 300 or 3 instead of 30), the standard error (SE) of the sample proportions was off. With 300 resampled observations, the SE was too small. With 3 resampled observations, the SE was too large.</p>
+<p>Here, you will use the incorrect standard error (based on the incorrect sample size) to create a confidence interval. The idea is that when the standard error is off, the interval is not particularly useful, nor is it correct.</p>
+</div>
+<div id="sample-proportion-value-effects-on-bootstrap-cis" class="section level2">
+<h2>4-14 Sample proportion value effects on bootstrap CIs</h2>
+<p>One additional element that changes the width of the confidence interval is the sample parameter value,
+.</p>
+<p>Generally, when the true parameter is close to 0.5, the standard error of
+is larger than when the true parameter is closer to 0 or 1. When calculating a bootstrap t-confidence interval, the standard error controls the width of the CI, and here (given a true parameter of 0.8) the sample proportion is higher than in previous exercises, so the width of the confidence interval will be narrower.</p>
+</div>
+<div id="percentile-effects-on-bootstrap-cis" class="section level2">
+<h2>4-15 Percentile effects on bootstrap CIs</h2>
+<p>Most scientists use 95% intervals to quantify their uncertainty about an estimate. That is, they understand that over a lifetime of creating confidence intervals, only 95% of them will actually contain the parameter that they set out to estimate.</p>
+<p>There are studies, however, which warrant either stricter or more lenient confidence intervals (and subsequent error rates).</p>
+<p>The previous bootstrapped
+values have been loaded for you and are available in one_poll_boot.</p>
 </div>
