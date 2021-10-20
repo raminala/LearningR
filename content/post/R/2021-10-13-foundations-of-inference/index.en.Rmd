@@ -749,9 +749,55 @@ It's important to realize that the first experiment relies on knowing the popula
 We have created 1000 random samples, each of size 30, from the population. The resulting data frame, all_polls, is available in your workspace. Take a look before getting started.
 
 ```{r}
-
+# Compute p-hat for each poll
+ex1_props <- all_polls %>% 
+  # Group by poll
+  group_by(poll) %>% 
+  # Calculate proportion of yes votes
+  summarise(stat = mean(vote == "yes"))
+  
+# Review the result
+ex1_props
 ```
 
+```{r}
+# Select one poll from which to resample
+one_poll <- all_polls %>%
+  # Filter for the first poll
+  filter(poll=="1") %>%
+  # Select vote
+  select(vote)
+  
+# Compute p-hat* for each resampled poll
+ex2_props <- one_poll %>%
+  # Specify vote as the response, where yes means success
+  specify(response = vote, success = "yes") %>%
+  # Generate 1000 reps of type bootstrap
+  generate(reps = 1000, type = "bootstrap") %>% 
+  # Calculate the summary stat "prop"
+  calculate(stat = "prop")
+```
+
+```{r}
+# From previous steps
+ex1_props <- all_polls %>% 
+  group_by(poll) %>% 
+  summarize(stat = mean(vote == "yes"))
+ex2_props <- all_polls %>%
+  filter(poll == 1) %>%
+  select(vote) %>%
+  specify(response = vote, success = "yes") %>%
+  generate(reps = 1000, type = "bootstrap") %>% 
+  calculate(stat = "prop")
+  
+# Calculate variability of p-hat
+ex1_props %>% 
+  summarize(variability = sd(stat))
+  
+# Calculate variability of p-hat*
+ex2_props %>% 
+  summarize(variability = sd(stat))
+```
 
 ## 4-6 Visualizing the variability of p-hat
 
@@ -764,10 +810,27 @@ Experiment 1: Sample () repeatedly from an extremely large population (gold stan
 Experiment 2: Resample () repeatedly with replacement from a single sample of size 30
 
 ```{r}
+# Combine data from both experiments
+both_ex_props <- bind_rows(ex1_props, ex2_props, .id = "experiment")
 
+# Using both_ex_props, plot stat colored by experiment
+ggplot(both_ex_props, aes(stat, color = experiment)) + 
+  # Add a density layer with bandwidth 0.1
+  geom_density(bw = 0.1)
 ```
 
+Q: Always resample the original number of observations
 
+In the bootstrap examples, exactly 30 observations have been repeatedly resampled from the original sample. The choice of 30 was given because the original sample had 30 observations. If we had resampled 3 observations instead, the resampled 
+ value could have ranged from 0 to 1 (producing a much larger 
+ than desired). If we had resampled 300 observations instead, the resampled 
+ value would have been close to the same number each time (producing a much smaller 
+ than desired).
+
+Generally, if  represents the size of the original sample, how many observations should we resample with replacement when bootstrapping?
+
+A: Resample exactly n observations because then the variability of P^* will be most similar / representative of the original sampling process.
+ 
 ## 4-9 Empirical Rule
 
 Many statistics we use in data analysis (including both the sample average and sample proportion) have nice properties that are used to better understand the population parameter(s) of interest.
@@ -782,7 +845,20 @@ The all_polls dataset contains 1000 samples of size 30 from a population with a 
 Note that you will use the R function sd() which calculates the variability of any set of numbers. In statistics, when sd() is applied to a variable (e.g., price of house) we call it the standard deviation. When sd() is applied to a statistic (e.g., set of sample proportions) we call it the standard error.
 
 ```{r}
+# Proportion of yes votes by poll
+props <- all_polls %>% 
+  group_by(poll) %>% 
+  summarize(prop_yes = mean(vote == "yes"))
 
+# The true population proportion of yes votes
+true_prop_yes <- 0.6
+
+# Proportion of polls within 2SE
+props %>%
+  # Add column: is prop_yes in 2SE of 0.6
+  mutate(is_in_conf_int = abs(prop_yes - true_prop_yes) < 2 * sd(prop_yes)) %>%
+  # Calculate  proportion in conf int
+  summarize(prop_in_conf_int = mean(is_in_conf_int))
 ```
 
 
@@ -801,7 +877,28 @@ The votes from a single poll, one_poll, and the data from 1000 bootstrap resampl
 As in the previous exercise, when discussing the variability of a statistic, the number is referred to as the standard error.
 
 ```{r}
+# From previous exercises
+one_poll <- all_polls %>%
+  filter(poll == 1) %>%
+  select(vote)
+one_poll_boot <- one_poll %>%
+  specify(response = vote, success = "yes") %>%
+  generate(reps = 1000, type = "bootstrap") %>% 
+  calculate(stat = "prop")
+  
+p_hat <- one_poll %>%
+  # Calculate proportion of yes votes
+  summarize(stat = mean(vote == "yes")) %>%
+  pull()
 
+# Create an interval of plausible values
+one_poll_boot %>%
+  summarize(
+    # Lower bound is p_hat minus 2 std errs
+    lower = p_hat- 2 * sd(stat),
+    # Upper bound is p_hat plus 2 std errs
+    upper = p_hat+ 2 * sd(stat)
+  )
 ```
 
 
@@ -823,9 +920,46 @@ Instead of using  as a way to measure the middle 95% of the sampled
 The bootstrapped resamples, one_poll_boot, and the proportion of yes votes, p_hat are available in your workspace.
 
 ```{r}
-
+# From previous exercise: bootstrap t-confidence interval
+one_poll_boot %>%
+  summarize(
+    lower = p_hat - 2 * sd(stat),
+    upper = p_hat + 2 * sd(stat)
+  )
+  
+# Manually calculate a 95% percentile interval
+one_poll_boot %>%
+  summarize(
+    lower = quantile(stat, p = 0.025),
+    upper = quantile(stat, p = 0.975)
+  )
 ```
 
+```{r}
+# From previous step
+one_poll_boot %>%
+  summarize(
+    lower = quantile(stat, 0.025),
+    upper = quantile(stat, 0.975)
+  )
+  
+# Calculate the same interval, more conveniently
+percentile_ci <- one_poll_boot %>% 
+  get_confidence_interval(level = 0.95)
+  
+# Review the value
+percentile_ci
+```
+
+```{r}
+# From previous step
+percentile_ci <- one_poll_boot %>% 
+  get_confidence_interval(level = 0.95)
+  
+one_poll_boot %>% 
+  # Visualize in-between the endpoints given by percentile_ci
+  visualize(endpoints=percentile_ci , direction = "between")
+```
 
 ## 4-13 Sample size effects on bootstrap CIs
 

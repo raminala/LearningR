@@ -144,15 +144,15 @@ homeown_perm</code></pre>
 ## # Groups:   replicate [10]
 ##    HomeOwn Gender replicate
 ##    &lt;fct&gt;   &lt;fct&gt;      &lt;int&gt;
-##  1 Rent    male           1
+##  1 Own     male           1
 ##  2 Own     male           1
 ##  3 Own     male           1
 ##  4 Own     male           1
 ##  5 Own     female         1
-##  6 Rent    male           1
+##  6 Own     male           1
 ##  7 Own     male           1
-##  8 Own     female         1
-##  9 Own     female         1
+##  8 Rent    female         1
+##  9 Rent    female         1
 ## 10 Own     female         1
 ## # ... with 97,110 more rows</code></pre>
 </div>
@@ -176,18 +176,18 @@ homeown_perm &lt;- homes %&gt;%
 # Print results to console
 homeown_perm</code></pre>
 <pre><code>## # A tibble: 100 x 2
-##    replicate        stat
-##        &lt;int&gt;       &lt;dbl&gt;
-##  1         1  0.00329   
-##  2         2 -0.00000297
-##  3         3 -0.0169    
-##  4         4 -0.00247   
-##  5         5  0.00412   
-##  6         6 -0.0165    
-##  7         7  0.00618   
-##  8         8 -0.00247   
-##  9         9  0.00123   
-## 10        10 -0.0157    
+##    replicate      stat
+##        &lt;int&gt;     &lt;dbl&gt;
+##  1         1 -0.00577 
+##  2         2 -0.00247 
+##  3         3 -0.000827
+##  4         4 -0.00948 
+##  5         5 -0.0165  
+##  6         6  0.00494 
+##  7         7  0.0189  
+##  8         8  0.00659 
+##  9         9 -0.0115  
+## 10        10 -0.00453 
 ## # ... with 90 more rows</code></pre>
 <pre class="r"><code># Perform 100 permutations
 homeown_perm &lt;- homes %&gt;%
@@ -369,11 +369,11 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 5 x 2
 ##   replicate    stat
 ##       &lt;int&gt;   &lt;dbl&gt;
-## 1         1  0.0417
-## 2         2 -0.208 
-## 3         3  0.125 
+## 1         1  0.208 
+## 2         2  0.125 
+## 3         3 -0.0417
 ## 4         4 -0.125 
-## 5         5 -0.125</code></pre>
+## 5         5 -0.0417</code></pre>
 </div>
 <div id="randomizing-gender-discrimination" class="section level2">
 <h2>2-5 Randomizing gender discrimination</h2>
@@ -438,7 +438,7 @@ ggplot(disc_perm, aes(x = stat)) +
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.208 0.208 0.292</code></pre>
+## 1 0.125 0.208 0.292</code></pre>
 </div>
 <div id="two-sided-critical-region" class="section level2">
 <h2>2-9 Two-sided critical region</h2>
@@ -465,15 +465,15 @@ disc_perm %&gt;%
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
 ##  1         1  0.0417
-##  2         2  0.208 
-##  3         3 -0.0417
-##  4         4 -0.0417
-##  5         5 -0.0417
-##  6         6 -0.0417
-##  7         7  0.0417
-##  8         8 -0.292 
-##  9         9  0.125 
-## 10        10 -0.125 
+##  2         2 -0.0417
+##  3         3 -0.125 
+##  4         4  0.125 
+##  5         5  0.208 
+##  6         6 -0.208 
+##  7         7  0.125 
+##  8         8  0.0417
+##  9         9 -0.208 
+## 10        10  0.208 
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># For an unknown reason, result is not same as DataCamp result. Therefore, I added below line:
 #disc_perm &lt;- read.csv(&quot;disc_perm.csv&quot;)
@@ -537,7 +537,7 @@ calc_upper_quantiles(disc_perm)</code></pre>
 <pre><code>## # A tibble: 1 x 3
 ##    q.90  q.95  q.99
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1 0.208 0.208 0.292</code></pre>
+## 1 0.125 0.208 0.292</code></pre>
 <pre class="r"><code># Calculate the quantiles associated with the small dataset
 calc_upper_quantiles(disc_perm_small)</code></pre>
 <pre><code>##   q.90 q.95 q.99
@@ -564,7 +564,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.481</code></pre>
+## 1   0.492</code></pre>
 <pre class="r"><code># Visualize and calculate the p-value for the small dataset
 #disc_perm_small %&gt;%
 #  visualize(obs_stat = diff_orig_small, direction = &quot;greater&quot;)
@@ -582,8 +582,8 @@ disc_perm_small %&gt;%
 disc_perm_big %&gt;%
   get_p_value(obs_stat = diff_orig_big, direction = &quot;greater&quot;)</code></pre>
 <pre><code>## Warning: Please be cautious in reporting a p-value of 0. This result is an
-## approximation based on the number of `reps` chosen in the `generate()` step. See `?
-## get_p_value()` for more information.</code></pre>
+## approximation based on the number of `reps` chosen in the `generate()` step. See
+## `?get_p_value()` for more information.</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
@@ -627,7 +627,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.481</code></pre>
+## 1   0.492</code></pre>
 <pre class="r"><code># Find the p-value from the new data
 disc_perm_new %&gt;%
   summarize(p_value = mean(diff_orig_new &lt;= stat))</code></pre>
@@ -646,7 +646,7 @@ disc_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.962</code></pre>
+## 1   0.984</code></pre>
 </div>
 <div id="hypothesis-testing-errors-opportunity-cost" class="section level2">
 <h2>3- Hypothesis testing errors: opportunity cost</h2>
@@ -865,16 +865,16 @@ opp_perm</code></pre>
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1 -0.0133
-##  2         2 -0.173 
-##  3         3  0.0933
-##  4         4  0.0133
+##  1         1  0.0133
+##  2         2 -0.0133
+##  3         3 -0.0133
+##  4         4 -0.0133
 ##  5         5  0.0933
-##  6         6  0.0133
-##  7         7  0.0933
-##  8         8  0.0667
-##  9         9 -0.0400
-## 10        10  0.0933
+##  6         6  0.0933
+##  7         7 -0.0400
+##  8         8  0.147 
+##  9         9 -0.0933
+## 10        10  0.0133
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># From previous steps
 diff_obs &lt;- opportunity %&gt;%
@@ -911,14 +911,14 @@ opp_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.744</code></pre>
+## 1   0.762</code></pre>
 <pre class="r"><code># Calculate the p-value using `summarize`
 opp_perm %&gt;%
   summarize(p_value = mean(stat &lt;= diff_orig))</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1   0.744</code></pre>
+## 1   0.762</code></pre>
 <p>Q: In the last exercise, you computed the p-value, or the proportion of permuted differences less than or equal to the observed difference:</p>
 <p>opp_perm %&gt;%
 summarize(p_value = mean(stat &lt;= diff_orig))</p>
@@ -949,16 +949,16 @@ What are type I (false positive) and type II (false negative) errors for the two
 <pre><code>## # A tibble: 1,000 x 2
 ##    replicate    stat
 ##        &lt;int&gt;   &lt;dbl&gt;
-##  1         1  0.0400
-##  2         2  0.0667
-##  3         3  0.0133
+##  1         1 -0.0933
+##  2         2  0.0133
+##  3         3  0.0933
 ##  4         4  0.0667
-##  5         5 -0.0933
-##  6         6  0.12  
-##  7         7  0.0667
-##  8         8 -0.12  
-##  9         9  0.0667
-## 10        10 -0.0400
+##  5         5  0.12  
+##  6         6 -0.0667
+##  7         7 -0.0133
+##  8         8  0.0133
+##  9         9 -0.0133
+## 10        10  0.0933
 ## # ... with 990 more rows</code></pre>
 <pre class="r"><code># Calculate the two-sided p-value
 opp_perm %&gt;%
@@ -966,7 +966,7 @@ opp_perm %&gt;%
 <pre><code>## # A tibble: 1 x 1
 ##   p_value
 ##     &lt;dbl&gt;
-## 1    1.49</code></pre>
+## 1    1.52</code></pre>
 </div>
 <div id="confidence-intervals" class="section level2">
 <h2>4- Confidence intervals</h2>
@@ -992,6 +992,69 @@ opp_perm %&gt;%
 <p>It’s important to realize that the first experiment relies on knowing the population and is typically impossible in practice. The second relies only on the sample of data and is therefore easy to implement for any statistic. Fortunately, as you will see, the variability in
 , or the proportion of “successes” in a sample, is approximately the same whether we sample from the population or resample from a sample.</p>
 <p>We have created 1000 random samples, each of size 30, from the population. The resulting data frame, all_polls, is available in your workspace. Take a look before getting started.</p>
+<pre class="r"><code># Compute p-hat for each poll
+ex1_props &lt;- all_polls %&gt;% 
+  # Group by poll
+  group_by(poll) %&gt;% 
+  # Calculate proportion of yes votes
+  summarise(stat = mean(vote == &quot;yes&quot;))
+  
+# Review the result
+ex1_props</code></pre>
+<pre><code>## # A tibble: 1,000 x 2
+##     poll  stat
+##    &lt;int&gt; &lt;dbl&gt;
+##  1     1 0.7  
+##  2     2 0.667
+##  3     3 0.633
+##  4     4 0.633
+##  5     5 0.4  
+##  6     6 0.6  
+##  7     7 0.5  
+##  8     8 0.533
+##  9     9 0.567
+## 10    10 0.567
+## # ... with 990 more rows</code></pre>
+<pre class="r"><code># Select one poll from which to resample
+one_poll &lt;- all_polls %&gt;%
+  # Filter for the first poll
+  filter(poll==&quot;1&quot;) %&gt;%
+  # Select vote
+  select(vote)
+  
+# Compute p-hat* for each resampled poll
+ex2_props &lt;- one_poll %&gt;%
+  # Specify vote as the response, where yes means success
+  specify(response = vote, success = &quot;yes&quot;) %&gt;%
+  # Generate 1000 reps of type bootstrap
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;% 
+  # Calculate the summary stat &quot;prop&quot;
+  calculate(stat = &quot;prop&quot;)</code></pre>
+<pre class="r"><code># From previous steps
+ex1_props &lt;- all_polls %&gt;% 
+  group_by(poll) %&gt;% 
+  summarize(stat = mean(vote == &quot;yes&quot;))
+ex2_props &lt;- all_polls %&gt;%
+  filter(poll == 1) %&gt;%
+  select(vote) %&gt;%
+  specify(response = vote, success = &quot;yes&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;% 
+  calculate(stat = &quot;prop&quot;)
+  
+# Calculate variability of p-hat
+ex1_props %&gt;% 
+  summarize(variability = sd(stat))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   variability
+##         &lt;dbl&gt;
+## 1      0.0868</code></pre>
+<pre class="r"><code># Calculate variability of p-hat*
+ex2_props %&gt;% 
+  summarize(variability = sd(stat))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   variability
+##         &lt;dbl&gt;
+## 1      0.0844</code></pre>
 </div>
 <div id="visualizing-the-variability-of-p-hat" class="section level2">
 <h2>4-6 Visualizing the variability of p-hat</h2>
@@ -1000,6 +1063,22 @@ and
 values in the previous exercises, it is valuable to visualize their distributions. To recall, the exercises walked through two different experiments for investigating the variability of P and P*:</p>
 <p>Experiment 1: Sample () repeatedly from an extremely large population (gold standard, but unrealistic)</p>
 <p>Experiment 2: Resample () repeatedly with replacement from a single sample of size 30</p>
+<pre class="r"><code># Combine data from both experiments
+both_ex_props &lt;- bind_rows(ex1_props, ex2_props, .id = &quot;experiment&quot;)
+
+# Using both_ex_props, plot stat colored by experiment
+ggplot(both_ex_props, aes(stat, color = experiment)) + 
+  # Add a density layer with bandwidth 0.1
+  geom_density(bw = 0.1)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>Q: Always resample the original number of observations</p>
+<p>In the bootstrap examples, exactly 30 observations have been repeatedly resampled from the original sample. The choice of 30 was given because the original sample had 30 observations. If we had resampled 3 observations instead, the resampled
+value could have ranged from 0 to 1 (producing a much larger
+than desired). If we had resampled 300 observations instead, the resampled
+value would have been close to the same number each time (producing a much smaller
+than desired).</p>
+<p>Generally, if represents the size of the original sample, how many observations should we resample with replacement when bootstrapping?</p>
+<p>A: Resample exactly n observations because then the variability of P^* will be most similar / representative of the original sampling process.</p>
 </div>
 <div id="empirical-rule" class="section level2">
 <h2>4-9 Empirical Rule</h2>
@@ -1009,6 +1088,24 @@ values (from different samples) will be within of the true population proportion
 <p>To check whether that holds in the situation at hand, let’s go back to the polls generated by taking many samples from the same population.</p>
 <p>The all_polls dataset contains 1000 samples of size 30 from a population with a probability of voting for Candidate X equal to 0.6.</p>
 <p>Note that you will use the R function sd() which calculates the variability of any set of numbers. In statistics, when sd() is applied to a variable (e.g., price of house) we call it the standard deviation. When sd() is applied to a statistic (e.g., set of sample proportions) we call it the standard error.</p>
+<pre class="r"><code># Proportion of yes votes by poll
+props &lt;- all_polls %&gt;% 
+  group_by(poll) %&gt;% 
+  summarize(prop_yes = mean(vote == &quot;yes&quot;))
+
+# The true population proportion of yes votes
+true_prop_yes &lt;- 0.6
+
+# Proportion of polls within 2SE
+props %&gt;%
+  # Add column: is prop_yes in 2SE of 0.6
+  mutate(is_in_conf_int = abs(prop_yes - true_prop_yes) &lt; 2 * sd(prop_yes)) %&gt;%
+  # Calculate  proportion in conf int
+  summarize(prop_in_conf_int = mean(is_in_conf_int))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   prop_in_conf_int
+##              &lt;dbl&gt;
+## 1            0.966</code></pre>
 </div>
 <div id="bootstrap-t-confidence-interval" class="section level2">
 <h2>4-10 Bootstrap t-confidence interval</h2>
@@ -1020,6 +1117,32 @@ Once you know the variability of
 Note that the rate of closeness (here 95%) refers to how often a sample is chosen so that it is close to the population parameter. You won’t ever know if a particular dataset is close to the parameter or far from it, but you do know that over your lifetime, 95% of the samples you collect should give you estimates that are within of the true population parameter.</p>
 <p>The votes from a single poll, one_poll, and the data from 1000 bootstrap resamples, one_poll_boot are available in your workspace. These are based on Experiment 2 from earlier in the chapter.</p>
 <p>As in the previous exercise, when discussing the variability of a statistic, the number is referred to as the standard error.</p>
+<pre class="r"><code># From previous exercises
+one_poll &lt;- all_polls %&gt;%
+  filter(poll == 1) %&gt;%
+  select(vote)
+one_poll_boot &lt;- one_poll %&gt;%
+  specify(response = vote, success = &quot;yes&quot;) %&gt;%
+  generate(reps = 1000, type = &quot;bootstrap&quot;) %&gt;% 
+  calculate(stat = &quot;prop&quot;)
+  
+p_hat &lt;- one_poll %&gt;%
+  # Calculate proportion of yes votes
+  summarize(stat = mean(vote == &quot;yes&quot;)) %&gt;%
+  pull()
+
+# Create an interval of plausible values
+one_poll_boot %&gt;%
+  summarize(
+    # Lower bound is p_hat minus 2 std errs
+    lower = p_hat- 2 * sd(stat),
+    # Upper bound is p_hat plus 2 std errs
+    upper = p_hat+ 2 * sd(stat)
+  )</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower upper
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.531 0.869</code></pre>
 </div>
 <div id="bootstrap-percentile-interval" class="section level2">
 <h2>4-11 Bootstrap percentile interval</h2>
@@ -1034,6 +1157,57 @@ values will vary in such a way that they overlap with the true parameter.</p>
 values, you can find the middle of the resampled
 values by removing the upper and lower 2.5%. Note that this second method of constructing bootstrap intervals also gives an intuitive way for making 90% or 99% confidence intervals as well as 95% intervals.</p>
 <p>The bootstrapped resamples, one_poll_boot, and the proportion of yes votes, p_hat are available in your workspace.</p>
+<pre class="r"><code># From previous exercise: bootstrap t-confidence interval
+one_poll_boot %&gt;%
+  summarize(
+    lower = p_hat - 2 * sd(stat),
+    upper = p_hat + 2 * sd(stat)
+  )</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower upper
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.531 0.869</code></pre>
+<pre class="r"><code># Manually calculate a 95% percentile interval
+one_poll_boot %&gt;%
+  summarize(
+    lower = quantile(stat, p = 0.025),
+    upper = quantile(stat, p = 0.975)
+  )</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower upper
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.533 0.867</code></pre>
+<pre class="r"><code># From previous step
+one_poll_boot %&gt;%
+  summarize(
+    lower = quantile(stat, 0.025),
+    upper = quantile(stat, 0.975)
+  )</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower upper
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.533 0.867</code></pre>
+<pre class="r"><code># Calculate the same interval, more conveniently
+percentile_ci &lt;- one_poll_boot %&gt;% 
+  get_confidence_interval(level = 0.95)
+  
+# Review the value
+percentile_ci</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   lower_ci upper_ci
+##      &lt;dbl&gt;    &lt;dbl&gt;
+## 1    0.533    0.867</code></pre>
+<pre class="r"><code># From previous step
+percentile_ci &lt;- one_poll_boot %&gt;% 
+  get_confidence_interval(level = 0.95)
+  
+one_poll_boot %&gt;% 
+  # Visualize in-between the endpoints given by percentile_ci
+  visualize(endpoints=percentile_ci , direction = &quot;between&quot;)</code></pre>
+<pre><code>## Warning: `visualize()` should no longer be used to plot a confidence interval.
+## Arguments `endpoints`, `endpoints_color`, and `ci_fill` are deprecated. Use
+## `shade_confidence_interval()` instead.</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
 </div>
 <div id="sample-size-effects-on-bootstrap-cis" class="section level2">
 <h2>4-13 Sample size effects on bootstrap CIs</h2>
