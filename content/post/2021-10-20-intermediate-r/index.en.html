@@ -1,0 +1,260 @@
+---
+title: Intermediate R
+author: ''
+date: '2021-10-20'
+slug: intermediate-r
+categories: []
+tags:
+  - R
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Intermediate R is the next stop on your journey in mastering the R programming language. In this R training, you will learn about conditional statements, loops, and functions to power your own R scripts. Next, make your R code more efficient and readable using the apply functions. Finally, the utilities chapter gets you up to speed with regular expressions in R, data structure manipulations, and times and dates. This course will allow you to take the next step in advancing your overall knowledge and capabilities while programming in R.</p>
+<div id="conditionals-and-control-flow" class="section level2">
+<h2>1- Conditionals and Control Flow</h2>
+<p>In this chapter, you’ll learn about relational operators for comparing R objects, and logical operators like “and” and “or” for combining TRUE and FALSE values. Then, you’ll use this knowledge to build conditional statements.</p>
+</div>
+<div id="equality" class="section level2">
+<h2>1-2 Equality</h2>
+<p>The most basic form of comparison is equality. Let’s briefly recap its syntax. The following statements all evaluate to TRUE (feel free to try them out in the console).</p>
+<p>3 == (2 + 1)
+“intermediate” != “r”
+TRUE != FALSE
+“Rchitect” != “rchitect”</p>
+<p>Notice from the last expression that R is case sensitive: “R” is not equal to “r”. Keep this in mind when solving the exercises in this chapter!</p>
+</div>
+<div id="greater-and-less-than" class="section level2">
+<h2>1-3 Greater and less than</h2>
+<p>Apart from equality operators, Filip also introduced the less than and greater than operators: &lt; and &gt;. You can also add an equal sign to express less than or equal to or greater than or equal to, respectively. Have a look at the following R expressions, that all evaluate to FALSE:</p>
+<p>(1 + 2) &gt; 4
+“dog” &lt; “Cats”
+TRUE &lt;= FALSE
+Remember that for string comparison, R determines the greater than relationship based on alphabetical order. Also, keep in mind that TRUE is treated as 1 for arithmetic, and FALSE is treated as 0. Therefore, FALSE &lt; TRUE is TRUE.</p>
+</div>
+<div id="compare-vectors" class="section level2">
+<h2>1-4 Compare vectors</h2>
+<p>You are already aware that R is very good with vectors. Without having to change anything about the syntax, R’s relational operators also work on vectors.</p>
+<p>Let’s go back to the example that was started in the video. You want to figure out whether your activity on social media platforms have paid off and decide to look at your results for LinkedIn and Facebook. The sample code in the editor initializes the vectors linkedin and facebook. Each of the vectors contains the number of profile views your LinkedIn and Facebook profiles had over the last seven days.</p>
+</div>
+<div id="compare-matrices" class="section level2">
+<h2>1-5 Compare matrices</h2>
+<p>R’s ability to deal with different data structures for comparisons does not stop at vectors. Matrices and relational operators also work together seamlessly!</p>
+<p>Instead of in vectors (as in the previous exercise), the LinkedIn and Facebook data is now stored in a matrix called views. The first row contains the LinkedIn information; the second row the Facebook information. The original vectors facebook and linkedin are still available as well.</p>
+</div>
+<div id="and" class="section level2">
+<h2>1-7 &amp; and |</h2>
+<p>Before you work your way through the next exercises, have a look at the following R expressions. All of them will evaluate to TRUE:</p>
+<p>TRUE &amp; TRUE
+FALSE | TRUE
+5 &lt;= 5 &amp; 2 &lt; 3
+3 &lt; 4 | 7 &lt; 6
+Watch out: 3 &lt; x &lt; 7 to check if x is between 3 and 7 will not work; you’ll need 3 &lt; x &amp; x &lt; 7 for that.</p>
+<p>In this exercise, you’ll be working with the last variable. This variable equals the last value of the linkedin vector that you’ve worked with previously. The linkedin vector represents the number of LinkedIn views your profile had in the last seven days, remember? Both the variables linkedin and last have been pre-defined for you.</p>
+</div>
+<div id="and-2" class="section level2">
+<h2>1-8 &amp; and | (2)</h2>
+<p>Like relational operators, logical operators work perfectly fine with vectors and matrices.</p>
+<p>Both the vectors linkedin and facebook are available again. Also a matrix - views - has been defined; its first and second row correspond to the linkedin and facebook vectors, respectively. Ready for some advanced queries to gain more insights into your social outreach?</p>
+</div>
+<div id="blend-it-all-together" class="section level2">
+<h2>1-10 Blend it all together</h2>
+<p>With the things you’ve learned by now, you’re able to solve pretty cool problems.</p>
+<p>Instead of recording the number of views for your own LinkedIn profile, suppose you conducted a survey inside the company you’re working for. You’ve asked every employee with a LinkedIn profile how many visits their profile has had over the past seven days. You stored the results in a data frame called li_df. This data frame is available in the workspace; type li_df in the console to check it out.</p>
+</div>
+<div id="the-if-statement" class="section level2">
+<h2>1-12 The if statement</h2>
+<p>Before diving into some exercises on the if statement, have another look at its syntax:</p>
+<p>if (condition) {
+expr
+}
+Remember your vectors with social profile views? Let’s look at it from another angle. The medium variable gives information about the social website; the num_views variable denotes the actual number of views that particular medium had on the last day of your recordings. Both variables have been pre-defined for you.</p>
+</div>
+<div id="add-an-else" class="section level2">
+<h2>1-13 Add an else</h2>
+<p>You can only use an else statement in combination with an if statement. The else statement does not require a condition; its corresponding code is simply run if all of the preceding conditions in the control structure are FALSE. Here’s a recipe for its usage:</p>
+<p>if (condition) {
+expr1
+} else {
+expr2
+}
+It’s important that the else keyword comes on the same line as the closing bracket of the if part!</p>
+<p>Both if statements that you coded in the previous exercises are already available to use. It’s now up to you to extend them with the appropriate else statements!</p>
+</div>
+<div id="customize-further-else-if" class="section level2">
+<h2>1-14 Customize further: else if</h2>
+<p>The else if statement allows you to further customize your control structure. You can add as many else if statements as you like. Keep in mind that R ignores the remainder of the control structure once a condition has been found that is TRUE and the corresponding expressions have been executed. Here’s an overview of the syntax to freshen your memory:</p>
+<p>if (condition1) {
+expr1
+} else if (condition2) {
+expr2
+} else if (condition3) {
+expr3
+} else {
+expr4
+}
+Again, It’s important that the else if keywords comes on the same line as the closing bracket of the previous part of the control construct!</p>
+</div>
+<div id="take-control" class="section level2">
+<h2>1-15 Take control!</h2>
+<p>In this exercise, you will combine everything that you’ve learned so far: relational operators, logical operators and control constructs. You’ll need it all!</p>
+<p>We’ve pre-defined two values for you: li and fb, denoting the number of profile views your LinkedIn and Facebook profile had on the last day of recordings. Go through the instructions to create R code that generates a ‘social media score’, sms, based on the values of li and fb.</p>
+</div>
+<div id="loops" class="section level2">
+<h2>2- Loops</h2>
+<p>Loops can come in handy on numerous occasions. While loops are like repeated if statements, the for loop is designed to iterate over all elements in a sequence. Learn about them in this chapter.</p>
+</div>
+<div id="section" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-1" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-2" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-3" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-4" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-5" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-6" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-7" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-8" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="section-9" class="section level2">
+<h2>2-2</h2>
+</div>
+<div id="functions" class="section level2">
+<h2>3- Functions</h2>
+<p>Functions are an extremely important concept in almost every programming language, and R is no different. Learn what functions are and how to use them—then take charge by writing your own functions.</p>
+</div>
+<div id="section-10" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-11" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-12" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-13" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-14" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-15" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-16" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-17" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-18" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-19" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-20" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="the-apply-family" class="section level2">
+<h2>4- The apply family</h2>
+<p>Whenever you’re using a for loop, you may want to revise your code to see whether you can use the lapply function instead. Learn all about this intuitive way of applying a function over a list or a vector, and how to use its variants, sapply and vapply.</p>
+</div>
+<div id="section-21" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-22" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-23" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-24" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-25" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-26" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-27" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-28" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-29" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-30" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-31" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-32" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="utilities" class="section level2">
+<h2>5- Utilities</h2>
+<p>Mastering R programming is not only about understanding its programming concepts. Having a solid understanding of a wide range of R functions is also important. This chapter introduces you to many useful functions for data structure manipulation, regular expressions, and working with times and dates.</p>
+</div>
+<div id="section-33" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-34" class="section level2">
+<h2>5-3</h2>
+</div>
+<div id="section-35" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-36" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-37" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-38" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-39" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-40" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-41" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-42" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-43" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-44" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-45" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-46" class="section level2">
+<h2>5-2</h2>
+</div>
