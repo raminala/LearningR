@@ -23,6 +23,11 @@ disc_perm_small <- read.csv("disc_perm_small.csv")
 disc_perm_big <- read.csv("disc_perm_big.csv")
 disc_perm_new <- read.csv("disc_perm_new.csv")
 opportunity <- read.csv("opportunity.csv")
+one_poll_boot_300  <- read.csv("one_poll_boot_300.csv")
+one_poll_boot_3  <- read.csv("one_poll_boot_3.csv")
+conf_int_data  <- read.csv("conf_int_data.csv")
+one_poll_0.8  <- read.csv("one_poll_0.8.csv")
+one_poll_boot_0.8  <- read.csv("one_poll_boot_0.8.csv")
 a <- readRDS("all_polls.rds")
 ```
 
@@ -968,7 +973,22 @@ In a previous multiple choice exercise, you realized that if you resampled the d
 Here, you will use the incorrect standard error (based on the incorrect sample size) to create a confidence interval. The idea is that when the standard error is off, the interval is not particularly useful, nor is it correct.
 
 ```{r}
+calc_t_conf_int <- function(resampled_dataset) {
+  resampled_dataset %>%
+    summarize(
+      lower = p_hat - 2 * sd(stat),
+      upper = p_hat + 2 * sd(stat)
+    )
+}
 
+# Find the bootstrap t-confidence interval for 30 resamples
+calc_t_conf_int(one_poll_boot)
+
+# ... and for 300 resamples
+calc_t_conf_int(one_poll_boot_300)
+
+# ... and for 3 resamples
+calc_t_conf_int(one_poll_boot_3)
 ```
 
 
@@ -981,7 +1001,36 @@ Generally, when the true parameter is close to 0.5, the standard error of
  is larger than when the true parameter is closer to 0 or 1. When calculating a bootstrap t-confidence interval, the standard error controls the width of the CI, and here (given a true parameter of 0.8) the sample proportion is higher than in previous exercises, so the width of the confidence interval will be narrower.
 
 ```{r}
+calc_p_hat <- function(dataset) {
+  dataset %>%
+    summarize(stat = mean(vote == "yes")) %>%
+    pull()
+}
+calc_t_conf_int <- function(resampled_dataset, p_hat) {
+  resampled_dataset %>%
+    summarize(
+      lower = p_hat - 2 * sd(stat),
+      upper = p_hat + 2 * sd(stat)
+    )
+}
 
+# Find proportion of yes votes from original population
+p_hat <- calc_p_hat(one_poll)
+
+# Review the value
+p_hat  
+
+# Calculate bootstrap t-confidence interval (original 0.6 param)
+calc_t_conf_int(one_poll_boot, p_hat)
+
+# Find proportion of yes votes from new population
+p_hat_0.8 <- calc_p_hat(one_poll_0.8)
+  
+# Review the value
+p_hat_0.8  
+  
+# Calculate the bootstrap t-confidence interval (new 0.8 param)
+calc_t_conf_int(one_poll_boot_0.8, p_hat_0.8)
 ```
 
 
