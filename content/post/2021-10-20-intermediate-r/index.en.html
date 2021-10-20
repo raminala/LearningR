@@ -44,16 +44,62 @@ TRUE == 1 </code></pre>
 “dog” &lt; “Cats”
 TRUE &lt;= FALSE
 Remember that for string comparison, R determines the greater than relationship based on alphabetical order. Also, keep in mind that TRUE is treated as 1 for arithmetic, and FALSE is treated as 0. Therefore, FALSE &lt; TRUE is TRUE.</p>
+<pre class="r"><code># Comparison of numerics
+-6 * 5 + 2 &gt;=  -10 + 1</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code># Comparison of character strings
+&quot;raining&quot; &lt;= &quot;raining dogs&quot;</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code># Comparison of logicals
+TRUE &gt; FALSE</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="compare-vectors" class="section level2">
 <h2>1-4 Compare vectors</h2>
 <p>You are already aware that R is very good with vectors. Without having to change anything about the syntax, R’s relational operators also work on vectors.</p>
 <p>Let’s go back to the example that was started in the video. You want to figure out whether your activity on social media platforms have paid off and decide to look at your results for LinkedIn and Facebook. The sample code in the editor initializes the vectors linkedin and facebook. Each of the vectors contains the number of profile views your LinkedIn and Facebook profiles had over the last seven days.</p>
+<p>Using relational operators, find a logical answer, i.e. TRUE or FALSE, for the following questions:</p>
+<p>On which days did the number of LinkedIn profile views exceed 15?</p>
+<p>When was your LinkedIn profile viewed only 5 times or fewer?</p>
+<p>When was your LinkedIn profile visited more often than your Facebook profile?</p>
+<pre class="r"><code># The linkedin and facebook vectors have already been created for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+facebook &lt;- c(17, 7, 5, 16, 8, 13, 14)
+
+# Popular days
+linkedin &gt; 15</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code># Quiet days
+linkedin &lt;= 5</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE</code></pre>
+<pre class="r"><code># LinkedIn more popular than Facebook
+facebook &lt; linkedin</code></pre>
+<pre><code>## [1] FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE</code></pre>
 </div>
 <div id="compare-matrices" class="section level2">
 <h2>1-5 Compare matrices</h2>
 <p>R’s ability to deal with different data structures for comparisons does not stop at vectors. Matrices and relational operators also work together seamlessly!</p>
 <p>Instead of in vectors (as in the previous exercise), the LinkedIn and Facebook data is now stored in a matrix called views. The first row contains the LinkedIn information; the second row the Facebook information. The original vectors facebook and linkedin are still available as well.</p>
+<p>When were the views exactly equal to 13? Use the views matrix to return a logical matrix.</p>
+<p>For which days were the number of views less than or equal to 14? Again, have R return a logical matrix.</p>
+<pre class="r"><code># The social data has been created for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+facebook &lt;- c(17, 7, 5, 16, 8, 13, 14)
+views &lt;- matrix(c(linkedin, facebook), nrow = 2, byrow = TRUE)
+views</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+## [1,]   16    9   13    5    2   17   14
+## [2,]   17    7    5   16    8   13   14</code></pre>
+<pre class="r"><code># When does views equal 13?
+views == 13</code></pre>
+<pre><code>##       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]
+## [1,] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+## [2,] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code># When is views less than or equal to 14?
+views &lt;= 14</code></pre>
+<pre><code>##       [,1] [,2] [,3]  [,4] [,5]  [,6] [,7]
+## [1,] FALSE TRUE TRUE  TRUE TRUE FALSE TRUE
+## [2,] FALSE TRUE TRUE FALSE TRUE  TRUE TRUE</code></pre>
 </div>
 <div id="and" class="section level2">
 <h2>1-7 &amp; and |</h2>
@@ -64,6 +110,17 @@ FALSE | TRUE
 3 &lt; 4 | 7 &lt; 6
 Watch out: 3 &lt; x &lt; 7 to check if x is between 3 and 7 will not work; you’ll need 3 &lt; x &amp; x &lt; 7 for that.</p>
 <p>In this exercise, you’ll be working with the last variable. This variable equals the last value of the linkedin vector that you’ve worked with previously. The linkedin vector represents the number of LinkedIn views your profile had in the last seven days, remember? Both the variables linkedin and last have been pre-defined for you.</p>
+<pre class="r"><code># The linkedin and last variable are already defined for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+last &lt;- tail(linkedin, 1)
+last</code></pre>
+<pre><code>## [1] 14</code></pre>
+<pre class="r"><code># Is last under 5 or above 10?
+last &lt; 5 | last &gt; 10</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code># Is last between 15 (exclusive) and 20 (inclusive)?
+15 &lt;last &amp; last &lt;= 20</code></pre>
+<pre><code>## [1] FALSE</code></pre>
 </div>
 <div id="and-2" class="section level2">
 <h2>1-8 &amp; and | (2)</h2>
