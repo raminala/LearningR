@@ -323,61 +323,144 @@ sms
 
 Loops can come in handy on numerous occasions. While loops are like repeated if statements, the for loop is designed to iterate over all elements in a sequence. Learn about them in this chapter.
 
-## 2-2 
+## 2-2 Write a while loop
+
+Let's get you started with building a while loop from the ground up. Have another look at its recipe:
+
+while (condition) {
+  expr
+}
+
+Remember that the condition part of this recipe should become FALSE at some point during the execution. Otherwise, the while loop will go on indefinitely.
+
+If your session expires when you run your code, check the body of your while loop carefully.
+
+Have a look at the sample code provided; it initializes the speed variables and already provides a while loop template to get you started.
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-3 Throw in more conditionals
+
+In the previous exercise, you simulated the interaction between a driver and a driver's assistant: When the speed was too high, "Slow down!" got printed out to the console, resulting in a decrease of your speed by 7 units.
+
+There are several ways in which you could make your driver's assistant more advanced. For example, the assistant could give you different messages based on your speed or provide you with a current speed at a given moment.
+
+A while loop similar to the one you've coded in the previous exercise is already available for you to use. It prints out your current speed, but there's no code that decreases the speed variable yet, which is pretty dangerous. Can you make the appropriate changes?
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-4 Stop the while loop: break
+
+There are some very rare situations in which severe speeding is necessary: what if a hurricane is approaching and you have to get away as quickly as possible? You don't want the driver's assistant sending you speeding notifications in that scenario, right?
+
+This seems like a great opportunity to include the break statement in the while loop you've been working on. Remember that the break statement is a control statement. When R encounters it, the while loop is abandoned completely.
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-5 Build a while loop from scratch
+
+The previous exercises guided you through developing a pretty advanced while loop, containing a break statement and different messages and updates as determined by control flow constructs. If you manage to solve this comprehensive exercise using a while loop, you're totally ready for the next topic: the for loop.
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-7 Loop over a vector
+
+In the previous video, Filip told you about two different strategies for using the for loop. To refresh your memory, consider the following loops that are equivalent in R:
+
+primes <- c(2, 3, 5, 7, 11, 13)
+
+# loop version 1
+for (p in primes) {
+  print(p)
+}
+
+# loop version 2
+for (i in 1:length(primes)) {
+  print(primes[i])
+}
+
+Remember our linkedin vector? It's a vector that contains the number of views your LinkedIn profile had in the last seven days. The linkedin vector has been pre-defined so that you can fully focus on the instructions!
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-8 Loop over a list
+
+Looping over a list is just as easy and convenient as looping over a vector. There are again two different approaches here:
+
+primes_list <- list(2, 3, 5, 7, 11, 13)
+
+# loop version 1
+for (p in primes_list) {
+  print(p)
+}
+
+# loop version 2
+for (i in 1:length(primes_list)) {
+  print(primes_list[[i]])
+}
+
+Notice that you need double square brackets - [[ ]] - to select the list elements in loop version 2.
+
+Suppose you have a list of all sorts of information on New York City: its population size, the names of the boroughs, and whether it is the capital of the United States. We've already defined a list nyc containing this information (source: Wikipedia).
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-9 Loop over a matrix
+
+In your workspace, there's a matrix ttt, that represents the status of a tic-tac-toe game. It contains the values "X", "O" and "NA". Print out ttt to get a closer look. On row 1 and column 1, there's "O", while on row 3 and column 2 there's "NA".
+
+To solve this exercise, you'll need a for loop inside a for loop, often called a nested loop. Doing this in R is a breeze! Simply use the following recipe:
+
+for (var1 in seq1) {
+  for (var2 in seq2) {
+    expr
+  }
+}
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-10 Mix it up with control flow
+
+Let's return to the LinkedIn profile views data, stored in a vector linkedin. In the first exercise on for loops you already did a simple printout of each element in this vector. A little more in-depth interpretation of this data wouldn't hurt, right? Time to throw in some conditionals! As with the while loop, you can use the if and else statements inside the for loop.
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-11 Next, you break it
+
+A possible solution to the previous exercise has been provided for you. The code loops over the linkedin vector and prints out different messages depending on the values of li.
+
+In this exercise, you will use the break and next statements:
+
+The break statement abandons the active loop: the remaining code in the loop is skipped and the loop is not iterated over anymore.
+The next statement skips the remainder of the code in the loop, but continues the iteration.
 
 ```{r}
 
 ```
 
-## 2-2 
+## 2-12 Build a for loop from scratch
+
+This exercise will not introduce any new concepts on for loops.
+
+We already went ahead and defined a variable rquote. This variable has been split up into a vector that contains separate letters and has been stored in a vector chars with the strsplit() function.
+
+Can you write code that counts the number of r's that come before the first u in rquote?
 
 ```{r}
 
