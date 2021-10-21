@@ -7,6 +7,9 @@ categories: []
 tags:
   - R
 ---
+```{r include=FALSE}
+li_df <- read.csv("li_df.csv")
+```
 
 Intermediate R is the next stop on your journey in mastering the R programming language. In this R training, you will learn about conditional statements, loops, and functions to power your own R scripts. Next, make your R code more efficient and readable using the apply functions. Finally, the utilities chapter gets you up to speed with regular expressions in R, data structure manipulations, and times and dates. This course will allow you to take the next step in advancing your overall knowledge and capabilities while programming in R.
 
@@ -74,9 +77,6 @@ On which days did the number of LinkedIn profile views exceed 15?
 When was your LinkedIn profile viewed only 5 times or fewer?
 
 When was your LinkedIn profile visited more often than your Facebook profile?
-
-
-
 
 
 ```{r}
@@ -150,7 +150,16 @@ Like relational operators, logical operators work perfectly fine with vectors an
 Both the vectors linkedin and facebook are available again. Also a matrix - views - has been defined; its first and second row correspond to the linkedin and facebook vectors, respectively. Ready for some advanced queries to gain more insights into your social outreach?
 
 ```{r}
+# The social data (linkedin, facebook, views) has been created for you
 
+# linkedin exceeds 10 but facebook below 10
+linkedin > 10 & facebook < 10
+
+# When were one or both visited at least 12 times?
+linkedin >= 12 | facebook >= 12
+
+# When is views between 11 (exclusive) and 14 (inclusive)?
+views > 11 & views <= 14
 ```
 
 
@@ -160,8 +169,22 @@ With the things you've learned by now, you're able to solve pretty cool problems
 
 Instead of recording the number of views for your own LinkedIn profile, suppose you conducted a survey inside the company you're working for. You've asked every employee with a LinkedIn profile how many visits their profile has had over the past seven days. You stored the results in a data frame called li_df. This data frame is available in the workspace; type li_df in the console to check it out.
 
-```{r}
+Select the entire second column, named day2, from the li_df data frame as a vector and assign it to second.
 
+Use second to create a logical vector, that contains TRUE if the corresponding number of views is strictly greater than 25 or strictly lower than 5 and FALSE otherwise. Store this logical vector as extremes.
+Use sum() on the extremes vector to calculate the number of TRUEs in extremes (i.e. to calculate the number of employees that are either very popular or very low-profile). Simply print this number to the console.
+
+```{r}
+# li_df is pre-loaded in your workspace
+
+# Select the second column, named day2, from li_df: second
+second <- li_df$day2
+
+# Build a logical vector, TRUE if value in second is extreme: extremes
+extremes <- second < 5 | second > 25 
+
+# Count the number of TRUEs in extremes
+sum(extremes==TRUE)
 ```
 
 
@@ -172,10 +195,23 @@ Before diving into some exercises on the if statement, have another look at its 
 if (condition) {
   expr
 }
+
 Remember your vectors with social profile views? Let's look at it from another angle. The medium variable gives information about the social website; the num_views variable denotes the actual number of views that particular medium had on the last day of your recordings. Both variables have been pre-defined for you.
 
 ```{r}
+# Variables related to your last day of recordings
+medium <- "LinkedIn"
+num_views <- 14
 
+# Examine the if statement for medium
+if (medium == "LinkedIn") {
+  print("Showing LinkedIn information")
+}
+
+# Write the if statement for num_views
+if (num_views > 15) {
+  print("You are popular!")
+}
 ```
 
 
@@ -188,12 +224,30 @@ if (condition) {
 } else {
   expr2
 }
+
 It's important that the else keyword comes on the same line as the closing bracket of the if part!
 
 Both if statements that you coded in the previous exercises are already available to use. It's now up to you to extend them with the appropriate else statements!
 
 ```{r}
+# Variables related to your last day of recordings
+medium <- "LinkedIn"
+num_views <- 14
 
+# Control structure for medium
+if (medium == "LinkedIn") {
+  print("Showing LinkedIn information")
+} else {
+print("Unknown medium")
+}
+
+
+# Control structure for num_views
+if (num_views > 15) {
+  print("You're popular!")
+} else {
+ print("Try to be more visible!")
+}
 ```
 
 
@@ -213,7 +267,29 @@ if (condition1) {
 Again, It's important that the else if keywords comes on the same line as the closing bracket of the previous part of the control construct!
 
 ```{r}
+# Variables related to your last day of recordings
+medium <- "LinkedIn"
+num_views <- 14
 
+# Control structure for medium
+if (medium == "LinkedIn") {
+  print("Showing LinkedIn information")
+} else if (medium == "Facebook") {
+  # Add code to print correct string when condition is TRUE
+print("Showing Facebook information")
+} else {
+  print("Unknown medium")
+}
+
+# Control structure for num_views
+if (num_views > 15) {
+  print("You're popular!")
+} else if (num_views <= 15 & num_views > 10) {
+  # Add code to print correct string when condition is TRUE
+print("Your number of views is average")
+} else {
+  print("Try to be more visible!")
+}
 ```
 
 
@@ -224,7 +300,21 @@ In this exercise, you will combine everything that you've learned so far: relati
 We've pre-defined two values for you: li and fb, denoting the number of profile views your LinkedIn and Facebook profile had on the last day of recordings. Go through the instructions to create R code that generates a 'social media score', sms, based on the values of li and fb.
 
 ```{r}
+# Variables related to your last day of recordings
+li <- 15
+fb <- 9
 
+# Code the control-flow construct
+if (li >= 15 & fb >= 15) {
+  sms <- 2 * (li + fb)
+} else if (li < 10 & fb < 10) {
+  sms <- 0.5 * (li + fb)
+} else {
+  sms <- li + fb
+}
+
+# Print the resulting sms to the console
+sms
 ```
 
 

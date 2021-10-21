@@ -126,19 +126,59 @@ last &lt; 5 | last &gt; 10</code></pre>
 <h2>1-8 &amp; and | (2)</h2>
 <p>Like relational operators, logical operators work perfectly fine with vectors and matrices.</p>
 <p>Both the vectors linkedin and facebook are available again. Also a matrix - views - has been defined; its first and second row correspond to the linkedin and facebook vectors, respectively. Ready for some advanced queries to gain more insights into your social outreach?</p>
+<pre class="r"><code># The social data (linkedin, facebook, views) has been created for you
+
+# linkedin exceeds 10 but facebook below 10
+linkedin &gt; 10 &amp; facebook &lt; 10</code></pre>
+<pre><code>## [1] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE</code></pre>
+<pre class="r"><code># When were one or both visited at least 12 times?
+linkedin &gt;= 12 | facebook &gt;= 12</code></pre>
+<pre><code>## [1]  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE</code></pre>
+<pre class="r"><code># When is views between 11 (exclusive) and 14 (inclusive)?
+views &gt; 11 &amp; views &lt;= 14</code></pre>
+<pre><code>##       [,1]  [,2]  [,3]  [,4]  [,5]  [,6] [,7]
+## [1,] FALSE FALSE  TRUE FALSE FALSE FALSE TRUE
+## [2,] FALSE FALSE FALSE FALSE FALSE  TRUE TRUE</code></pre>
 </div>
 <div id="blend-it-all-together" class="section level2">
 <h2>1-10 Blend it all together</h2>
 <p>With the things you’ve learned by now, you’re able to solve pretty cool problems.</p>
 <p>Instead of recording the number of views for your own LinkedIn profile, suppose you conducted a survey inside the company you’re working for. You’ve asked every employee with a LinkedIn profile how many visits their profile has had over the past seven days. You stored the results in a data frame called li_df. This data frame is available in the workspace; type li_df in the console to check it out.</p>
+<p>Select the entire second column, named day2, from the li_df data frame as a vector and assign it to second.</p>
+<p>Use second to create a logical vector, that contains TRUE if the corresponding number of views is strictly greater than 25 or strictly lower than 5 and FALSE otherwise. Store this logical vector as extremes.
+Use sum() on the extremes vector to calculate the number of TRUEs in extremes (i.e. to calculate the number of employees that are either very popular or very low-profile). Simply print this number to the console.</p>
+<pre class="r"><code># li_df is pre-loaded in your workspace
+
+# Select the second column, named day2, from li_df: second
+second &lt;- li_df$day2
+
+# Build a logical vector, TRUE if value in second is extreme: extremes
+extremes &lt;- second &lt; 5 | second &gt; 25 
+
+# Count the number of TRUEs in extremes
+sum(extremes==TRUE)</code></pre>
+<pre><code>## [1] 16</code></pre>
 </div>
 <div id="the-if-statement" class="section level2">
 <h2>1-12 The if statement</h2>
 <p>Before diving into some exercises on the if statement, have another look at its syntax:</p>
 <p>if (condition) {
 expr
-}
-Remember your vectors with social profile views? Let’s look at it from another angle. The medium variable gives information about the social website; the num_views variable denotes the actual number of views that particular medium had on the last day of your recordings. Both variables have been pre-defined for you.</p>
+}</p>
+<p>Remember your vectors with social profile views? Let’s look at it from another angle. The medium variable gives information about the social website; the num_views variable denotes the actual number of views that particular medium had on the last day of your recordings. Both variables have been pre-defined for you.</p>
+<pre class="r"><code># Variables related to your last day of recordings
+medium &lt;- &quot;LinkedIn&quot;
+num_views &lt;- 14
+
+# Examine the if statement for medium
+if (medium == &quot;LinkedIn&quot;) {
+  print(&quot;Showing LinkedIn information&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Showing LinkedIn information&quot;</code></pre>
+<pre class="r"><code># Write the if statement for num_views
+if (num_views &gt; 15) {
+  print(&quot;You are popular!&quot;)
+}</code></pre>
 </div>
 <div id="add-an-else" class="section level2">
 <h2>1-13 Add an else</h2>
@@ -147,9 +187,27 @@ Remember your vectors with social profile views? Let’s look at it from another
 expr1
 } else {
 expr2
-}
-It’s important that the else keyword comes on the same line as the closing bracket of the if part!</p>
+}</p>
+<p>It’s important that the else keyword comes on the same line as the closing bracket of the if part!</p>
 <p>Both if statements that you coded in the previous exercises are already available to use. It’s now up to you to extend them with the appropriate else statements!</p>
+<pre class="r"><code># Variables related to your last day of recordings
+medium &lt;- &quot;LinkedIn&quot;
+num_views &lt;- 14
+
+# Control structure for medium
+if (medium == &quot;LinkedIn&quot;) {
+  print(&quot;Showing LinkedIn information&quot;)
+} else {
+print(&quot;Unknown medium&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Showing LinkedIn information&quot;</code></pre>
+<pre class="r"><code># Control structure for num_views
+if (num_views &gt; 15) {
+  print(&quot;You&#39;re popular!&quot;)
+} else {
+ print(&quot;Try to be more visible!&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Try to be more visible!&quot;</code></pre>
 </div>
 <div id="customize-further-else-if" class="section level2">
 <h2>1-14 Customize further: else if</h2>
@@ -164,11 +222,51 @@ expr3
 expr4
 }
 Again, It’s important that the else if keywords comes on the same line as the closing bracket of the previous part of the control construct!</p>
+<pre class="r"><code># Variables related to your last day of recordings
+medium &lt;- &quot;LinkedIn&quot;
+num_views &lt;- 14
+
+# Control structure for medium
+if (medium == &quot;LinkedIn&quot;) {
+  print(&quot;Showing LinkedIn information&quot;)
+} else if (medium == &quot;Facebook&quot;) {
+  # Add code to print correct string when condition is TRUE
+print(&quot;Showing Facebook information&quot;)
+} else {
+  print(&quot;Unknown medium&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Showing LinkedIn information&quot;</code></pre>
+<pre class="r"><code># Control structure for num_views
+if (num_views &gt; 15) {
+  print(&quot;You&#39;re popular!&quot;)
+} else if (num_views &lt;= 15 &amp; num_views &gt; 10) {
+  # Add code to print correct string when condition is TRUE
+print(&quot;Your number of views is average&quot;)
+} else {
+  print(&quot;Try to be more visible!&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Your number of views is average&quot;</code></pre>
 </div>
 <div id="take-control" class="section level2">
 <h2>1-15 Take control!</h2>
 <p>In this exercise, you will combine everything that you’ve learned so far: relational operators, logical operators and control constructs. You’ll need it all!</p>
 <p>We’ve pre-defined two values for you: li and fb, denoting the number of profile views your LinkedIn and Facebook profile had on the last day of recordings. Go through the instructions to create R code that generates a ‘social media score’, sms, based on the values of li and fb.</p>
+<pre class="r"><code># Variables related to your last day of recordings
+li &lt;- 15
+fb &lt;- 9
+
+# Code the control-flow construct
+if (li &gt;= 15 &amp; fb &gt;= 15) {
+  sms &lt;- 2 * (li + fb)
+} else if (li &lt; 10 &amp; fb &lt; 10) {
+  sms &lt;- 0.5 * (li + fb)
+} else {
+  sms &lt;- li + fb
+}
+
+# Print the resulting sms to the console
+sms</code></pre>
+<pre><code>## [1] 24</code></pre>
 </div>
 <div id="loops" class="section level2">
 <h2>2- Loops</h2>
