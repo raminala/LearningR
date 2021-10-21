@@ -272,76 +272,310 @@ sms</code></pre>
 <h2>2- Loops</h2>
 <p>Loops can come in handy on numerous occasions. While loops are like repeated if statements, the for loop is designed to iterate over all elements in a sequence. Learn about them in this chapter.</p>
 </div>
-<div id="section" class="section level2">
-<h2>2-2</h2>
+<div id="write-a-while-loop" class="section level2">
+<h2>2-2 Write a while loop</h2>
+<p>Let’s get you started with building a while loop from the ground up. Have another look at its recipe:</p>
+<p>while (condition) {
+expr
+}</p>
+<p>Remember that the condition part of this recipe should become FALSE at some point during the execution. Otherwise, the while loop will go on indefinitely.</p>
+<p>If your session expires when you run your code, check the body of your while loop carefully.</p>
+<p>Have a look at the sample code provided; it initializes the speed variables and already provides a while loop template to get you started.</p>
+<pre class="r"><code># Initialize the speed variable
+speed &lt;- 64
+
+# Code the while loop
+while ( speed&gt; 30 ) {
+  print (&quot;Slow down!&quot;)
+  speed &lt;- speed-7
+}</code></pre>
+<pre><code>## [1] &quot;Slow down!&quot;
+## [1] &quot;Slow down!&quot;
+## [1] &quot;Slow down!&quot;
+## [1] &quot;Slow down!&quot;
+## [1] &quot;Slow down!&quot;</code></pre>
+<pre class="r"><code># Print out the speed variable
+speed</code></pre>
+<pre><code>## [1] 29</code></pre>
 </div>
-<div id="section-1" class="section level2">
-<h2>2-2</h2>
+<div id="throw-in-more-conditionals" class="section level2">
+<h2>2-3 Throw in more conditionals</h2>
+<p>In the previous exercise, you simulated the interaction between a driver and a driver’s assistant: When the speed was too high, “Slow down!” got printed out to the console, resulting in a decrease of your speed by 7 units.</p>
+<p>There are several ways in which you could make your driver’s assistant more advanced. For example, the assistant could give you different messages based on your speed or provide you with a current speed at a given moment.</p>
+<p>A while loop similar to the one you’ve coded in the previous exercise is already available for you to use. It prints out your current speed, but there’s no code that decreases the speed variable yet, which is pretty dangerous. Can you make the appropriate changes?</p>
+<pre class="r"><code># Initialize the speed variable
+speed &lt;- 64
+
+# Extend/adapt the while loop
+while (speed &gt; 30) {
+  print(paste(&quot;Your speed is&quot;,speed))
+  if (speed &gt; 48 ) {
+    print(&quot;Slow down big time!&quot;)
+    speed &lt;- speed-11
+  } else {
+    print(&quot;Slow down!&quot;)
+    speed &lt;- speed-6
+  }
+}</code></pre>
+<pre><code>## [1] &quot;Your speed is 64&quot;
+## [1] &quot;Slow down big time!&quot;
+## [1] &quot;Your speed is 53&quot;
+## [1] &quot;Slow down big time!&quot;
+## [1] &quot;Your speed is 42&quot;
+## [1] &quot;Slow down!&quot;
+## [1] &quot;Your speed is 36&quot;
+## [1] &quot;Slow down!&quot;</code></pre>
 </div>
-<div id="section-2" class="section level2">
-<h2>2-2</h2>
+<div id="stop-the-while-loop-break" class="section level2">
+<h2>2-4 Stop the while loop: break</h2>
+<p>There are some very rare situations in which severe speeding is necessary: what if a hurricane is approaching and you have to get away as quickly as possible? You don’t want the driver’s assistant sending you speeding notifications in that scenario, right?</p>
+<p>This seems like a great opportunity to include the break statement in the while loop you’ve been working on. Remember that the break statement is a control statement. When R encounters it, the while loop is abandoned completely.</p>
+<pre class="r"><code># Initialize the speed variable
+speed &lt;- 88
+
+while (speed &gt; 30) {
+  print(paste(&quot;Your speed is&quot;, speed))
+  
+  # Break the while loop when speed exceeds 80
+  if (speed &gt; 80) {
+    break
+  }
+  
+  if (speed &gt; 48) {
+    print(&quot;Slow down big time!&quot;)
+    speed &lt;- speed - 11
+  } else {
+    print(&quot;Slow down!&quot;)
+    speed &lt;- speed - 6
+  }
+}</code></pre>
+<pre><code>## [1] &quot;Your speed is 88&quot;</code></pre>
 </div>
-<div id="section-3" class="section level2">
-<h2>2-2</h2>
+<div id="build-a-while-loop-from-scratch" class="section level2">
+<h2>2-5 Build a while loop from scratch</h2>
+<p>The previous exercises guided you through developing a pretty advanced while loop, containing a break statement and different messages and updates as determined by control flow constructs. If you manage to solve this comprehensive exercise using a while loop, you’re totally ready for the next topic: the for loop.</p>
+<pre class="r"><code># Initialize i as 1 
+i &lt;- 1
+
+# Code the while loop
+while (i &lt;= 10) {
+  print(3 * i)
+  if ((i * 3) %% 8 == 0) {
+    break
+  }
+  i &lt;- i + 1
+}</code></pre>
+<pre><code>## [1] 3
+## [1] 6
+## [1] 9
+## [1] 12
+## [1] 15
+## [1] 18
+## [1] 21
+## [1] 24</code></pre>
 </div>
-<div id="section-4" class="section level2">
-<h2>2-2</h2>
+<div id="loop-over-a-vector" class="section level2">
+<h2>2-7 Loop over a vector</h2>
+<p>In the previous video, Filip told you about two different strategies for using the for loop. To refresh your memory, consider the following loops that are equivalent in R:</p>
+<p>primes &lt;- c(2, 3, 5, 7, 11, 13)</p>
 </div>
-<div id="section-5" class="section level2">
-<h2>2-2</h2>
+<div id="loop-version-1" class="section level1">
+<h1>loop version 1</h1>
+<p>for (p in primes) {
+print(p)
+}</p>
 </div>
-<div id="section-6" class="section level2">
-<h2>2-2</h2>
+<div id="loop-version-2" class="section level1">
+<h1>loop version 2</h1>
+<p>for (i in 1:length(primes)) {
+print(primes[i])
+}</p>
+<p>Remember our linkedin vector? It’s a vector that contains the number of views your LinkedIn profile had in the last seven days. The linkedin vector has been pre-defined so that you can fully focus on the instructions!</p>
+<pre class="r"><code># The linkedin vector has already been defined for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+
+# Loop version 1
+for (i in linkedin) {
+    print(i)
+}</code></pre>
+<pre><code>## [1] 16
+## [1] 9
+## [1] 13
+## [1] 5
+## [1] 2
+## [1] 17
+## [1] 14</code></pre>
+<pre class="r"><code>print(&quot;----------------------&quot;)</code></pre>
+<pre><code>## [1] &quot;----------------------&quot;</code></pre>
+<pre class="r"><code># Loop version 2
+for (i in 1:length(linkedin)) {
+    print(linkedin[i])
+}</code></pre>
+<pre><code>## [1] 16
+## [1] 9
+## [1] 13
+## [1] 5
+## [1] 2
+## [1] 17
+## [1] 14</code></pre>
+<div id="loop-over-a-list" class="section level2">
+<h2>2-8 Loop over a list</h2>
+<p>Looping over a list is just as easy and convenient as looping over a vector. There are again two different approaches here:</p>
+<p>primes_list &lt;- list(2, 3, 5, 7, 11, 13)</p>
 </div>
-<div id="section-7" class="section level2">
-<h2>2-2</h2>
 </div>
-<div id="section-8" class="section level2">
-<h2>2-2</h2>
+<div id="loop-version-1-1" class="section level1">
+<h1>loop version 1</h1>
+<p>for (p in primes_list) {
+print(p)
+}</p>
 </div>
-<div id="section-9" class="section level2">
-<h2>2-2</h2>
+<div id="loop-version-2-1" class="section level1">
+<h1>loop version 2</h1>
+<p>for (i in 1:length(primes_list)) {
+print(primes_list[[i]])
+}</p>
+<p>Notice that you need double square brackets - [[ ]] - to select the list elements in loop version 2.</p>
+<p>Suppose you have a list of all sorts of information on New York City: its population size, the names of the boroughs, and whether it is the capital of the United States. We’ve already defined a list nyc containing this information (source: Wikipedia).</p>
+<pre class="r"><code># The nyc list is already specified
+nyc &lt;- list(pop = 8405837, 
+            boroughs = c(&quot;Manhattan&quot;, &quot;Bronx&quot;, &quot;Brooklyn&quot;, &quot;Queens&quot;, &quot;Staten Island&quot;), 
+            capital = FALSE)
+
+# Loop version 1
+for (p in nyc) {
+  print(p)
+}</code></pre>
+<pre><code>## [1] 8405837
+## [1] &quot;Manhattan&quot;     &quot;Bronx&quot;         &quot;Brooklyn&quot;      &quot;Queens&quot;       
+## [5] &quot;Staten Island&quot;
+## [1] FALSE</code></pre>
+<pre class="r"><code># Loop version 2
+for (i in 1:length(nyc)) {
+  print(nyc[[i]])
+}</code></pre>
+<pre><code>## [1] 8405837
+## [1] &quot;Manhattan&quot;     &quot;Bronx&quot;         &quot;Brooklyn&quot;      &quot;Queens&quot;       
+## [5] &quot;Staten Island&quot;
+## [1] FALSE</code></pre>
+<div id="loop-over-a-matrix" class="section level2">
+<h2>2-9 Loop over a matrix</h2>
+<p>In your workspace, there’s a matrix ttt, that represents the status of a tic-tac-toe game. It contains the values “X”, “O” and “NA”. Print out ttt to get a closer look. On row 1 and column 1, there’s “O”, while on row 3 and column 2 there’s “NA”.</p>
+<p>To solve this exercise, you’ll need a for loop inside a for loop, often called a nested loop. Doing this in R is a breeze! Simply use the following recipe:</p>
+<p>for (var1 in seq1) {
+for (var2 in seq2) {
+expr
+}
+}</p>
+<p>Finish the nested for loops to go over the elements in ttt:</p>
+<p>The outer loop should loop over the rows, with loop index i (use 1:nrow(ttt)).</p>
+<p>The inner loop should loop over the columns, with loop index j (use 1:ncol(ttt)).</p>
+<p>Inside the inner loop, make use of print() and paste() to print out information in the following format: “On row i and column j the board contains x”, where x is the value on that position.</p>
+<pre class="r"><code># The tic-tac-toe matrix ttt has already been defined for you
+
+# define the double for loop
+for (i in 1:nrow(ttt)) {
+  for (j in 1:ncol(ttt)) {
+    print(paste(&quot;On row&quot;, i, &quot;and column&quot;, j, &quot;the board contains&quot;,ttt[i,j]))
+  }
+}</code></pre>
+<pre><code>## [1] &quot;On row 1 and column 1 the board contains 0&quot;
+## [1] &quot;On row 1 and column 2 the board contains NA&quot;
+## [1] &quot;On row 1 and column 3 the board contains X&quot;
+## [1] &quot;On row 2 and column 1 the board contains NA&quot;
+## [1] &quot;On row 2 and column 2 the board contains 0&quot;
+## [1] &quot;On row 2 and column 3 the board contains 0&quot;
+## [1] &quot;On row 3 and column 1 the board contains X&quot;
+## [1] &quot;On row 3 and column 2 the board contains NA&quot;
+## [1] &quot;On row 3 and column 3 the board contains X&quot;</code></pre>
+</div>
+<div id="mix-it-up-with-control-flow" class="section level2">
+<h2>2-10 Mix it up with control flow</h2>
+<p>Let’s return to the LinkedIn profile views data, stored in a vector linkedin. In the first exercise on for loops you already did a simple printout of each element in this vector. A little more in-depth interpretation of this data wouldn’t hurt, right? Time to throw in some conditionals! As with the while loop, you can use the if and else statements inside the for loop.</p>
+</div>
+<div id="next-you-break-it" class="section level2">
+<h2>2-11 Next, you break it</h2>
+<p>A possible solution to the previous exercise has been provided for you. The code loops over the linkedin vector and prints out different messages depending on the values of li.</p>
+<p>In this exercise, you will use the break and next statements:</p>
+<p>The break statement abandons the active loop: the remaining code in the loop is skipped and the loop is not iterated over anymore.
+The next statement skips the remainder of the code in the loop, but continues the iteration.</p>
+</div>
+<div id="build-a-for-loop-from-scratch" class="section level2">
+<h2>2-12 Build a for loop from scratch</h2>
+<p>This exercise will not introduce any new concepts on for loops.</p>
+<p>We already went ahead and defined a variable rquote. This variable has been split up into a vector that contains separate letters and has been stored in a vector chars with the strsplit() function.</p>
+<p>Can you write code that counts the number of r’s that come before the first u in rquote?</p>
 </div>
 <div id="functions" class="section level2">
 <h2>3- Functions</h2>
 <p>Functions are an extremely important concept in almost every programming language, and R is no different. Learn what functions are and how to use them—then take charge by writing your own functions.</p>
 </div>
+<div id="section" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-1" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-2" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-3" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-4" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-5" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-6" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-7" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-8" class="section level2">
+<h2>3-2</h2>
+</div>
+<div id="section-9" class="section level2">
+<h2>3-2</h2>
+</div>
 <div id="section-10" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-11" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-12" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-13" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-14" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-15" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-16" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-17" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-18" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-19" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-20" class="section level2">
 <h2>3-2</h2>
 </div>
 <div id="the-apply-family" class="section level2">
 <h2>4- The apply family</h2>
 <p>Whenever you’re using a for loop, you may want to revise your code to see whether you can use the lapply function instead. Learn all about this intuitive way of applying a function over a list or a vector, and how to use its variants, sapply and vapply.</p>
+</div>
+<div id="section-11" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-12" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-13" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-14" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-15" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-16" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-17" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-18" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-19" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-20" class="section level2">
+<h2>4-2</h2>
 </div>
 <div id="section-21" class="section level2">
 <h2>4-2</h2>
@@ -349,45 +583,45 @@ sms</code></pre>
 <div id="section-22" class="section level2">
 <h2>4-2</h2>
 </div>
-<div id="section-23" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-24" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-25" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-26" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-27" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-28" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-29" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-30" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-31" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-32" class="section level2">
-<h2>4-2</h2>
-</div>
 <div id="utilities" class="section level2">
 <h2>5- Utilities</h2>
 <p>Mastering R programming is not only about understanding its programming concepts. Having a solid understanding of a wide range of R functions is also important. This chapter introduces you to many useful functions for data structure manipulation, regular expressions, and working with times and dates.</p>
+</div>
+<div id="section-23" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-24" class="section level2">
+<h2>5-3</h2>
+</div>
+<div id="section-25" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-26" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-27" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-28" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-29" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-30" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-31" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-32" class="section level2">
+<h2>5-2</h2>
 </div>
 <div id="section-33" class="section level2">
 <h2>5-2</h2>
 </div>
 <div id="section-34" class="section level2">
-<h2>5-3</h2>
+<h2>5-2</h2>
 </div>
 <div id="section-35" class="section level2">
 <h2>5-2</h2>
@@ -395,33 +629,4 @@ sms</code></pre>
 <div id="section-36" class="section level2">
 <h2>5-2</h2>
 </div>
-<div id="section-37" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-38" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-39" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-40" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-41" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-42" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-43" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-44" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-45" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-46" class="section level2">
-<h2>5-2</h2>
 </div>
