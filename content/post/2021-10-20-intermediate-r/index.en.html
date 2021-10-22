@@ -692,27 +692,201 @@ facebook &lt;- c(17, NA, 5, 16, 8, 13, 14)
 mean(abs(linkedin -facebook), na.rm=TRUE)</code></pre>
 <pre><code>## [1] 4.8</code></pre>
 </div>
-<div id="section" class="section level2">
-<h2>3-9</h2>
+<div id="write-your-own-function" class="section level2">
+<h2>3-9 Write your own function</h2>
+<p>Wow, things are getting serious… you’re about to write your own function! Before you have a go at it, have a look at the following function template:</p>
+<p>my_fun &lt;- function(arg1, arg2) {
+body
+}</p>
+<p>Notice that this recipe uses the assignment operator (&lt;-) just as if you were assigning a vector to a variable for example. This is not a coincidence. Creating a function in R basically is the assignment of a function object to a variable! In the recipe above, you’re creating a new R variable my_fun, that becomes available in the workspace as soon as you execute the definition. From then on, you can use the my_fun as a function.</p>
+<pre class="r"><code># Create a function pow_two()
+pow_two &lt;- function(a){
+a*a
+}
+
+
+# Use the function
+pow_two(12)</code></pre>
+<pre><code>## [1] 144</code></pre>
+<pre class="r"><code># Create a function sum_abs()
+sum_abs &lt;- function(b,c){
+abs(b)+abs(c)
+}
+
+
+# Use the function
+sum_abs(-2,3)</code></pre>
+<pre><code>## [1] 5</code></pre>
 </div>
-<div id="section-1" class="section level2">
-<h2>3-10</h2>
+<div id="write-your-own-function-2" class="section level2">
+<h2>3-10 Write your own function (2)</h2>
+<p>There are situations in which your function does not require an input. Let’s say you want to write a function that gives us the random outcome of throwing a fair die:</p>
+<p>throw_die &lt;- function() {
+number &lt;- sample(1:6, size = 1)
+number
+}</p>
+<p>throw_die()</p>
+<p>Up to you to code a function that doesn’t take any arguments!</p>
+<pre class="r"><code># Define the function hello()
+hello &lt;- function(){
+print(&quot;Hi there!&quot;)
+return(TRUE)
+}
+
+
+
+
+# Call the function hello()
+hello()</code></pre>
+<pre><code>## [1] &quot;Hi there!&quot;</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
-<div id="section-2" class="section level2">
-<h2>3-11</h2>
+<div id="write-your-own-function-3" class="section level2">
+<h2>3-11 Write your own function (3)</h2>
+<p>Do you still remember the difference between an argument with and without default values? The usage section in the sd() documentation shows the following information:</p>
+<p>sd(x, na.rm = FALSE)
+This tells us that x has to be defined for the sd() function to be called correctly, however, na.rm already has a default value. Not specifying this argument won’t cause an error.</p>
+<p>You can define default argument values in your own R functions as well. You can use the following recipe to do so:</p>
+<p>my_fun &lt;- function(arg1, arg2 = val2) {
+body
+}</p>
+<p>The editor on the right already includes an extended version of the pow_two() function from before. Can you finish it?</p>
+<pre class="r"><code># Finish the pow_two() function
+pow_two &lt;- function(x, print_info=TRUE) {
+  y &lt;- x ^ 2
+  if(print_info == TRUE){
+     print(paste(x, &quot;to the power two equals&quot;, y))
+  }
+ 
+  return(y)
+}</code></pre>
 </div>
-<div id="section-3" class="section level2">
-<h2>3-14</h2>
+<div id="r-you-functional" class="section level2">
+<h2>3-14 R you functional?</h2>
+<p>Now that you’ve acquired some skills in defining functions with different types of arguments and return values, you should try to create more advanced functions. As you’ve noticed in the previous exercises, it’s perfectly possible to add control-flow constructs, loops and even other functions to your function body.</p>
+<p>Remember our social media example? The vectors linkedin and facebook are already defined in the workspace so you can get your hands dirty straight away. As a first step, you will be writing a function that can interpret a single value of this vector. In the next exercise, you will write another function that can handle an entire vector at once.</p>
+<pre class="r"><code>facebook2 &lt;- c(17,  7,  5, 16,  8, 13, 14)
+# The linkedin and facebook vectors have already been created for you
+
+# Define the interpret function
+interpret &lt;- function(num_views) {
+  if (num_views &gt; 15) {
+    print(&quot;You&#39;re popular!&quot;)
+    return(num_views)
+  } else {
+    print(&quot;Try to be more visible!&quot;)
+    return(0)
+  }
+}
+
+# Call the interpret function twice
+interpret(linkedin[1])</code></pre>
+<pre><code>## [1] &quot;You&#39;re popular!&quot;</code></pre>
+<pre><code>## [1] 16</code></pre>
+<pre class="r"><code>interpret(facebook2[2])</code></pre>
+<pre><code>## [1] &quot;Try to be more visible!&quot;</code></pre>
+<pre><code>## [1] 0</code></pre>
 </div>
-<div id="section-4" class="section level2">
-<h2>3-15</h2>
+<div id="r-you-functional-2" class="section level2">
+<h2>3-15 R you functional? (2)</h2>
+<p>A possible implementation of the interpret() function has been provided for you. In this exercise you’ll be writing another function that will use the interpret() function to interpret all the data from your daily profile views inside a vector. Furthermore, your function will return the sum of views on popular days, if asked for. A for loop is ideal for iterating over all the vector elements. The ability to return the sum of views on popular days is something you can code through a function argument with a default value.</p>
+<pre class="r"><code># The linkedin and facebook vectors have already been created for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+facebook &lt;- c(17, 7, 5, 16, 8, 13, 14)
+
+# The interpret() can be used inside interpret_all()
+interpret &lt;- function(num_views) {
+  if (num_views &gt; 15) {
+    print(&quot;You&#39;re popular!&quot;)
+    return(num_views)
+  } else {
+    print(&quot;Try to be more visible!&quot;)
+    return(0)
+  }
+}
+
+# Define the interpret_all() function
+# views: vector with data to interpret
+# return_sum: return total number of views on popular days?
+interpret_all &lt;- function(views, return_sum=TRUE) {
+  count &lt;- 0
+
+  for (v in views) {
+count &lt;- count+ interpret(v)
+  }
+
+  if (return_sum==TRUE) {
+    count
+  } else {
+    NULL
+  }
+}
+
+# Call the interpret_all() function on both linkedin and facebook
+interpret_all(linkedin)</code></pre>
+<pre><code>## [1] &quot;You&#39;re popular!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;You&#39;re popular!&quot;
+## [1] &quot;Try to be more visible!&quot;</code></pre>
+<pre><code>## [1] 33</code></pre>
+<pre class="r"><code>interpret_all(facebook)</code></pre>
+<pre><code>## [1] &quot;You&#39;re popular!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;You&#39;re popular!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;Try to be more visible!&quot;
+## [1] &quot;Try to be more visible!&quot;</code></pre>
+<pre><code>## [1] 33</code></pre>
 </div>
-<div id="section-5" class="section level2">
-<h2>3-17</h2>
+<div id="load-an-r-package" class="section level2">
+<h2>3-17 Load an R Package</h2>
+<p>There are basically two extremely important functions when it comes down to R packages:</p>
+<p>install.packages(), which as you can expect, installs a given package.
+library() which loads packages, i.e. attaches them to the search list on your R workspace.
+To install packages, you need administrator privileges. This means that install.packages() will thus not work in the DataCamp interface. However, almost all CRAN packages are installed on our servers. You can load them with library().</p>
+<p>In this exercise, you’ll be learning how to load the ggplot2 package, a powerful package for data visualization. You’ll use it to create a plot of two variables of the mtcars data frame. The data has already been prepared for you in the workspace.</p>
+<p>Before starting, execute the following commands in the console:</p>
+<p>search(), to look at the currently attached packages and
+qplot(mtcars<span class="math inline">\(wt, mtcars\)</span>hp), to build a plot of two variables of the mtcars data frame.
+An error should occur, because you haven’t loaded the ggplot2 package yet!</p>
+<pre class="r"><code># Load the ggplot2 package
+library(ggplot2)
+
+# Retry the qplot() function
+qplot(mtcars$wt, mtcars$hp)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<pre class="r"><code># Check out the currently attached packages again
+search()</code></pre>
+<pre><code>##  [1] &quot;.GlobalEnv&quot;        &quot;package:ggplot2&quot;   &quot;package:stats&quot;    
+##  [4] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    
+##  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
+## [10] &quot;package:base&quot;</code></pre>
 </div>
 <div id="the-apply-family" class="section level2">
 <h2>4- The apply family</h2>
 <p>Whenever you’re using a for loop, you may want to revise your code to see whether you can use the lapply function instead. Learn all about this intuitive way of applying a function over a list or a vector, and how to use its variants, sapply and vapply.</p>
+</div>
+<div id="section" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-1" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-2" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-3" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-4" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-5" class="section level2">
+<h2>4-2</h2>
 </div>
 <div id="section-6" class="section level2">
 <h2>4-2</h2>
@@ -732,33 +906,33 @@ mean(abs(linkedin -facebook), na.rm=TRUE)</code></pre>
 <div id="section-11" class="section level2">
 <h2>4-2</h2>
 </div>
-<div id="section-12" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-13" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-14" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-15" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-16" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-17" class="section level2">
-<h2>4-2</h2>
-</div>
 <div id="utilities" class="section level2">
 <h2>5- Utilities</h2>
 <p>Mastering R programming is not only about understanding its programming concepts. Having a solid understanding of a wide range of R functions is also important. This chapter introduces you to many useful functions for data structure manipulation, regular expressions, and working with times and dates.</p>
+</div>
+<div id="section-12" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-13" class="section level2">
+<h2>5-3</h2>
+</div>
+<div id="section-14" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-15" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-16" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-17" class="section level2">
+<h2>5-2</h2>
 </div>
 <div id="section-18" class="section level2">
 <h2>5-2</h2>
 </div>
 <div id="section-19" class="section level2">
-<h2>5-3</h2>
+<h2>5-2</h2>
 </div>
 <div id="section-20" class="section level2">
 <h2>5-2</h2>
@@ -776,24 +950,6 @@ mean(abs(linkedin -facebook), na.rm=TRUE)</code></pre>
 <h2>5-2</h2>
 </div>
 <div id="section-25" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-26" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-27" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-28" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-29" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-30" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-31" class="section level2">
 <h2>5-2</h2>
 </div>
 </div>
