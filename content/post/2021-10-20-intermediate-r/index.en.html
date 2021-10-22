@@ -604,40 +604,127 @@ print(rcount)</code></pre>
 <p>A quick hack to see the arguments of the sample() function is the args() function. Try it out in the console:</p>
 <p>args(sample)
 In the next exercises, you’ll be learning how to use the mean() function with increasing complexity. The first thing you’ll have to do is get acquainted with the mean() function.</p>
+<pre class="r"><code># Consult the documentation on the mean() function
+?mean</code></pre>
+<pre><code>## starting httpd help server ... done</code></pre>
+<pre class="r"><code># Inspect the arguments of the mean() function
+ args(mean)</code></pre>
+<pre><code>## function (x, ...) 
+## NULL</code></pre>
+</div>
+<div id="use-a-function" class="section level2">
+<h2>3-3 Use a function</h2>
+<p>The documentation on the mean() function gives us quite some information:</p>
+<p>The mean() function computes the arithmetic mean.
+The most general method takes multiple arguments: x and ….
+The x argument should be a vector containing numeric, logical or time-related information.
+Remember that R can match arguments both by position and by name. Can you still remember the difference? You’ll find out in this exercise!</p>
+<p>Once more, you’ll be working with the view counts of your social network profiles for the past 7 days. These are stored in the linkedin and facebook vectors and have already been created for you.</p>
+<pre class="r"><code># The linkedin and facebook vectors have already been created for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+facebook &lt;- c(17, 7, 5, 16, 8, 13, 14)
+
+# Calculate average number of views
+avg_li &lt;- mean(linkedin)
+avg_fb &lt;- mean(facebook)
+
+
+# Inspect avg_li and avg_fb
+avg_li</code></pre>
+<pre><code>## [1] 10.85714</code></pre>
+<pre class="r"><code>avg_fb</code></pre>
+<pre><code>## [1] 11.42857</code></pre>
+</div>
+<div id="use-a-function-2" class="section level2">
+<h2>3-4 Use a function (2)</h2>
+<p>Check the documentation on the mean() function again:</p>
+<p>?mean
+The Usage section of the documentation includes two versions of the mean() function. The first usage,</p>
+<p>mean(x, …)
+is the most general usage of the mean function. The ‘Default S3 method’, however, is:</p>
+<p>mean(x, trim = 0, na.rm = FALSE, …)
+The … is called the ellipsis. It is a way for R to pass arguments along without the function having to name them explicitly. The ellipsis will be treated in more detail in future courses.</p>
+<p>For the remainder of this exercise, just work with the second usage of the mean function. Notice that both trim and na.rm have default values. This makes them optional arguments.</p>
+<pre class="r"><code># The linkedin and facebook vectors have already been created for you
+linkedin &lt;- c(16, 9, 13, 5, 2, 17, 14)
+facebook &lt;- c(17, 7, 5, 16, 8, 13, 14)
+
+# Calculate the mean of the sum
+avg_sum &lt;- mean(linkedin+facebook)
+
+# Calculate the trimmed mean of the sum
+avg_sum_trimmed &lt;- mean(linkedin+facebook, trim = 0.2)
+
+# Inspect both new variables
+avg_sum</code></pre>
+<pre><code>## [1] 22.28571</code></pre>
+<pre class="r"><code>avg_sum_trimmed</code></pre>
+<pre><code>## [1] 22.6</code></pre>
+</div>
+<div id="use-a-function-3" class="section level2">
+<h2>3-5 Use a function (3)</h2>
+<p>In the video, Filip guided you through the example of specifying arguments of the sd() function. The sd() function has an optional argument, na.rm that specified whether or not to remove missing values from the input vector before calculating the standard deviation.</p>
+<p>If you’ve had a good look at the documentation, you’ll know by now that the mean() function also has this argument, na.rm, and it does the exact same thing. By default, it is set to FALSE, as the Usage of the default S3 method shows:</p>
+<p>mean(x, trim = 0, na.rm = FALSE, …)
+Let’s see what happens if your vectors linkedin and facebook contain missing values (NA).</p>
+<pre class="r"><code># The linkedin and facebook vectors have already been created for you
+linkedin &lt;- c(16, 9, 13, 5, NA, 17, 14)
+facebook &lt;- c(17, NA, 5, 16, 8, 13, 14)
+
+# Basic average of linkedin
+mean(linkedin)</code></pre>
+<pre><code>## [1] NA</code></pre>
+<pre class="r"><code># Advanced average of linkedin
+mean(linkedin, na.rm = TRUE)</code></pre>
+<pre><code>## [1] 12.33333</code></pre>
+</div>
+<div id="functions-inside-functions" class="section level2">
+<h2>3-6 Functions inside functions</h2>
+<p>You already know that R functions return objects that you can then use somewhere else. This makes it easy to use functions inside functions, as you’ve seen before:</p>
+<p>speed &lt;- 31</p>
+<p>print(paste(“Your speed is”, speed))</p>
+<p>Notice that both the print() and paste() functions use the ellipsis - … - as an argument. Can you figure out how they’re used?</p>
+<pre class="r"><code># The linkedin and facebook vectors have already been created for you
+linkedin &lt;- c(16, 9, 13, 5, NA, 17, 14)
+facebook &lt;- c(17, NA, 5, 16, 8, 13, 14)
+
+# Calculate the mean absolute deviation
+mean(abs(linkedin -facebook), na.rm=TRUE)</code></pre>
+<pre><code>## [1] 4.8</code></pre>
 </div>
 <div id="section" class="section level2">
-<h2>3-2</h2>
+<h2>3-9</h2>
 </div>
 <div id="section-1" class="section level2">
-<h2>3-2</h2>
+<h2>3-10</h2>
 </div>
 <div id="section-2" class="section level2">
-<h2>3-2</h2>
+<h2>3-11</h2>
 </div>
 <div id="section-3" class="section level2">
-<h2>3-2</h2>
+<h2>3-14</h2>
 </div>
 <div id="section-4" class="section level2">
-<h2>3-2</h2>
+<h2>3-15</h2>
 </div>
 <div id="section-5" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-6" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-7" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-8" class="section level2">
-<h2>3-2</h2>
-</div>
-<div id="section-9" class="section level2">
-<h2>3-2</h2>
+<h2>3-17</h2>
 </div>
 <div id="the-apply-family" class="section level2">
 <h2>4- The apply family</h2>
 <p>Whenever you’re using a for loop, you may want to revise your code to see whether you can use the lapply function instead. Learn all about this intuitive way of applying a function over a list or a vector, and how to use its variants, sapply and vapply.</p>
+</div>
+<div id="section-6" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-7" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-8" class="section level2">
+<h2>4-2</h2>
+</div>
+<div id="section-9" class="section level2">
+<h2>4-2</h2>
 </div>
 <div id="section-10" class="section level2">
 <h2>4-2</h2>
@@ -663,27 +750,27 @@ In the next exercises, you’ll be learning how to use the mean() function with 
 <div id="section-17" class="section level2">
 <h2>4-2</h2>
 </div>
-<div id="section-18" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-19" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-20" class="section level2">
-<h2>4-2</h2>
-</div>
-<div id="section-21" class="section level2">
-<h2>4-2</h2>
-</div>
 <div id="utilities" class="section level2">
 <h2>5- Utilities</h2>
 <p>Mastering R programming is not only about understanding its programming concepts. Having a solid understanding of a wide range of R functions is also important. This chapter introduces you to many useful functions for data structure manipulation, regular expressions, and working with times and dates.</p>
+</div>
+<div id="section-18" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-19" class="section level2">
+<h2>5-3</h2>
+</div>
+<div id="section-20" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-21" class="section level2">
+<h2>5-2</h2>
 </div>
 <div id="section-22" class="section level2">
 <h2>5-2</h2>
 </div>
 <div id="section-23" class="section level2">
-<h2>5-3</h2>
+<h2>5-2</h2>
 </div>
 <div id="section-24" class="section level2">
 <h2>5-2</h2>
@@ -707,18 +794,6 @@ In the next exercises, you’ll be learning how to use the mean() function with 
 <h2>5-2</h2>
 </div>
 <div id="section-31" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-32" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-33" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-34" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-35" class="section level2">
 <h2>5-2</h2>
 </div>
 </div>

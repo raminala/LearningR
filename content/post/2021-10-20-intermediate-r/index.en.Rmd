@@ -637,64 +637,141 @@ args(sample)
 In the next exercises, you'll be learning how to use the mean() function with increasing complexity. The first thing you'll have to do is get acquainted with the mean() function.
 
 ```{r}
+# Consult the documentation on the mean() function
+?mean
 
+# Inspect the arguments of the mean() function
+ args(mean)
 ```
 
-## 3-2 
+## 3-3 Use a function
+
+The documentation on the mean() function gives us quite some information:
+
+The mean() function computes the arithmetic mean.
+The most general method takes multiple arguments: x and ....
+The x argument should be a vector containing numeric, logical or time-related information.
+Remember that R can match arguments both by position and by name. Can you still remember the difference? You'll find out in this exercise!
+
+Once more, you'll be working with the view counts of your social network profiles for the past 7 days. These are stored in the linkedin and facebook vectors and have already been created for you.
+
+```{r}
+# The linkedin and facebook vectors have already been created for you
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+facebook <- c(17, 7, 5, 16, 8, 13, 14)
+
+# Calculate average number of views
+avg_li <- mean(linkedin)
+avg_fb <- mean(facebook)
+
+
+# Inspect avg_li and avg_fb
+avg_li
+avg_fb
+```
+
+## 3-4 Use a function (2)
+
+Check the documentation on the mean() function again:
+
+?mean
+The Usage section of the documentation includes two versions of the mean() function. The first usage,
+
+mean(x, ...)
+is the most general usage of the mean function. The 'Default S3 method', however, is:
+
+mean(x, trim = 0, na.rm = FALSE, ...)
+The ... is called the ellipsis. It is a way for R to pass arguments along without the function having to name them explicitly. The ellipsis will be treated in more detail in future courses.
+
+For the remainder of this exercise, just work with the second usage of the mean function. Notice that both trim and na.rm have default values. This makes them optional arguments.
+
+```{r}
+# The linkedin and facebook vectors have already been created for you
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+facebook <- c(17, 7, 5, 16, 8, 13, 14)
+
+# Calculate the mean of the sum
+avg_sum <- mean(linkedin+facebook)
+
+# Calculate the trimmed mean of the sum
+avg_sum_trimmed <- mean(linkedin+facebook, trim = 0.2)
+
+# Inspect both new variables
+avg_sum
+avg_sum_trimmed
+```
+
+## 3-5 Use a function (3)
+
+In the video, Filip guided you through the example of specifying arguments of the sd() function. The sd() function has an optional argument, na.rm that specified whether or not to remove missing values from the input vector before calculating the standard deviation.
+
+If you've had a good look at the documentation, you'll know by now that the mean() function also has this argument, na.rm, and it does the exact same thing. By default, it is set to FALSE, as the Usage of the default S3 method shows:
+
+mean(x, trim = 0, na.rm = FALSE, ...)
+Let's see what happens if your vectors linkedin and facebook contain missing values (NA).
+
+```{r}
+# The linkedin and facebook vectors have already been created for you
+linkedin <- c(16, 9, 13, 5, NA, 17, 14)
+facebook <- c(17, NA, 5, 16, 8, 13, 14)
+
+# Basic average of linkedin
+mean(linkedin)
+
+# Advanced average of linkedin
+mean(linkedin, na.rm = TRUE)
+```
+
+## 3-6 Functions inside functions
+
+You already know that R functions return objects that you can then use somewhere else. This makes it easy to use functions inside functions, as you've seen before:
+
+speed <- 31
+
+print(paste("Your speed is", speed))
+
+Notice that both the print() and paste() functions use the ellipsis - ... - as an argument. Can you figure out how they're used?
+
+```{r}
+# The linkedin and facebook vectors have already been created for you
+linkedin <- c(16, 9, 13, 5, NA, 17, 14)
+facebook <- c(17, NA, 5, 16, 8, 13, 14)
+
+# Calculate the mean absolute deviation
+mean(abs(linkedin -facebook), na.rm=TRUE)
+```
+
+## 3-9 
 
 ```{r}
 
 ```
 
-## 3-2 
+## 3-10 
 
 ```{r}
 
 ```
 
-## 3-2 
+## 3-11 
 
 ```{r}
 
 ```
 
-## 3-2 
+## 3-14 
 
 ```{r}
 
 ```
 
-## 3-2 
+## 3-15 
 
 ```{r}
 
 ```
 
-## 3-2 
-
-```{r}
-
-```
-
-## 3-2 
-
-```{r}
-
-```
-
-## 3-2 
-
-```{r}
-
-```
-
-## 3-2 
-
-```{r}
-
-```
-
-## 3-2 
+## 3-17 
 
 ```{r}
 
