@@ -532,7 +532,18 @@ for (i in 1:nrow(ttt)) {
 Let's return to the LinkedIn profile views data, stored in a vector linkedin. In the first exercise on for loops you already did a simple printout of each element in this vector. A little more in-depth interpretation of this data wouldn't hurt, right? Time to throw in some conditionals! As with the while loop, you can use the if and else statements inside the for loop.
 
 ```{r}
+# The linkedin vector has already been defined for you
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
 
+# Code the for loop with conditionals
+for (li in linkedin) {
+  if (li>10 ) {
+    print("You're popular!")
+  } else {
+   print("Be more visible!") 
+  }
+  print(li)
+}
 ```
 
 ## 2-11 Next, you break it
@@ -544,8 +555,36 @@ In this exercise, you will use the break and next statements:
 The break statement abandons the active loop: the remaining code in the loop is skipped and the loop is not iterated over anymore.
 The next statement skips the remainder of the code in the loop, but continues the iteration.
 
-```{r}
+Extend the for loop with two new, separate if tests as follows:
 
+If the vector element's value exceeds 16, print out "This is ridiculous, I'm outta here!" and have R abandon the for loop (break).
+If the value is lower than 5, print out "This is too embarrassing!" and fast-forward to the next iteration (next).
+
+```{r}
+# The linkedin vector has already been defined for you
+linkedin <- c(16, 9, 13, 5, 2, 17, 14)
+
+# Adapt/extend the for loop
+for (li in linkedin) {
+  if (li > 10) {
+    print("You're popular!")
+  } else {
+    print("Be more visible!")
+  }
+  
+  # Add if statement with break
+  if (li > 16) {
+  print("This is ridiculous, I'm outta here!")
+  break
+  }
+  # Add if statement with next
+  if (li < 5) {
+  print("his is too embarrassing!")
+  next
+  }
+  
+  print(li)
+}
 ```
 
 ## 2-12 Build a for loop from scratch
@@ -557,7 +596,25 @@ We already went ahead and defined a variable rquote. This variable has been spli
 Can you write code that counts the number of r's that come before the first u in rquote?
 
 ```{r}
+# Pre-defined variables
+rquote <- "r's internals are irrefutably intriguing"
+chars <- strsplit(rquote, split = "")[[1]]
 
+# Initialize rcount
+rcount <- 0
+
+# Finish the for loop
+for (char in chars) {
+  if (char == "r") {
+  rcount <- rcount+1
+}
+
+if (char == "u") {
+  break
+}
+}
+# Print out rcount
+print(rcount)
 ```
 
 
@@ -565,7 +622,19 @@ Can you write code that counts the number of r's that come before the first u in
 
 Functions are an extremely important concept in almost every programming language, and R is no different. Learn what functions are and how to use them—then take charge by writing your own functions.
 
-## 3-2 
+## 3-2 Function documentation
+
+Before even thinking of using an R function, you should clarify which arguments it expects. All the relevant details such as a description, usage, and arguments can be found in the documentation. To consult the documentation on the sample() function, for example, you can use one of following R commands:
+
+help(sample)
+?sample
+
+If you execute these commands, you'll be redirected to www.rdocumentation.org.
+
+A quick hack to see the arguments of the sample() function is the args() function. Try it out in the console:
+
+args(sample)
+In the next exercises, you'll be learning how to use the mean() function with increasing complexity. The first thing you'll have to do is get acquainted with the mean() function.
 
 ```{r}
 
