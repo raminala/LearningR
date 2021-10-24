@@ -926,83 +926,186 @@ search()
 
 Whenever you're using a for loop, you may want to revise your code to see whether you can use the lapply function instead. Learn all about this intuitive way of applying a function over a list or a vector, and how to use its variants, sapply and vapply.
 
-## 4-2 
+## 4-2 Use lapply with a built-in R function
+
+Before you go about solving the exercises below, have a look at the documentation of the lapply() function. The Usage section shows the following expression:
+
+lapply(X, FUN, ...)
+
+To put it generally, lapply takes a vector or list X, and applies the function FUN to each of its members. If FUN requires additional arguments, you pass them after you've specified X and FUN (...). The output of lapply() is a list, the same length as X, where each element is the result of applying FUN on the corresponding element of X.
+
+Now that you are truly brushing up on your data science skills, let's revisit some of the most relevant figures in data science history. We've compiled a vector of famous mathematicians/statisticians and the year they were born. Up to you to extract some information!
+
+```{r}
+# The vector pioneers has already been created for you
+pioneers <- c("GAUSS:1777", "BAYES:1702", "PASCAL:1623", "PEARSON:1857")
+
+# Split names from birth year
+split_math <- strsplit(pioneers, split = ":")
+
+# Convert to lowercase strings: split_low
+split_low <- lapply(split_math, tolower)
+
+# Take a look at the structure of split_low
+str(split_low)
+```
+
+## 4-3 Use lapply with your own function
+
+As Filip explained in the instructional video, you can use lapply() on your own functions as well. You just need to code a new function and make sure it is available in the workspace. After that, you can use the function inside lapply() just as you did with base R functions.
+
+In the previous exercise you already used lapply() once to convert the information about your favorite pioneering statisticians to a list of vectors composed of two character strings. Let's write some code to select the names and the birth years separately.
+
+The sample code already includes code that defined select_first(), that takes a vector as input and returns the first element of this vector.
+
+```{r}
+# Code from previous exercise:
+pioneers <- c("GAUSS:1777", "BAYES:1702", "PASCAL:1623", "PEARSON:1857")
+split <- strsplit(pioneers, split = ":")
+split_low <- lapply(split, tolower)
+
+# Write function select_first()
+select_first <- function(x) {
+  x[1]
+}
+
+# Apply select_first() over split_low: names
+names <- lapply(split_low, select_first)
+
+# Write function select_second()
+select_second <- function(x) {
+  x[2]
+}
+
+# Apply select_second() over split_low: years
+years <- lapply(split_low, select_second)
+```
+
+
+## 4-4 lapply and anonymous functions
+
+Writing your own functions and then using them inside lapply() is quite an accomplishment! But defining functions to use them only once is kind of overkill, isn't it? That's why you can use so-called anonymous functions in R.
+
+Previously, you learned that functions in R are objects in their own right. This means that they aren't automatically bound to a name. When you create a function, you can use the assignment operator to give the function a name. It's perfectly possible, however, to not give the function a name. This is called an anonymous function:
+
+# Named function
+triple <- function(x) { 3 * x }
+
+# Anonymous function with same implementation
+function(x) { 3 * x }
+
+# Use anonymous function inside lapply()
+lapply(list(1,2,3), function(x) { 3 * x })
+
+split_low is defined for you.
 
 ```{r}
 
 ```
 
-## 4-2 
+
+## 4-5 Use lapply with additional arguments
+
+In the video, the triple() function was transformed to the multiply() function to allow for a more generic approach. lapply() provides a way to handle functions that require more than one argument, such as the multiply() function:
+
+multiply <- function(x, factor) {
+  x * factor
+}
+
+lapply(list(1,2,3), multiply, factor = 3)
+On the right we've included a generic version of the select functions that you've coded earlier: select_el(). It takes a vector as its first argument, and an index as its second argument. It returns the vector's element at the specified index.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-8 How to use sapply
+
+You can use sapply() similar to how you used lapply(). The first argument of sapply() is the list or vector X over which you want to apply a function, FUN. Potential additional arguments to this function are specified afterwards (...):
+
+sapply(X, FUN, ...)
+
+In the next couple of exercises, you'll be working with the variable temp, that contains temperature measurements for 7 days. temp is a list of length 7, where each element is a vector of length 5, representing 5 measurements on a given day. This variable has already been defined in the workspace: type str(temp) to see its structure.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-9 sapply with your own function
+
+Like lapply(), sapply() allows you to use self-defined functions and apply them over a vector or a list:
+
+sapply(X, FUN, ...)
+
+Here, FUN can be one of R's built-in functions, but it can also be a function you wrote. This self-written function can be defined before hand, or can be inserted directly as an anonymous function.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-10 sapply with function returning vector
+
+In the previous exercises, you've seen how sapply() simplifies the list that lapply() would return by turning it into a vector. But what if the function you're applying over a list or a vector returns a vector of length greater than 1? If you don't remember from the video, don't waste more time in the valley of ignorance and head over to the instructions!
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-11 sapply can't simplify, now what?
+
+It seems like we've hit the jackpot with sapply(). On all of the examples so far, sapply() was able to nicely simplify the rather bulky output of lapply(). But, as with life, there are things you can't simplify. How does sapply() react?
+
+We already created a function, below_zero(), that takes a vector of numerical values and returns a vector that only contains the values that are strictly below zero.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-12 sapply with functions that return NULL
+
+You already have some apply tricks under your sleeve, but you're surely hungry for some more, aren't you? In this exercise, you'll see how sapply() reacts when it is used to apply a function that returns NULL over a vector or a list.
+
+A function print_info(), that takes a vector and prints the average of this vector, has already been created for you. It uses the cat() function.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-15 Use vapply
+
+Before you get your hands dirty with the third and last apply function that you'll learn about in this intermediate R course, let's take a look at its syntax. The function is called vapply(), and it has the following syntax:
+
+vapply(X, FUN, FUN.VALUE, ..., USE.NAMES = TRUE)
+
+Over the elements inside X, the function FUN is applied. The FUN.VALUE argument expects a template for the return argument of this function FUN. USE.NAMES is TRUE by default; in this case vapply() tries to generate a named array, if possible.
+
+For the next set of exercises, you'll be working on the temp list again, that contains 7 numerical vectors of length 5. We also coded a function basics() that takes a vector, and returns a named vector of length 3, containing the minimum, mean and maximum value of the vector respectively.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-16 Use vapply (2)
+
+So far you've seen that vapply() mimics the behavior of sapply() if everything goes according to plan. But what if it doesn't?
+
+In the video, Filip showed you that there are cases where the structure of the output of the function you want to apply, FUN, does not correspond to the template you specify in FUN.VALUE. In that case, vapply() will throw an error that informs you about the misalignment between expected and actual output.
 
 ```{r}
 
 ```
 
 
-## 4-2 
+## 4-17 From sapply to vapply
 
-```{r}
-
-```
-
-
-## 4-2 
-
-```{r}
-
-```
-
-
-## 4-2 
+As highlighted before, vapply() can be considered a more robust version of sapply(), because you explicitly restrict the output of the function you want to apply. Converting your sapply() expressions in your own R scripts to vapply() expressions is therefore a good practice (and also a breeze!).
 
 ```{r}
 

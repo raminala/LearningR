@@ -870,86 +870,168 @@ search()</code></pre>
 <h2>4- The apply family</h2>
 <p>Whenever you’re using a for loop, you may want to revise your code to see whether you can use the lapply function instead. Learn all about this intuitive way of applying a function over a list or a vector, and how to use its variants, sapply and vapply.</p>
 </div>
-<div id="section" class="section level2">
-<h2>4-2</h2>
+<div id="use-lapply-with-a-built-in-r-function" class="section level2">
+<h2>4-2 Use lapply with a built-in R function</h2>
+<p>Before you go about solving the exercises below, have a look at the documentation of the lapply() function. The Usage section shows the following expression:</p>
+<p>lapply(X, FUN, …)</p>
+<p>To put it generally, lapply takes a vector or list X, and applies the function FUN to each of its members. If FUN requires additional arguments, you pass them after you’ve specified X and FUN (…). The output of lapply() is a list, the same length as X, where each element is the result of applying FUN on the corresponding element of X.</p>
+<p>Now that you are truly brushing up on your data science skills, let’s revisit some of the most relevant figures in data science history. We’ve compiled a vector of famous mathematicians/statisticians and the year they were born. Up to you to extract some information!</p>
+<pre class="r"><code># The vector pioneers has already been created for you
+pioneers &lt;- c(&quot;GAUSS:1777&quot;, &quot;BAYES:1702&quot;, &quot;PASCAL:1623&quot;, &quot;PEARSON:1857&quot;)
+
+# Split names from birth year
+split_math &lt;- strsplit(pioneers, split = &quot;:&quot;)
+
+# Convert to lowercase strings: split_low
+split_low &lt;- lapply(split_math, tolower)
+
+# Take a look at the structure of split_low
+str(split_low)</code></pre>
+<pre><code>## List of 4
+##  $ : chr [1:2] &quot;gauss&quot; &quot;1777&quot;
+##  $ : chr [1:2] &quot;bayes&quot; &quot;1702&quot;
+##  $ : chr [1:2] &quot;pascal&quot; &quot;1623&quot;
+##  $ : chr [1:2] &quot;pearson&quot; &quot;1857&quot;</code></pre>
 </div>
-<div id="section-1" class="section level2">
-<h2>4-2</h2>
+<div id="use-lapply-with-your-own-function" class="section level2">
+<h2>4-3 Use lapply with your own function</h2>
+<p>As Filip explained in the instructional video, you can use lapply() on your own functions as well. You just need to code a new function and make sure it is available in the workspace. After that, you can use the function inside lapply() just as you did with base R functions.</p>
+<p>In the previous exercise you already used lapply() once to convert the information about your favorite pioneering statisticians to a list of vectors composed of two character strings. Let’s write some code to select the names and the birth years separately.</p>
+<p>The sample code already includes code that defined select_first(), that takes a vector as input and returns the first element of this vector.</p>
+<pre class="r"><code># Code from previous exercise:
+pioneers &lt;- c(&quot;GAUSS:1777&quot;, &quot;BAYES:1702&quot;, &quot;PASCAL:1623&quot;, &quot;PEARSON:1857&quot;)
+split &lt;- strsplit(pioneers, split = &quot;:&quot;)
+split_low &lt;- lapply(split, tolower)
+
+# Write function select_first()
+select_first &lt;- function(x) {
+  x[1]
+}
+
+# Apply select_first() over split_low: names
+names &lt;- lapply(split_low, select_first)
+
+# Write function select_second()
+select_second &lt;- function(x) {
+  x[2]
+}
+
+# Apply select_second() over split_low: years
+years &lt;- lapply(split_low, select_second)</code></pre>
 </div>
-<div id="section-2" class="section level2">
-<h2>4-2</h2>
+<div id="lapply-and-anonymous-functions" class="section level2">
+<h2>4-4 lapply and anonymous functions</h2>
+<p>Writing your own functions and then using them inside lapply() is quite an accomplishment! But defining functions to use them only once is kind of overkill, isn’t it? That’s why you can use so-called anonymous functions in R.</p>
+<p>Previously, you learned that functions in R are objects in their own right. This means that they aren’t automatically bound to a name. When you create a function, you can use the assignment operator to give the function a name. It’s perfectly possible, however, to not give the function a name. This is called an anonymous function:</p>
 </div>
-<div id="section-3" class="section level2">
-<h2>4-2</h2>
 </div>
-<div id="section-4" class="section level2">
-<h2>4-2</h2>
+<div id="named-function" class="section level1">
+<h1>Named function</h1>
+<p>triple &lt;- function(x) { 3 * x }</p>
 </div>
-<div id="section-5" class="section level2">
-<h2>4-2</h2>
+<div id="anonymous-function-with-same-implementation" class="section level1">
+<h1>Anonymous function with same implementation</h1>
+<p>function(x) { 3 * x }</p>
 </div>
-<div id="section-6" class="section level2">
-<h2>4-2</h2>
+<div id="use-anonymous-function-inside-lapply" class="section level1">
+<h1>Use anonymous function inside lapply()</h1>
+<p>lapply(list(1,2,3), function(x) { 3 * x })</p>
+<p>split_low is defined for you.</p>
+<div id="use-lapply-with-additional-arguments" class="section level2">
+<h2>4-5 Use lapply with additional arguments</h2>
+<p>In the video, the triple() function was transformed to the multiply() function to allow for a more generic approach. lapply() provides a way to handle functions that require more than one argument, such as the multiply() function:</p>
+<p>multiply &lt;- function(x, factor) {
+x * factor
+}</p>
+<p>lapply(list(1,2,3), multiply, factor = 3)
+On the right we’ve included a generic version of the select functions that you’ve coded earlier: select_el(). It takes a vector as its first argument, and an index as its second argument. It returns the vector’s element at the specified index.</p>
 </div>
-<div id="section-7" class="section level2">
-<h2>4-2</h2>
+<div id="how-to-use-sapply" class="section level2">
+<h2>4-8 How to use sapply</h2>
+<p>You can use sapply() similar to how you used lapply(). The first argument of sapply() is the list or vector X over which you want to apply a function, FUN. Potential additional arguments to this function are specified afterwards (…):</p>
+<p>sapply(X, FUN, …)</p>
+<p>In the next couple of exercises, you’ll be working with the variable temp, that contains temperature measurements for 7 days. temp is a list of length 7, where each element is a vector of length 5, representing 5 measurements on a given day. This variable has already been defined in the workspace: type str(temp) to see its structure.</p>
 </div>
-<div id="section-8" class="section level2">
-<h2>4-2</h2>
+<div id="sapply-with-your-own-function" class="section level2">
+<h2>4-9 sapply with your own function</h2>
+<p>Like lapply(), sapply() allows you to use self-defined functions and apply them over a vector or a list:</p>
+<p>sapply(X, FUN, …)</p>
+<p>Here, FUN can be one of R’s built-in functions, but it can also be a function you wrote. This self-written function can be defined before hand, or can be inserted directly as an anonymous function.</p>
 </div>
-<div id="section-9" class="section level2">
-<h2>4-2</h2>
+<div id="sapply-with-function-returning-vector" class="section level2">
+<h2>4-10 sapply with function returning vector</h2>
+<p>In the previous exercises, you’ve seen how sapply() simplifies the list that lapply() would return by turning it into a vector. But what if the function you’re applying over a list or a vector returns a vector of length greater than 1? If you don’t remember from the video, don’t waste more time in the valley of ignorance and head over to the instructions!</p>
 </div>
-<div id="section-10" class="section level2">
-<h2>4-2</h2>
+<div id="sapply-cant-simplify-now-what" class="section level2">
+<h2>4-11 sapply can’t simplify, now what?</h2>
+<p>It seems like we’ve hit the jackpot with sapply(). On all of the examples so far, sapply() was able to nicely simplify the rather bulky output of lapply(). But, as with life, there are things you can’t simplify. How does sapply() react?</p>
+<p>We already created a function, below_zero(), that takes a vector of numerical values and returns a vector that only contains the values that are strictly below zero.</p>
 </div>
-<div id="section-11" class="section level2">
-<h2>4-2</h2>
+<div id="sapply-with-functions-that-return-null" class="section level2">
+<h2>4-12 sapply with functions that return NULL</h2>
+<p>You already have some apply tricks under your sleeve, but you’re surely hungry for some more, aren’t you? In this exercise, you’ll see how sapply() reacts when it is used to apply a function that returns NULL over a vector or a list.</p>
+<p>A function print_info(), that takes a vector and prints the average of this vector, has already been created for you. It uses the cat() function.</p>
+</div>
+<div id="use-vapply" class="section level2">
+<h2>4-15 Use vapply</h2>
+<p>Before you get your hands dirty with the third and last apply function that you’ll learn about in this intermediate R course, let’s take a look at its syntax. The function is called vapply(), and it has the following syntax:</p>
+<p>vapply(X, FUN, FUN.VALUE, …, USE.NAMES = TRUE)</p>
+<p>Over the elements inside X, the function FUN is applied. The FUN.VALUE argument expects a template for the return argument of this function FUN. USE.NAMES is TRUE by default; in this case vapply() tries to generate a named array, if possible.</p>
+<p>For the next set of exercises, you’ll be working on the temp list again, that contains 7 numerical vectors of length 5. We also coded a function basics() that takes a vector, and returns a named vector of length 3, containing the minimum, mean and maximum value of the vector respectively.</p>
+</div>
+<div id="use-vapply-2" class="section level2">
+<h2>4-16 Use vapply (2)</h2>
+<p>So far you’ve seen that vapply() mimics the behavior of sapply() if everything goes according to plan. But what if it doesn’t?</p>
+<p>In the video, Filip showed you that there are cases where the structure of the output of the function you want to apply, FUN, does not correspond to the template you specify in FUN.VALUE. In that case, vapply() will throw an error that informs you about the misalignment between expected and actual output.</p>
+</div>
+<div id="from-sapply-to-vapply" class="section level2">
+<h2>4-17 From sapply to vapply</h2>
+<p>As highlighted before, vapply() can be considered a more robust version of sapply(), because you explicitly restrict the output of the function you want to apply. Converting your sapply() expressions in your own R scripts to vapply() expressions is therefore a good practice (and also a breeze!).</p>
 </div>
 <div id="utilities" class="section level2">
 <h2>5- Utilities</h2>
 <p>Mastering R programming is not only about understanding its programming concepts. Having a solid understanding of a wide range of R functions is also important. This chapter introduces you to many useful functions for data structure manipulation, regular expressions, and working with times and dates.</p>
 </div>
+<div id="section" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-1" class="section level2">
+<h2>5-3</h2>
+</div>
+<div id="section-2" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-3" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-4" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-5" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-6" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-7" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-8" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-9" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-10" class="section level2">
+<h2>5-2</h2>
+</div>
+<div id="section-11" class="section level2">
+<h2>5-2</h2>
+</div>
 <div id="section-12" class="section level2">
 <h2>5-2</h2>
 </div>
 <div id="section-13" class="section level2">
-<h2>5-3</h2>
-</div>
-<div id="section-14" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-15" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-16" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-17" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-18" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-19" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-20" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-21" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-22" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-23" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-24" class="section level2">
-<h2>5-2</h2>
-</div>
-<div id="section-25" class="section level2">
 <h2>5-2</h2>
 </div>
 </div>
