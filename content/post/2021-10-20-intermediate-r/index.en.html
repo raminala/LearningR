@@ -937,6 +937,36 @@ years &lt;- lapply(split_low, select_second)</code></pre>
 <h1>Use anonymous function inside lapply()</h1>
 <p>lapply(list(1,2,3), function(x) { 3 * x })</p>
 <p>split_low is defined for you.</p>
+<pre class="r"><code># split_low has been created for you
+split_low</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;gauss&quot; &quot;1777&quot; 
+## 
+## [[2]]
+## [1] &quot;bayes&quot; &quot;1702&quot; 
+## 
+## [[3]]
+## [1] &quot;pascal&quot; &quot;1623&quot;  
+## 
+## [[4]]
+## [1] &quot;pearson&quot; &quot;1857&quot;</code></pre>
+<pre class="r"><code># Transform: use anonymous function inside lapply
+function(x) {
+  x[1]
+}</code></pre>
+<pre><code>## function(x) {
+##   x[1]
+## }</code></pre>
+<pre class="r"><code>names &lt;- lapply(split_low, function(x) {x[1]})
+
+# Transform: use anonymous function inside lapply
+function(x) {
+  x[2]
+}</code></pre>
+<pre><code>## function(x) {
+##   x[2]
+## }</code></pre>
+<pre class="r"><code>years &lt;- lapply(split_low, function(x) {x[2]})</code></pre>
 <div id="use-lapply-with-additional-arguments" class="section level2">
 <h2>4-5 Use lapply with additional arguments</h2>
 <p>In the video, the triple() function was transformed to the multiply() function to allow for a more generic approach. lapply() provides a way to handle functions that require more than one argument, such as the multiply() function:</p>
@@ -945,18 +975,122 @@ x * factor
 }</p>
 <p>lapply(list(1,2,3), multiply, factor = 3)
 On the right we’ve included a generic version of the select functions that you’ve coded earlier: select_el(). It takes a vector as its first argument, and an index as its second argument. It returns the vector’s element at the specified index.</p>
+<pre class="r"><code># Definition of split_low
+pioneers &lt;- c(&quot;GAUSS:1777&quot;, &quot;BAYES:1702&quot;, &quot;PASCAL:1623&quot;, &quot;PEARSON:1857&quot;)
+split &lt;- strsplit(pioneers, split = &quot;:&quot;)
+split_low &lt;- lapply(split, tolower)
+
+# Generic select function
+select_el &lt;- function(x, index) {
+  x[index]
+}
+
+# Use lapply() twice on split_low: names and years
+names &lt;- lapply(split_low, select_el, index=1)
+years &lt;- lapply(split_low, select_el, index=2)</code></pre>
 </div>
 <div id="how-to-use-sapply" class="section level2">
 <h2>4-8 How to use sapply</h2>
 <p>You can use sapply() similar to how you used lapply(). The first argument of sapply() is the list or vector X over which you want to apply a function, FUN. Potential additional arguments to this function are specified afterwards (…):</p>
 <p>sapply(X, FUN, …)</p>
 <p>In the next couple of exercises, you’ll be working with the variable temp, that contains temperature measurements for 7 days. temp is a list of length 7, where each element is a vector of length 5, representing 5 measurements on a given day. This variable has already been defined in the workspace: type str(temp) to see its structure.</p>
+<pre class="r"><code># temp has already been defined in the workspace
+temp &lt;- list(c(3, 7, 9, 6, -1),
+             c(6, 9, 12, 13, 5),
+             c(4, 8, 3, -1, -3),
+             c(1, 4, 7, 2, -2),
+             c(5, 7, 9, 4, 2),
+             c(-3, 5, 8, 9, 4),
+             c(3, 6, 9, 4, 1))
+
+# Use lapply() to find each day&#39;s minimum temperature
+lapply(temp, min)</code></pre>
+<pre><code>## [[1]]
+## [1] -1
+## 
+## [[2]]
+## [1] 5
+## 
+## [[3]]
+## [1] -3
+## 
+## [[4]]
+## [1] -2
+## 
+## [[5]]
+## [1] 2
+## 
+## [[6]]
+## [1] -3
+## 
+## [[7]]
+## [1] 1</code></pre>
+<pre class="r"><code># Use sapply() to find each day&#39;s minimum temperature
+sapply(temp, min)</code></pre>
+<pre><code>## [1] -1  5 -3 -2  2 -3  1</code></pre>
+<pre class="r"><code># Use lapply() to find each day&#39;s maximum temperature
+lapply(temp, max)</code></pre>
+<pre><code>## [[1]]
+## [1] 9
+## 
+## [[2]]
+## [1] 13
+## 
+## [[3]]
+## [1] 8
+## 
+## [[4]]
+## [1] 7
+## 
+## [[5]]
+## [1] 9
+## 
+## [[6]]
+## [1] 9
+## 
+## [[7]]
+## [1] 9</code></pre>
+<pre class="r"><code># Use sapply() to find each day&#39;s maximum temperature
+sapply(temp, max)</code></pre>
+<pre><code>## [1]  9 13  8  7  9  9  9</code></pre>
 </div>
 <div id="sapply-with-your-own-function" class="section level2">
 <h2>4-9 sapply with your own function</h2>
 <p>Like lapply(), sapply() allows you to use self-defined functions and apply them over a vector or a list:</p>
 <p>sapply(X, FUN, …)</p>
 <p>Here, FUN can be one of R’s built-in functions, but it can also be a function you wrote. This self-written function can be defined before hand, or can be inserted directly as an anonymous function.</p>
+<pre class="r"><code># temp is already defined in the workspace
+
+# Finish function definition of extremes_avg
+extremes_avg &lt;- function(x) {
+  ( min(x) + max(x) ) / 2
+}
+
+# Apply extremes_avg() over temp using sapply()
+sapply(temp, extremes_avg)</code></pre>
+<pre><code>## [1] 4.0 9.0 2.5 2.5 5.5 3.0 5.0</code></pre>
+<pre class="r"><code># Apply extremes_avg() over temp using lapply()
+lapply(temp, extremes_avg)</code></pre>
+<pre><code>## [[1]]
+## [1] 4
+## 
+## [[2]]
+## [1] 9
+## 
+## [[3]]
+## [1] 2.5
+## 
+## [[4]]
+## [1] 2.5
+## 
+## [[5]]
+## [1] 5.5
+## 
+## [[6]]
+## [1] 3
+## 
+## [[7]]
+## [1] 5</code></pre>
 </div>
 <div id="sapply-with-function-returning-vector" class="section level2">
 <h2>4-10 sapply with function returning vector</h2>
