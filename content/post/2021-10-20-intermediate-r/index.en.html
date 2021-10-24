@@ -1141,11 +1141,92 @@ lapply(temp, extremes)</code></pre>
 <h2>4-11 sapply can’t simplify, now what?</h2>
 <p>It seems like we’ve hit the jackpot with sapply(). On all of the examples so far, sapply() was able to nicely simplify the rather bulky output of lapply(). But, as with life, there are things you can’t simplify. How does sapply() react?</p>
 <p>We already created a function, below_zero(), that takes a vector of numerical values and returns a vector that only contains the values that are strictly below zero.</p>
+<pre class="r"><code># temp is already prepared for you in the workspace
+
+# Definition of below_zero()
+below_zero &lt;- function(x) {
+  return(x[x &lt; 0])
+}
+
+# Apply below_zero over temp using sapply(): freezing_s
+freezing_s &lt;- sapply(temp, below_zero)
+
+# Apply below_zero over temp using lapply(): freezing_l
+freezing_l &lt;- lapply(temp, below_zero)
+
+# Are freezing_s and freezing_l identical?
+identical(freezing_s, freezing_l)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="sapply-with-functions-that-return-null" class="section level2">
 <h2>4-12 sapply with functions that return NULL</h2>
 <p>You already have some apply tricks under your sleeve, but you’re surely hungry for some more, aren’t you? In this exercise, you’ll see how sapply() reacts when it is used to apply a function that returns NULL over a vector or a list.</p>
 <p>A function print_info(), that takes a vector and prints the average of this vector, has already been created for you. It uses the cat() function.</p>
+<pre class="r"><code># temp is already available in the workspace
+
+# Definition of print_info()
+print_info &lt;- function(x) {
+  cat(&quot;The average temperature is&quot;, mean(x), &quot;\n&quot;)
+}
+
+# Apply print_info() over temp using sapply()
+sapply(temp, print_info)</code></pre>
+<pre><code>## The average temperature is 4.8 
+## The average temperature is 9 
+## The average temperature is 2.2 
+## The average temperature is 2.4 
+## The average temperature is 5.4 
+## The average temperature is 4.6 
+## The average temperature is 4.6</code></pre>
+<pre><code>## [[1]]
+## NULL
+## 
+## [[2]]
+## NULL
+## 
+## [[3]]
+## NULL
+## 
+## [[4]]
+## NULL
+## 
+## [[5]]
+## NULL
+## 
+## [[6]]
+## NULL
+## 
+## [[7]]
+## NULL</code></pre>
+<pre class="r"><code># Apply print_info() over temp using lapply()
+lapply(temp, print_info)</code></pre>
+<pre><code>## The average temperature is 4.8 
+## The average temperature is 9 
+## The average temperature is 2.2 
+## The average temperature is 2.4 
+## The average temperature is 5.4 
+## The average temperature is 4.6 
+## The average temperature is 4.6</code></pre>
+<pre><code>## [[1]]
+## NULL
+## 
+## [[2]]
+## NULL
+## 
+## [[3]]
+## NULL
+## 
+## [[4]]
+## NULL
+## 
+## [[5]]
+## NULL
+## 
+## [[6]]
+## NULL
+## 
+## [[7]]
+## NULL</code></pre>
 </div>
 <div id="use-vapply" class="section level2">
 <h2>4-15 Use vapply</h2>
