@@ -1179,7 +1179,15 @@ Over the elements inside X, the function FUN is applied. The FUN.VALUE argument 
 For the next set of exercises, you'll be working on the temp list again, that contains 7 numerical vectors of length 5. We also coded a function basics() that takes a vector, and returns a named vector of length 3, containing the minimum, mean and maximum value of the vector respectively.
 
 ```{r}
+# temp is already available in the workspace
 
+# Definition of basics()
+basics <- function(x) {
+  c(min = min(x), mean = mean(x), max = max(x))
+}
+
+# Apply basics() over temp using vapply()
+vapply(temp, basics, numeric(3))
 ```
 
 
@@ -1190,7 +1198,15 @@ So far you've seen that vapply() mimics the behavior of sapply() if everything g
 In the video, Filip showed you that there are cases where the structure of the output of the function you want to apply, FUN, does not correspond to the template you specify in FUN.VALUE. In that case, vapply() will throw an error that informs you about the misalignment between expected and actual output.
 
 ```{r}
+# temp is already available in the workspace
 
+# Definition of the basics() function
+basics <- function(x) {
+  c(min = min(x), mean = mean(x), median = median(x), max = max(x))
+}
+
+# Fix the error:
+vapply(temp, basics, numeric(4))
 ```
 
 
@@ -1199,7 +1215,13 @@ In the video, Filip showed you that there are cases where the structure of the o
 As highlighted before, vapply() can be considered a more robust version of sapply(), because you explicitly restrict the output of the function you want to apply. Converting your sapply() expressions in your own R scripts to vapply() expressions is therefore a good practice (and also a breeze!).
 
 ```{r}
+# temp is already defined in the workspace
 
+# Convert to vapply() expression
+vapply(temp, max, numeric(1))
+
+# Convert to vapply() expression
+vapply(temp, function(x, y) { mean(x) > y }, logical(1), y = 5)
 ```
 
 
@@ -1208,85 +1230,172 @@ As highlighted before, vapply() can be considered a more robust version of sappl
 
 Mastering R programming is not only about understanding its programming concepts. Having a solid understanding of a wide range of R functions is also important. This chapter introduces you to many useful functions for data structure manipulation, regular expressions, and working with times and dates.
 
-## 5-2 
+## 5-2 Mathematical utilities
+
+Have another look at some useful math functions that R features:
+
+abs(): Calculate the absolute value.
+sum(): Calculate the sum of all the values in a data structure.
+mean(): Calculate the arithmetic mean.
+round(): Round the values to 0 decimal places by default. Try out ?round in the console for variations of round() and ways to change the number of digits to round to.
+As a data scientist in training, you've estimated a regression model on the sales data for the past six months. After evaluating your model, you see that the training error of your model is quite regular, showing both positive and negative values. A vector errors containing the error values has been pre-defined for you.
 
 ```{r}
 
 ```
 
-## 5-3 
+## 5-3 Find the error
+
+We went ahead and pre-loaded some code for you, but there's still an error. Can you trace it and fix it?
+
+In times of despair, help with functions such as sum() and rev() are a single command away; simply execute the code ?sum and ?rev.
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-4 Data Utilities
+
+R features a bunch of functions to juggle around with data structures::
+
+seq(): Generate sequences, by specifying the from, to, and by arguments.
+
+rep(): Replicate elements of vectors and lists.
+
+sort(): Sort a vector in ascending order. Works on numerics, but also on character strings and logicals.
+
+rev(): Reverse the elements in a data structures for which reversal is defined.
+
+str(): Display the structure of any R object.
+append(): Merge vectors or lists.
+
+is.*(): Check for the class of an R object.
+
+as.*(): Convert an R object from one class to another.
+
+unlist(): Flatten (possibly embedded) lists to produce a
+vector.
+
+Remember the social media profile views data? Your LinkedIn and Facebook view counts for the last seven days have been pre-defined as lists.
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-5 Find the error (2)
+
+Just as before, let's switch roles. It's up to you to see what unforgivable mistakes we've made. Go fix them!
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-6 Beat Gauss using R
+
+There is a popular story about young Gauss. As a pupil, he had a lazy teacher who wanted to keep the classroom busy by having them add up the numbers 1 to 100. Gauss came up with an answer almost instantaneously, 5050. On the spot, he had developed a formula for calculating the sum of an arithmetic series. There are more general formulas for calculating the sum of an arithmetic series with different starting values and increments. Instead of deriving such a formula, why not use R to calculate the sum of a sequence?
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-8 grepl & grep
+
+In their most basic form, regular expressions can be used to see whether a pattern exists inside a character string or a vector of character strings. For this purpose, you can use:
+
+grepl(), which returns TRUE when a pattern is found in the corresponding character string.
+grep(), which returns a vector of indices of the character strings that contains the pattern.
+Both functions need a pattern and an x argument, where pattern is the regular expression you want to match for, and the x argument is the character vector from which matches should be sought.
+
+In this and the following exercises, you'll be querying and manipulating a character vector of email addresses! The vector emails has been pre-defined so you can begin with the instructions straight away!
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-9 grepl & grep (2)
+
+You can use the caret, ^, and the dollar sign, $ to match the content located in the start and end of a string, respectively. This could take us one step closer to a correct pattern for matching only the ".edu" email addresses from our list of emails. But there's more that can be added to make the pattern more robust:
+
+@, because a valid email must contain an at-sign.
+
+.*, which matches any character (.) zero or more times (*).
+
+Both the dot and the asterisk are metacharacters. You can use them to match any character between the at-sign and the ".edu" portion of an email address.
+
+\\.edu$, to match the ".edu" part of the email at the end of the string. The \\ part escapes the dot: it tells R that you want to use the . as an actual character.
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-10 sub & gsub
+
+While grep() and grepl() were used to simply check whether a regular expression could be matched with a character vector, sub() and gsub() take it one step further: you can specify a replacement argument. If inside the character vector x, the regular expression pattern is found, the matching element(s) will be replaced with replacement.sub() only replaces the first match, whereas gsub() replaces all matches.
+
+Suppose that emails vector you've been working with is an excerpt of DataCamp's email database. Why not offer the owners of the .edu email addresses a new email address on the datacamp.edu domain? This could be quite a powerful marketing stunt: Online education is taking over traditional learning institutions! Convert your email and be a part of the new generation!
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-13 Right here, right now
+
+In R, dates are represented by Date objects, while times are represented by POSIXct objects. Under the hood, however, these dates and times are simple numerical values. Date objects store the number of days since the 1st of January in 1970. POSIXct objects on the other hand, store the number of seconds since the 1st of January in 1970.
+
+The 1st of January in 1970 is the common origin for representing times and dates in a wide range of programming languages. There is no particular reason for this; it is a simple convention. Of course, it's also possible to create dates and times before 1970; the corresponding numerical values are simply negative in this case.
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-14 Create and format dates
+
+To create a Date object from a simple character string in R, you can use the as.Date() function. The character string has to obey a format that can be defined using a set of symbols (the examples correspond to 13 January, 1982):
+
+%Y: 4-digit year (1982)
+%y: 2-digit year (82)
+%m: 2-digit month (01)
+%d: 2-digit day of the month (13)
+%A: weekday (Wednesday)
+%a: abbreviated weekday (Wed)
+%B: month (January)
+%b: abbreviated month (Jan)
+The following R commands will all create the same Date object for the 13th day in January of 1982:
+
+as.Date("1982-01-13")
+as.Date("Jan-13-82", format = "%b-%d-%y")
+as.Date("13 January, 1982", format = "%d %B, %Y")
+Notice that the first line here did not need a format argument, because by default R matches your character string to the formats "%Y-%m-%d" or "%Y/%m/%d".
+
+In addition to creating dates, you can also convert dates to character strings that use a different date notation. For this, you use the format() function. Try the following lines of code:
+
+today <- Sys.Date()
+format(Sys.Date(), format = "%d %B, %Y")
+format(Sys.Date(), format = "Today is a %A!")
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-15 
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-16 
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-17 
 
 ```{r}
 
 ```
 
-## 5-2 
+## 5-18 
 
 ```{r}
 
