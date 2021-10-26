@@ -1341,8 +1341,28 @@ Both functions need a pattern and an x argument, where pattern is the regular ex
 
 In this and the following exercises, you'll be querying and manipulating a character vector of email addresses! The vector emails has been pre-defined so you can begin with the instructions straight away!
 
-```{r}
+Use grepl() to generate a vector of logicals that indicates whether these email addressess contain "edu". Print the result to the output.
 
+Do the same thing with grep(), but this time save the resulting indexes in a variable hits.
+
+Use the variable hits to select from the emails vector only the emails that contain "edu".
+
+
+
+
+```{r}
+# The emails vector has already been defined for you
+emails <- c("john.doe@ivyleague.edu", "education@world.gov", "dalai.lama@peace.org",
+            "invalid.edu", "quant@bigdatacollege.edu", "cookie.monster@sesame.tv")
+
+# Use grepl() to match for .edu addresses more robustly
+grepl(pattern = "@.*\\.edu$", x = emails)
+
+# Use grep() to match for .edu addresses more robustly, save result to hits
+hits <- grep(pattern = "@.*\\.edu$", x = emails)
+
+# Subset emails using hits
+emails[hits]
 ```
 
 ## 5-9 grepl & grep (2)

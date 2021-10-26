@@ -1369,6 +1369,22 @@ sum(seq1, seq2)</code></pre>
 grep(), which returns a vector of indices of the character strings that contains the pattern.
 Both functions need a pattern and an x argument, where pattern is the regular expression you want to match for, and the x argument is the character vector from which matches should be sought.</p>
 <p>In this and the following exercises, you’ll be querying and manipulating a character vector of email addresses! The vector emails has been pre-defined so you can begin with the instructions straight away!</p>
+<p>Use grepl() to generate a vector of logicals that indicates whether these email addressess contain “edu”. Print the result to the output.</p>
+<p>Do the same thing with grep(), but this time save the resulting indexes in a variable hits.</p>
+<p>Use the variable hits to select from the emails vector only the emails that contain “edu”.</p>
+<pre class="r"><code># The emails vector has already been defined for you
+emails &lt;- c(&quot;john.doe@ivyleague.edu&quot;, &quot;education@world.gov&quot;, &quot;dalai.lama@peace.org&quot;,
+            &quot;invalid.edu&quot;, &quot;quant@bigdatacollege.edu&quot;, &quot;cookie.monster@sesame.tv&quot;)
+
+# Use grepl() to match for .edu addresses more robustly
+grepl(pattern = &quot;@.*\\.edu$&quot;, x = emails)</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code># Use grep() to match for .edu addresses more robustly, save result to hits
+hits &lt;- grep(pattern = &quot;@.*\\.edu$&quot;, x = emails)
+
+# Subset emails using hits
+emails[hits]</code></pre>
+<pre><code>## [1] &quot;john.doe@ivyleague.edu&quot;   &quot;quant@bigdatacollege.edu&quot;</code></pre>
 </div>
 <div id="grepl-grep-2" class="section level2">
 <h2>5-9 grepl &amp; grep (2)</h2>
