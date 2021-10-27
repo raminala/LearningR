@@ -9,7 +9,35 @@ tags:
 ---
 
 ```{r include=FALSE}
+ 
+```
 
+```{r}
+library(tidyverse)
+e <- read.csv("e2.csv")
+names(e)
+```
+
+
+```{r}
+e %>%  pivot_longer(c(Lab.1...10,Lab.2...10)) %>% 
+  ggplot(aes(value,color=name))+geom_density()
+```
+
+```{r}
+e %>% mutate(q3=Quiz.3..15*20/15) %>% pivot_longer(c(Quiz.1..20,Quiz.2..20,q3)) %>% 
+  ggplot(aes(value,color=name))+geom_density()
+```
+
+```{r}
+Q1_m <- mean(e$Quiz.1..20, na.rm=TRUE)
+print(paste("quiz 1: ",Q1_m))
+
+Q2_m <- mean(e$Quiz.2..20, na.rm=TRUE)
+print(paste("quiz 2: ",Q2_m))
+
+Q3_m <- 20/15*mean(e$Quiz.3..15, na.rm=TRUE)
+print(paste("quiz 2: ",Q3_m))
 ```
 
 
