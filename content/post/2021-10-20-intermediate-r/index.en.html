@@ -1393,16 +1393,51 @@ emails[hits]</code></pre>
 <p>.<em>, which matches any character (.) zero or more times (</em>).</p>
 <p>Both the dot and the asterisk are metacharacters. You can use them to match any character between the at-sign and the “.edu” portion of an email address.</p>
 <p>\.edu$, to match the “.edu” part of the email at the end of the string. The \ part escapes the dot: it tells R that you want to use the . as an actual character.</p>
+<pre class="r"><code># The emails vector has already been defined for you
+emails &lt;- c(&quot;john.doe@ivyleague.edu&quot;, &quot;education@world.gov&quot;, &quot;dalai.lama@peace.org&quot;,
+            &quot;invalid.edu&quot;, &quot;quant@bigdatacollege.edu&quot;, &quot;cookie.monster@sesame.tv&quot;)
+
+# Use grepl() to match for .edu addresses more robustly
+grepl(pattern = &quot;@.*\\.edu$&quot;, x = emails)</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE FALSE  TRUE FALSE</code></pre>
+<pre class="r"><code># Use grep() to match for .edu addresses more robustly, save result to hits
+hits &lt;- grep(pattern = &quot;@.*\\.edu$&quot;, x = emails)
+
+# Subset emails using hits
+emails[hits]</code></pre>
+<pre><code>## [1] &quot;john.doe@ivyleague.edu&quot;   &quot;quant@bigdatacollege.edu&quot;</code></pre>
 </div>
 <div id="sub-gsub" class="section level2">
 <h2>5-10 sub &amp; gsub</h2>
 <p>While grep() and grepl() were used to simply check whether a regular expression could be matched with a character vector, sub() and gsub() take it one step further: you can specify a replacement argument. If inside the character vector x, the regular expression pattern is found, the matching element(s) will be replaced with replacement.sub() only replaces the first match, whereas gsub() replaces all matches.</p>
 <p>Suppose that emails vector you’ve been working with is an excerpt of DataCamp’s email database. Why not offer the owners of the .edu email addresses a new email address on the datacamp.edu domain? This could be quite a powerful marketing stunt: Online education is taking over traditional learning institutions! Convert your email and be a part of the new generation!</p>
+<p>With the advanced regular expression "@.*\.edu$“, use sub() to replace the match with”<span class="citation">@datacamp.edu</span>". Since there will only be one match per character string, gsub() is not necessary here. Inspect the resulting output.</p>
+<pre class="r"><code># The emails vector has already been defined for you
+emails &lt;- c(&quot;john.doe@ivyleague.edu&quot;, &quot;education@world.gov&quot;, &quot;global@peace.org&quot;,
+            &quot;invalid.edu&quot;, &quot;quant@bigdatacollege.edu&quot;, &quot;cookie.monster@sesame.tv&quot;)
+
+# Use sub() to convert the email domains to datacamp.edu
+sub(pattern = &quot;@.*\\.edu$&quot;, replacement = &quot;@datacamp.edu&quot;, x = emails)</code></pre>
+<pre><code>## [1] &quot;john.doe@datacamp.edu&quot;    &quot;education@world.gov&quot;     
+## [3] &quot;global@peace.org&quot;         &quot;invalid.edu&quot;             
+## [5] &quot;quant@datacamp.edu&quot;       &quot;cookie.monster@sesame.tv&quot;</code></pre>
 </div>
 <div id="right-here-right-now" class="section level2">
 <h2>5-13 Right here, right now</h2>
 <p>In R, dates are represented by Date objects, while times are represented by POSIXct objects. Under the hood, however, these dates and times are simple numerical values. Date objects store the number of days since the 1st of January in 1970. POSIXct objects on the other hand, store the number of seconds since the 1st of January in 1970.</p>
 <p>The 1st of January in 1970 is the common origin for representing times and dates in a wide range of programming languages. There is no particular reason for this; it is a simple convention. Of course, it’s also possible to create dates and times before 1970; the corresponding numerical values are simply negative in this case.</p>
+<pre class="r"><code># Get the current date: today
+today &lt;- Sys.Date()
+
+# See what today looks like under the hood
+unclass(today)</code></pre>
+<pre><code>## [1] 18927</code></pre>
+<pre class="r"><code># Get the current time: now
+now &lt;- Sys.time()
+
+# See what now looks like under the hood
+unclass(now)</code></pre>
+<pre><code>## [1] 1635307761</code></pre>
 </div>
 <div id="create-and-format-dates" class="section level2">
 <h2>5-14 Create and format dates</h2>
@@ -1424,27 +1459,52 @@ Notice that the first line here did not need a format argument, because by defau
 <p>today &lt;- Sys.Date()
 format(Sys.Date(), format = “%d %B, %Y”)
 format(Sys.Date(), format = “Today is a %A!”)</p>
+<pre class="r"><code># Definition of character strings representing dates
+str1 &lt;- &quot;May 23, &#39;96&quot;
+str2 &lt;- &quot;2012-03-15&quot;
+str3 &lt;- &quot;30/January/2006&quot;
+
+# Convert the strings to dates: date1, date2, date3
+date1 &lt;- as.Date(str1, format = &quot;%b %d, &#39;%y&quot;)
+date2 &lt;- as.Date(str2, format = &quot;%Y-%m-%d&quot;)
+date3 &lt;- as.Date(str3, format = &quot;%d/%b/%Y&quot;)
+
+# Convert dates to formatted strings
+format(date1, &quot;%A&quot;)</code></pre>
+<pre><code>## [1] &quot;Thursday&quot;</code></pre>
+<pre class="r"><code>format(date2, &quot;%d&quot;)</code></pre>
+<pre><code>## [1] &quot;15&quot;</code></pre>
+<pre class="r"><code>format(date3, &quot;%b %Y&quot;)</code></pre>
+<pre><code>## [1] &quot;Jan 2006&quot;</code></pre>
 </div>
-<div id="create-and-format-dates-1" class="section level2">
-<h2>5-15 Create and format dates</h2>
-<p>To create a Date object from a simple character string in R, you can use the as.Date() function. The character string has to obey a format that can be defined using a set of symbols (the examples correspond to 13 January, 1982):</p>
-<p>%Y: 4-digit year (1982)
-%y: 2-digit year (82)
-%m: 2-digit month (01)
-%d: 2-digit day of the month (13)
-%A: weekday (Wednesday)
-%a: abbreviated weekday (Wed)
-%B: month (January)
-%b: abbreviated month (Jan)
-The following R commands will all create the same Date object for the 13th day in January of 1982:</p>
-<p>as.Date(“1982-01-13”)
-as.Date(“Jan-13-82”, format = “%b-%d-%y”)
-as.Date(“13 January, 1982”, format = “%d %B, %Y”)
-Notice that the first line here did not need a format argument, because by default R matches your character string to the formats “%Y-%m-%d” or “%Y/%m/%d”.</p>
-<p>In addition to creating dates, you can also convert dates to character strings that use a different date notation. For this, you use the format() function. Try the following lines of code:</p>
-<p>today &lt;- Sys.Date()
-format(Sys.Date(), format = “%d %B, %Y”)
-format(Sys.Date(), format = “Today is a %A!”)</p>
+<div id="create-and-format-times" class="section level2">
+<h2>5-15 Create and format times</h2>
+<p>Similar to working with dates, you can use as.POSIXct() to convert from a character string to a POSIXct object, and format() to convert from a POSIXct object to a character string. Again, you have a wide variety of symbols:</p>
+<p>%H: hours as a decimal number (00-23)
+%I: hours as a decimal number (01-12)
+%M: minutes as a decimal number
+%S: seconds as a decimal number
+%T: shorthand notation for the typical format %H:%M:%S
+%p: AM/PM indicator
+For a full list of conversion symbols, consult the strptime documentation in the console:</p>
+<p>?strptime
+Again,as.POSIXct() uses a default format to match character strings. In this case, it’s %Y-%m-%d %H:%M:%S. In this exercise, abstraction is made of different time zones.</p>
+<p>Convert two strings that represent timestamps, str1 and str2, to POSIXct objects called time1 and time2.</p>
+<p>Using format(), create a string from time1 containing only the minutes.</p>
+<p>From time2, extract the hours and minutes as “hours:minutes AM/PM”. Refer to the assignment text above to find the correct conversion symbols!</p>
+<pre class="r"><code># Definition of character strings representing times
+str1 &lt;- &quot;May 23, &#39;96 hours:23 minutes:01 seconds:45&quot;
+str2 &lt;- &quot;2012-3-12 14:23:08&quot;
+
+# Convert the strings to POSIXct objects: time1, time2
+time1 &lt;- as.POSIXct(str1, format = &quot;%B %d, &#39;%y hours:%H minutes:%M seconds:%S&quot;)
+time2 &lt;- as.POSIXct(str2, format = &quot;%Y-%m-%d %H:%M:%S&quot;)
+
+# Convert times to formatted strings
+format(time1, &quot;%M&quot;)</code></pre>
+<pre><code>## [1] &quot;01&quot;</code></pre>
+<pre class="r"><code>format(time2, &quot;%I:%M %p&quot;)</code></pre>
+<pre><code>## [1] &quot;02:23 PM&quot;</code></pre>
 </div>
 <div id="calculations-with-dates" class="section level2">
 <h2>5-16 Calculations with Dates</h2>
@@ -1455,6 +1515,24 @@ today + 1
 today - 1</p>
 <p>as.Date(“2015-03-12”) - as.Date(“2015-02-27”)
 To control your eating habits, you decided to write down the dates of the last five days that you ate pizza. In the workspace, these dates are defined as five Date objects, day1 to day5. A vector pizza containing these 5 Date objects has been pre-defined for you.</p>
+<pre class="r"><code># day1, day2, day3, day4 and day5 are already available in the workspace
+day1 &lt;- as.Date(&quot;2021-10-09&quot;)
+day2 &lt;- as.Date(&quot;2021-10-11&quot;)
+day3 &lt;- as.Date(&quot;2021-10-16&quot;)
+day4 &lt;- as.Date(&quot;2021-10-22&quot;)
+day5 &lt;- as.Date(&quot;2021-10-27&quot;)
+# Difference between last and first pizza day
+day5-day1</code></pre>
+<pre><code>## Time difference of 18 days</code></pre>
+<pre class="r"><code># Create vector pizza
+pizza &lt;- c(day1, day2, day3, day4, day5)
+
+# Create differences between consecutive pizza days: day_diff
+day_diff &lt;- diff(pizza)
+
+# Average period between two consecutive pizza days
+mean(day_diff)</code></pre>
+<pre><code>## Time difference of 4.5 days</code></pre>
 </div>
 <div id="calculations-with-times" class="section level2">
 <h2>5-17 Calculations with Times</h2>

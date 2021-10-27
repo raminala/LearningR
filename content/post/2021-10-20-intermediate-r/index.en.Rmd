@@ -1378,7 +1378,18 @@ Both the dot and the asterisk are metacharacters. You can use them to match any 
 \\.edu$, to match the ".edu" part of the email at the end of the string. The \\ part escapes the dot: it tells R that you want to use the . as an actual character.
 
 ```{r}
+# The emails vector has already been defined for you
+emails <- c("john.doe@ivyleague.edu", "education@world.gov", "dalai.lama@peace.org",
+            "invalid.edu", "quant@bigdatacollege.edu", "cookie.monster@sesame.tv")
 
+# Use grepl() to match for .edu addresses more robustly
+grepl(pattern = "@.*\\.edu$", x = emails)
+
+# Use grep() to match for .edu addresses more robustly, save result to hits
+hits <- grep(pattern = "@.*\\.edu$", x = emails)
+
+# Subset emails using hits
+emails[hits]
 ```
 
 ## 5-10 sub & gsub
@@ -1387,8 +1398,15 @@ While grep() and grepl() were used to simply check whether a regular expression 
 
 Suppose that emails vector you've been working with is an excerpt of DataCamp's email database. Why not offer the owners of the .edu email addresses a new email address on the datacamp.edu domain? This could be quite a powerful marketing stunt: Online education is taking over traditional learning institutions! Convert your email and be a part of the new generation!
 
-```{r}
+With the advanced regular expression "@.*\\.edu$", use sub() to replace the match with "@datacamp.edu". Since there will only be one match per character string, gsub() is not necessary here. Inspect the resulting output.
 
+```{r}
+# The emails vector has already been defined for you
+emails <- c("john.doe@ivyleague.edu", "education@world.gov", "global@peace.org",
+            "invalid.edu", "quant@bigdatacollege.edu", "cookie.monster@sesame.tv")
+
+# Use sub() to convert the email domains to datacamp.edu
+sub(pattern = "@.*\\.edu$", replacement = "@datacamp.edu", x = emails)
 ```
 
 ## 5-13 Right here, right now
@@ -1398,7 +1416,17 @@ In R, dates are represented by Date objects, while times are represented by POSI
 The 1st of January in 1970 is the common origin for representing times and dates in a wide range of programming languages. There is no particular reason for this; it is a simple convention. Of course, it's also possible to create dates and times before 1970; the corresponding numerical values are simply negative in this case.
 
 ```{r}
+# Get the current date: today
+today <- Sys.Date()
 
+# See what today looks like under the hood
+unclass(today)
+
+# Get the current time: now
+now <- Sys.time()
+
+# See what now looks like under the hood
+unclass(now)
 ```
 
 ## 5-14 Create and format dates
@@ -1427,36 +1455,55 @@ format(Sys.Date(), format = "%d %B, %Y")
 format(Sys.Date(), format = "Today is a %A!")
 
 ```{r}
+# Definition of character strings representing dates
+str1 <- "May 23, '96"
+str2 <- "2012-03-15"
+str3 <- "30/January/2006"
 
+# Convert the strings to dates: date1, date2, date3
+date1 <- as.Date(str1, format = "%b %d, '%y")
+date2 <- as.Date(str2, format = "%Y-%m-%d")
+date3 <- as.Date(str3, format = "%d/%b/%Y")
+
+# Convert dates to formatted strings
+format(date1, "%A")
+format(date2, "%d")
+format(date3, "%b %Y")
 ```
 
-## 5-15 Create and format dates
+## 5-15 Create and format times
 
-To create a Date object from a simple character string in R, you can use the as.Date() function. The character string has to obey a format that can be defined using a set of symbols (the examples correspond to 13 January, 1982):
+Similar to working with dates, you can use as.POSIXct() to convert from a character string to a POSIXct object, and format() to convert from a POSIXct object to a character string. Again, you have a wide variety of symbols:
 
-%Y: 4-digit year (1982)
-%y: 2-digit year (82)
-%m: 2-digit month (01)
-%d: 2-digit day of the month (13)
-%A: weekday (Wednesday)
-%a: abbreviated weekday (Wed)
-%B: month (January)
-%b: abbreviated month (Jan)
-The following R commands will all create the same Date object for the 13th day in January of 1982:
+%H: hours as a decimal number (00-23)
+%I: hours as a decimal number (01-12)
+%M: minutes as a decimal number
+%S: seconds as a decimal number
+%T: shorthand notation for the typical format %H:%M:%S
+%p: AM/PM indicator
+For a full list of conversion symbols, consult the strptime documentation in the console:
 
-as.Date("1982-01-13")
-as.Date("Jan-13-82", format = "%b-%d-%y")
-as.Date("13 January, 1982", format = "%d %B, %Y")
-Notice that the first line here did not need a format argument, because by default R matches your character string to the formats "%Y-%m-%d" or "%Y/%m/%d".
+?strptime
+Again,as.POSIXct() uses a default format to match character strings. In this case, it's %Y-%m-%d %H:%M:%S. In this exercise, abstraction is made of different time zones.
 
-In addition to creating dates, you can also convert dates to character strings that use a different date notation. For this, you use the format() function. Try the following lines of code:
+Convert two strings that represent timestamps, str1 and str2, to POSIXct objects called time1 and time2.
 
-today <- Sys.Date()
-format(Sys.Date(), format = "%d %B, %Y")
-format(Sys.Date(), format = "Today is a %A!")
+Using format(), create a string from time1 containing only the minutes.
+
+From time2, extract the hours and minutes as "hours:minutes AM/PM". Refer to the assignment text above to find the correct conversion symbols!
 
 ```{r}
+# Definition of character strings representing times
+str1 <- "May 23, '96 hours:23 minutes:01 seconds:45"
+str2 <- "2012-3-12 14:23:08"
 
+# Convert the strings to POSIXct objects: time1, time2
+time1 <- as.POSIXct(str1, format = "%B %d, '%y hours:%H minutes:%M seconds:%S")
+time2 <- as.POSIXct(str2, format = "%Y-%m-%d %H:%M:%S")
+
+# Convert times to formatted strings
+format(time1, "%M")
+format(time2, "%I:%M %p")
 ```
 
 ## 5-16 Calculations with Dates
@@ -1473,7 +1520,23 @@ as.Date("2015-03-12") - as.Date("2015-02-27")
 To control your eating habits, you decided to write down the dates of the last five days that you ate pizza. In the workspace, these dates are defined as five Date objects, day1 to day5. A vector pizza containing these 5 Date objects has been pre-defined for you.
 
 ```{r}
+# day1, day2, day3, day4 and day5 are already available in the workspace
+day1 <- as.Date("2021-10-09")
+day2 <- as.Date("2021-10-11")
+day3 <- as.Date("2021-10-16")
+day4 <- as.Date("2021-10-22")
+day5 <- as.Date("2021-10-27")
+# Difference between last and first pizza day
+day5-day1
 
+# Create vector pizza
+pizza <- c(day1, day2, day3, day4, day5)
+
+# Create differences between consecutive pizza days: day_diff
+day_diff <- diff(pizza)
+
+# Average period between two consecutive pizza days
+mean(day_diff)
 ```
 
 ## 5-17 Calculations with Times
