@@ -30,14 +30,25 @@ e %>% mutate(q3=Quiz.3..15*20/15) %>% pivot_longer(c(Quiz.1..20,Quiz.2..20,q3)) 
 ```
 
 ```{r}
-Q1_m <- mean(e$Quiz.1..20, na.rm=TRUE)
+Q1_m <- 5*mean(e$Quiz.1..20, na.rm=TRUE)
 print(paste("quiz 1: ",Q1_m))
 
-Q2_m <- mean(e$Quiz.2..20, na.rm=TRUE)
+Q2_m <- 5*mean(e$Quiz.2..20, na.rm=TRUE)
 print(paste("quiz 2: ",Q2_m))
 
-Q3_m <- 20/15*mean(e$Quiz.3..15, na.rm=TRUE)
+Q3_m <- 5*20/15*mean(e$Quiz.3..15, na.rm=TRUE)
 print(paste("quiz 2: ",Q3_m))
+```
+
+```{r}
+Q1_max <- min(e$Quiz.1..20, na.rm=TRUE)
+print(paste("quiz 1: ",Q1_max))
+
+Q2_max <- min(e$Quiz.2..20, na.rm=TRUE)
+print(paste("quiz 2: ",Q2_max))
+
+Q3_max <- 20/15*min(e$Quiz.3..15, na.rm=TRUE)
+print(paste("quiz 3: ",Q3_max))
 ```
 
 
