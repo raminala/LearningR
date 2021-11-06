@@ -21,7 +21,7 @@ eu_stocks <- as.ts(read.csv("eu_stocks.csv"), start = 1998, end = 1998)
 rapid_growth <- as.vector(read.csv("rapid_growth.csv"))
 z <- read.csv("z.csv")$x
 x <- read.csv("x.csv")$x
-
+y <- read.csv("y.csv")$x
 ```
 
 ## Course Description
@@ -307,6 +307,17 @@ An ARIMA(p, d, q) model has three parts, the autoregressive order p, the order o
 In this exercise, you will practice simulating a basic WN model.
 
 ```{r}
+# Simulate a WN model with list(order = c(0, 0, 0))
+white_noise <- arima.sim(model = list(order = c(0, 0, 0)), n = 100)
+
+# Plot your white_noise data
+ts.plot(white_noise)
+
+# Simulate from the WN model with: mean = 100, sd = 10
+white_noise_2 <- arima.sim(model = list(order = c(0, 0, 0)), n = 100, mean = 100, sd = 10)
+
+# Plot your white_noise_2 data
+ts.plot(white_noise_2)
 
 ```
 
@@ -320,6 +331,12 @@ In this exercise, you'll explore the qualities of the WN model. What is the esti
 The time series y has already been loaded, and is shown in the adjoining figure.
 
 ```{r}
+# Fit the WN model to y using the arima command
+arima(y, order =c(0, 0, 0))
+
+# Calculate the sample mean and sample variance of y
+mean(y)
+var(y)
 
 ```
 
