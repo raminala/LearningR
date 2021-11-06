@@ -20,8 +20,8 @@ eu_stocks <- as.ts(read.csv("eu_stocks.csv"), start = 1998, end = 1998)
 
 rapid_growth <- as.vector(read.csv("rapid_growth.csv"))
 z <- read.csv("z.csv")$x
+x <- read.csv("x.csv")$x
 
-str(z)
 ```
 
 ## Course Description
@@ -284,7 +284,15 @@ For time series exhibiting seasonal trends, seasonal differencing can be applied
 The function diff(..., lag = s) will calculate the lag s difference or length s seasonal change series. For monthly or quarterly data, an appropriate value of s would be 12 or 4, respectively. The diff() function has lag = 1 as its default for first differencing. Similar to before, a seasonally differenced series will have s fewer observations than the original series.
 
 ```{r}
+# Generate a diff of x with lag = 4. Save this to dx
+dx <- diff(x, lag = 4)
+  ts.plot(x)
+# Plot dx
+  ts.plot(dx)
 
+# View the length of x and dx, respectively 
+length(x)
+length(dx)
 ```
 
 

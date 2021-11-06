@@ -30,9 +30,7 @@ eu_stocks &lt;- as.ts(read.csv(&quot;eu_stocks.csv&quot;), start = 1998, end = 1
 
 rapid_growth &lt;- as.vector(read.csv(&quot;rapid_growth.csv&quot;))
 z &lt;- read.csv(&quot;z.csv&quot;)$x
-
-str(z)</code></pre>
-<pre><code>##  num [1:200] 6.23 6.1 6.3 6.25 6.23 ...</code></pre>
+x &lt;- read.csv(&quot;x.csv&quot;)$x</code></pre>
 <div id="course-description" class="section level2">
 <h2>Course Description</h2>
 <p>Many phenomena in our day-to-day lives, such as the movement of stock prices, are measured in intervals over a period of time. Time series analysis methods are extremely useful for analyzing these special data types. In this course, you will be introduced to some core time series analysis concepts and techniques.</p>
@@ -431,6 +429,18 @@ length(z)</code></pre>
 <h2>2-6 Removing seasonal trends with seasonal differencing</h2>
 <p>For time series exhibiting seasonal trends, seasonal differencing can be applied to remove these periodic patterns. For example, monthly data may exhibit a strong twelve month pattern. In such situations, changes in behavior from year to year may be of more interest than changes from month to month, which may largely follow the overall seasonal pattern.</p>
 <p>The function diff(…, lag = s) will calculate the lag s difference or length s seasonal change series. For monthly or quarterly data, an appropriate value of s would be 12 or 4, respectively. The diff() function has lag = 1 as its default for first differencing. Similar to before, a seasonally differenced series will have s fewer observations than the original series.</p>
+<pre class="r"><code># Generate a diff of x with lag = 4. Save this to dx
+dx &lt;- diff(x, lag = 4)
+  ts.plot(x)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code># Plot dx
+  ts.plot(dx)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<pre class="r"><code># View the length of x and dx, respectively 
+length(x)</code></pre>
+<pre><code>## [1] 100</code></pre>
+<pre class="r"><code>length(dx)</code></pre>
+<pre><code>## [1] 96</code></pre>
 </div>
 <div id="simulate-the-white-noise-model" class="section level2">
 <h2>2-8 Simulate the white noise model</h2>
