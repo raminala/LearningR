@@ -18,7 +18,7 @@ data_vector <- c(2.0521941073,  4.2928852797,  3.3294132944,  3.5085950670,  0.0
 eu_stocks <- as.ts(read.csv("eu_stocks.csv"))
 #eu_stocks <- ts(eu_stocks1, start = 1998, end = 1998)
 
-rapid_growth <- read.csv("rapid_growth.csv")
+rapid_growth <- as.vector(read.csv("rapid_growth.csv"))
 ```
 
 ## Course Description
