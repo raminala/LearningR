@@ -489,17 +489,59 @@ mean(y)</code></pre>
 <h2>2-11 Simulate the random walk model</h2>
 <p>The random walk (RW) model is also a basic time series model. It is the cumulative sum (or integration) of a mean zero white noise (WN) series, such that the first difference series of a RW is a WN series. Note for reference that the RW model is an ARIMA(0, 1, 0) model, in which the middle entry of 1 indicates that the model’s order of integration is 1.</p>
 <p>The arima.sim() function can be used to simulate data from the RW by including the model = list(order = c(0, 1, 0)) argument. We also need to specify a series length n. Finally, you can specify a sd for the series (increments), where the default value is 1.</p>
+<pre class="r"><code># Generate a RW model using arima.sim
+random_walk &lt;- arima.sim(model = list(order = c(0, 1, 0)), n = 100)
+
+# Plot random_walk
+ts.plot(random_walk)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code># Calculate the first difference series
+random_walk_diff &lt;- diff(random_walk)
+
+# Plot random_walk_diff
+ts.plot(random_walk_diff)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
 </div>
 <div id="simulate-the-random-walk-model-with-a-drift" class="section level2">
 <h2>2-12 Simulate the random walk model with a drift</h2>
 <p>A random walk (RW) need not wander about zero, it can have an upward or downward trajectory, i.e., a drift or time trend. This is done by including an intercept in the RW model, which corresponds to the slope of the RW time trend.</p>
 <p>For an alternative formulation, you can take the cumulative sum of a constant mean white noise (WN) series, such that the mean corresponds to the slope of the RW time trend.</p>
 <p>To simulate data from the RW model with a drift you again use the arima.sim() function with the model = list(order = c(0, 1, 0)) argument. This time, you should add the additional argument mean = … to specify the drift variable, or the intercept.</p>
+<pre class="r"><code># Generate a RW model with a drift uing arima.sim
+rw_drift &lt;- arima.sim(model = list(order = c(0, 1, 0)), n = 100, mean = 1)
+
+# Plot rw_drift
+ts.plot(rw_drift)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre class="r"><code># Calculate the first difference series
+rw_drift_diff &lt;- diff(rw_drift)
+
+# Plot rw_drift_diff
+ts.plot(rw_drift_diff)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
 </div>
 <div id="estimate-the-random-walk-model" class="section level2">
 <h2>2-13 Estimate the random walk model</h2>
 <p>For a given time series y we can fit the random walk model with a drift by first differencing the data, then fitting the white noise (WN) model to the differenced data using the arima() command with the order = c(0, 0, 0)) argument.</p>
 <p>The arima() command displays information or output about the fitted model. Under the Coefficients: heading is the estimated drift variable, named the intercept. Its approximate standard error (or s.e.) is provided directly below it. The variance of the WN part of the model is also estimated under the label sigma^2.</p>
+<pre class="r"><code># Difference your random_walk data
+rw_diff &lt;- diff(random_walk)
+
+# Plot rw_diff
+ts.plot(rw_diff)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code># Now fit the WN model to the differenced data
+model_wn &lt;- arima(x = rw_diff, order=c(0, 0, 0))
+
+# Store the value of the estimated time trend (intercept)
+int_wn &lt;- model_wn$coef
+
+# Plot the original random_walk data
+ts.plot(random_walk)
+
+# Use abline(0, ...) to add time trend to the figure
+abline(0, int_wn)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-17-2.png" width="672" /></p>
 </div>
 <div id="are-the-white-noise-model-or-the-random-walk-model-stationary" class="section level2">
 <h2>2-16 Are the white noise model or the random walk model stationary?</h2>

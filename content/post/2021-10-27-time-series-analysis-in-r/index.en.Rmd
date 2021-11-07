@@ -348,7 +348,17 @@ The random walk (RW) model is also a basic time series model. It is the cumulati
 The arima.sim() function can be used to simulate data from the RW by including the model = list(order = c(0, 1, 0)) argument. We also need to specify a series length n. Finally, you can specify a sd for the series (increments), where the default value is 1.
 
 ```{r}
+# Generate a RW model using arima.sim
+random_walk <- arima.sim(model = list(order = c(0, 1, 0)), n = 100)
 
+# Plot random_walk
+ts.plot(random_walk)
+
+# Calculate the first difference series
+random_walk_diff <- diff(random_walk)
+
+# Plot random_walk_diff
+ts.plot(random_walk_diff)
 ```
 
 
@@ -361,6 +371,17 @@ For an alternative formulation, you can take the cumulative sum of a constant me
 To simulate data from the RW model with a drift you again use the arima.sim() function with the model = list(order = c(0, 1, 0)) argument. This time, you should add the additional argument mean = ... to specify the drift variable, or the intercept.
 
 ```{r}
+# Generate a RW model with a drift uing arima.sim
+rw_drift <- arima.sim(model = list(order = c(0, 1, 0)), n = 100, mean = 1)
+
+# Plot rw_drift
+ts.plot(rw_drift)
+
+# Calculate the first difference series
+rw_drift_diff <- diff(rw_drift)
+
+# Plot rw_drift_diff
+ts.plot(rw_drift_diff)
 
 ```
 
@@ -372,7 +393,23 @@ For a given time series y we can fit the random walk model with a drift by first
 The arima() command displays information or output about the fitted model. Under the Coefficients: heading is the estimated drift variable, named the intercept. Its approximate standard error (or s.e.) is provided directly below it. The variance of the WN part of the model is also estimated under the label sigma^2.
 
 ```{r}
+# Difference your random_walk data
+rw_diff <- diff(random_walk)
 
+# Plot rw_diff
+ts.plot(rw_diff)
+
+# Now fit the WN model to the differenced data
+model_wn <- arima(x = rw_diff, order=c(0, 0, 0))
+
+# Store the value of the estimated time trend (intercept)
+int_wn <- model_wn$coef
+
+# Plot the original random_walk data
+ts.plot(random_walk)
+
+# Use abline(0, ...) to add time trend to the figure
+abline(0, int_wn)
 ```
 
 
