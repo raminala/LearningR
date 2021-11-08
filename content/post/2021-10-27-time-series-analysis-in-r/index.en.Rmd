@@ -15,13 +15,15 @@ class(Nile)
 
 data_vector <- c(2.0521941073,  4.2928852797,  3.3294132944,  3.5085950670,  0.0009576938, 1.9217186345,  0.7978134128,  0.2999543435, 0.9435687536,  0.5748283388, -0.0034005903,  0.3448649176,  2.2229761136,  0.1763144576, 2.7097622770, 1.2501948965, -0.4007164754,  0.8852732121, -1.5852420266, -2.2829278891, -2.5609531290, -3.1259963754, -2.8660295895, -1.7847009207, -1.8894912908, -2.7255351194, -2.1033141800, -0.0174256893, -0.3613204151, -2.9008403327, -3.2847440927, -2.8684594718, -1.9505074437, -4.8801892525, -3.2634605353, -1.6396062522, -3.3012575840, -2.6331245433, -1.7058354022, -2.2119825061, -0.5170595186,  0.0752508095, -0.8406994716, -1.4022683487, -0.1382114230, -1.4065954703, -2.3046941055,  1.5073891432, 0.7118679477, -1.1300519022)
 
-eu_stocks <- as.ts(read.csv("eu_stocks.csv"), start = 1998, end = 1998)
-#eu_stocks <- ts(eu_stocks1, start = 1998, end = 1998)
+eu_stocks <- as.ts(read.csv("eu_stocks.csv"), start = c(1991, 130), end = c(1998, 169), frequency=260)
+
 
 rapid_growth <- as.vector(read.csv("rapid_growth.csv"))
 z <- read.csv("z.csv")$x
 x <- read.csv("x.csv")$x
 y <- read.csv("y.csv")$x
+
+str(eu_stocks)
 ```
 
 ## Course Description
@@ -420,7 +422,20 @@ The white noise (WN) and random walk (RW) models are very closely related. Howev
 Recall that if we start with a mean zero WN process and compute its running or cumulative sum, the result is a RW process. The cumsum() function will make this transformation for you. Similarly, if we create a WN process, but change its mean from zero, and then compute its cumulative sum, the result is a RW process with a drift.
 
 ```{r}
+# Use arima.sim() to generate WN data
+white_noise <- arima.sim(model= list(order = c(0, 0, 0)), n=100)
 
+# Use cumsum() to convert your WN data to RW
+random_walk <- cumsum(white_noise)
+  
+# Use arima.sim() to generate WN drift data
+wn_drift <- arima.sim(model= list(order = c(0, 0, 0)), mean=0.4, n=100)
+  
+# Use cumsum() to convert your WN drift data to RW
+rw_drift <- cumsum(wn_drift)
+
+# Plot all four data objects
+plot.ts(cbind(white_noise, random_walk, wn_drift, rw_drift))
 ```
 
 
@@ -429,13 +444,129 @@ Recall that if we start with a mean zero WN process and compute its running or c
 
 In this chapter, you will review the correlation coefficient, use it to compare two time series, and also apply it to compare a time series with its past, as an autocorrelation. You will discover the autocorrelation function (ACF) and practice estimating and visualizing autocorrelations for time series data.
 
+## 3-2 Asset prices vs. asset returns
+
+The goal of investing is to make a profit. The revenue or loss from investing depends on the amount invested and changes in prices, and high revenue relative to the size of an investment is of central interest. This is what financial asset returns measure, changes in price as a fraction of the initial price over a given time horizon, for example, one business day.
+
+Let's again consider the eu_stocks dataset. This dataset reports index values, which we can regard as prices. The indices are not investable assets themselves, but there are many investable financial assets that closely track major market indices, including mutual funds and exchange traded funds.
+
+Log returns, also called continuously compounded returns, are also commonly used in financial time series analysis. They are the log of gross returns, or equivalently, the changes (or first differences) in the logarithm of prices.
+
+The change in appearance between daily prices and daily returns is typically substantial, while the difference between daily returns and log returns is usually small. As you'll see later, one advantage of using log returns is that calculating multi-period returns from individual periods is greatly simplified - you just add them together!
+
+In this exercise, you'll further explore the eu_stocks dataset, including plotting prices, converting prices to (net) returns, and converting prices to log returns.
+
+```{r}
+# Plot eu_stocks
+plot(eu_stocks)
+
+# Use this code to convert prices to returns
+returns <- eu_stocks[-1,] / eu_stocks[-1860,] - 1
+
+# Convert returns to ts
+returns <- ts(returns, start = c(1991, 130), frequency = 260)
+
+# Plot returns
+plot(returns)
+
+# Use this code to convert prices to log returns
+logreturns <- diff(log(eu_stocks))
+
+# Plot logreturns
+plot(logreturns)
+
+```
 
 
+## 3-3 Characteristics of financial time series
 
+Daily financial asset returns typically share many characteristics. Returns over one day are typically small, and their average is close to zero. At the same time, their variances and standard deviations can be relatively large. Over the course of a few years, several very large returns (in magnitude) are typically observed. These relative outliers happen on only a handful of days, but they account for the most substantial movements in asset prices. Because of these extreme returns, the distribution of daily asset returns is not normal, but heavy-tailed, and sometimes skewed. In general, individual stock returns typically have even greater variability and more extreme observations than index returns.
 
+In this exercise, you'll work with the eu_percentreturns dataset, which is the percentage returns calculated from your eu_stocks data. For each of the four indices contained in your data, you'll calculate the sample mean, variance, and standard deviation.
 
+Notice that the average daily return is about 0, while the standard deviation is about 1 percentage point. Also apply the hist() and qqnorm() functions to make histograms and normal quantile plots, respectively, for each of the indices.
 
+```{r}
 
+```
+
+## 3-4 Plotting pairs of data
+
+Time series data is often presented in a time series plot. For example, the index values from the eu_stocks dataset are shown in the adjoining figure. Recall, eu_stocks contains daily closing prices from 1991-1998 for the major stock indices in Germany (DAX), Switzerland (SMI), France (CAC), and the UK (FTSE).
+
+It is also useful to examine the bivariate relationship between pairs of time series. In this exercise we will consider the contemporaneous relationship, that is matching observations that occur at the same time, between pairs of index values as well as their log returns. The plot(a, b) function will produce a scatterplot when two time series names a and b are given as input.
+
+To simultaneously make scatterplots for all pairs of several assets the pairs() function can be applied to produce a scatterplot matrix. When shared time trends are present in prices or index values it is common to instead compare their returns or log returns.
+
+In this exercise, you'll practice these skills on the eu_stocks data. Because the DAX and FTSE returns have similar time coverage, you can easily make a scatterplot of these indices. Note that the normal distribution has elliptical contours of equal probability, and pairs of data drawn from the multivariate normal distribution form a roughly elliptically shaped point cloud. Do any of the pairs in the scatterplot matrices exhibit this pattern, before or after log transformation?
+
+```{r}
+
+```
+
+## 3-6 Calculating sample covariances and correlations
+
+Sample covariances measure the strength of the linear relationship between matched pairs of variables. The cov() function can be used to calculate covariances for a pair of variables, or a covariance matrix when a matrix containing several variables is given as input. For the latter case, the matrix is symmetric with covariances between variables on the off-diagonal and variances of the variables along the diagonal. On the right you can see the scatterplot matrix of your logreturns data.
+
+Covariances are very important throughout finance, but they are not scale free and they can be difficult to directly interpret. Correlation is the standardized version of covariance that ranges in value from -1 to 1, where values close to 1 in magnitude indicate a strong linear relationship between pairs of variables. The cor() function can be applied to both pairs of variables as well as a matrix containing several variables, and the output is interpreted analogously.
+
+In this exercise, you'll use cov() and cor() to explore your logreturns data.
+
+```{r}
+
+```
+
+## 3-9 Calculating autocorrelations
+
+Autocorrelations or lagged correlations are used to assess whether a time series is dependent on its past. For a time series x of length n we consider the n-1 pairs of observations one time unit apart. The first such pair is (x[2],x[1]), and the next is (x[3],x[2]). Each such pair is of the form (x[t],x[t-1]) where t is the observation index, which we vary from 2 to n in this case. The lag-1 autocorrelation of x can be estimated as the sample correlation of these (x[t], x[t-1]) pairs.
+
+In general, we can manually create these pairs of observations. First, create two vectors, x_t0 and x_t1, each with length n-1, such that the rows correspond to (x[t], x[t-1]) pairs. Then apply the cor() function to estimate the lag-1 autocorrelation.
+
+Luckily, the acf() command provides a shortcut. Applying
+
+acf(..., lag.max = 1, plot = FALSE)
+
+to a series x automatically calculates the lag-1 autocorrelation.
+
+Finally, note that the two estimates differ slightly as they use slightly different scalings in their calculation of sample covariance, 1/(n-1) versus 1/n. Although the latter would provide a biased estimate, it is preferred in time series analysis, and the resulting autocorrelation estimates only differ by a factor of (n-1)/n.
+
+In this exercise, you'll practice both the manual and automatic calculation of a lag-1 autocorrelation. The time series x and its length n (150) have already been loaded. The series is shown in the plot on the right.
+
+```{r}
+
+```
+
+## 3-10 The autocorrelation function
+
+Autocorrelations can be estimated at many lags to better assess how a time series relates to its past. We are typically most interested in how a series relates to its most recent past.
+
+The
+
+acf(..., lag.max = ..., plot = FALSE)
+
+function will estimate all autocorrelations from 0, 1, 2,..., up to the value specified by the argument lag.max. In the previous exercise, you focused on the lag-1 autocorrelation by setting the lag.max argument to 1.
+
+In this exercise, you'll explore some further applications of the acf() command. Once again, the time series x has been preloaded for you and is shown in the plot on the right.
+
+```{r}
+
+```
+
+## 3-11 Visualizing the autocorrelation function
+
+Estimating the autocorrelation function (ACF) at many lags allows us to assess how a time series x relates to its past. The numeric estimates are important for detailed calculations, but it is also useful to visualize the ACF as a function of the lag.
+
+In fact, the acf() command produces a figure by default. It also makes a default choice for lag.max, the maximum number of lags to be displayed.
+
+Three time series x, y, and z have been loaded into your R environment and are plotted on the right. The time series x shows strong persistence, meaning the current value is closely relatively to those that proceed it. The time series y shows a periodic pattern with a cycle length of approximately four observations, meaning the current value is relatively close to the observation four before it. The time series z does not exhibit any clear pattern.
+
+In this exercise, you'll plot an estimated autocorrelation function for each time series. In the plots produced by acf(), the lag for each autocorrelation estimate is denoted on the horizontal axis and each autocorrelation estimate is indicated by the height of the vertical bars. Recall that the ACF at lag-0 is always 1.
+
+Finally, each ACF figure includes a pair of blue, horizontal, dashed lines representing lag-wise 95% confidence intervals centered at zero. These are used for determining the statistical significance of an individual autocorrelation estimate at a given lag versus a null value of zero, i.e., no autocorrelation at that lag.
+
+```{r}
+
+```
 
 ## 4- Autoregression
 
