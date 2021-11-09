@@ -548,6 +548,23 @@ Covariances are very important throughout finance, but they are not scale free a
 In this exercise, you'll use cov() and cor() to explore your logreturns data.
 
 ```{r}
+DAX_logreturns <- diff(log(DAX))
+  FTSE_logreturns <- diff(log(FTSE))
+```
+
+
+```{r}
+# Use cov() with DAX_logreturns and FTSE_logreturns
+cov(DAX_logreturns, FTSE_logreturns)
+
+# Use cov() with logreturns
+cov(logreturns)
+
+# Use cor() with DAX_logreturns and FTSE_logreturns
+cor(DAX_logreturns, FTSE_logreturns)
+
+# Use cor() with logreturns
+cor(logreturns)
 
 ```
 
