@@ -25,6 +25,8 @@ y <- read.csv("y.csv")$x
 
 eu_percentreturns <- as.ts(read.csv("eu_percentreturns.csv"), start = c(1991, 130), end = c(1998, 169), frequency=260)
 
+DAX <- ts(read.csv("DAX.csv"), start = 1871 , end = 1970, frequency = 1)
+FTSE <- ts(read.csv("FTSE.csv"), start = 1871 , end = 1970, frequency = 1)
 str(eu_stocks)
 ```
 
@@ -520,6 +522,20 @@ To simultaneously make scatterplots for all pairs of several assets the pairs() 
 In this exercise, you'll practice these skills on the eu_stocks data. Because the DAX and FTSE returns have similar time coverage, you can easily make a scatterplot of these indices. Note that the normal distribution has elliptical contours of equal probability, and pairs of data drawn from the multivariate normal distribution form a roughly elliptically shaped point cloud. Do any of the pairs in the scatterplot matrices exhibit this pattern, before or after log transformation?
 
 ```{r}
+# Make a scatterplot of DAX and FTSE
+plot(DAX, FTSE)
+
+# Make a scatterplot matrix of eu_stocks
+pairs(eu_stocks)
+
+# Convert eu_stocks to log returns
+logreturns <- diff(log(eu_stocks))
+
+# Plot logreturns
+plot(logreturns)
+
+# Make a scatterplot matrix of logreturns
+pairs(logreturns)
 
 ```
 
