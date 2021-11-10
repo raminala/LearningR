@@ -29,7 +29,10 @@ DAX <- ts(read.csv("DAX.csv"), start = 1871 , end = 1970, frequency = 1)
 FTSE <- ts(read.csv("FTSE.csv"), start = 1871 , end = 1970, frequency = 1)
 
 DAX_logreturns <- ts(read.csv("DAX_logreturns.csv"), start = 1871 , end = 1970, frequency = 1)
+
 FTSE_logreturns <- ts(read.csv("FTSE_logreturns.csv"), start = 1871 , end = 1970, frequency = 1)
+
+x1 <- ts(read.csv("x1.csv"))
 
 str(eu_stocks)
 ```
@@ -586,12 +589,12 @@ In this exercise, you'll practice both the manual and automatic calculation of a
 
 ```{r}
 n <- 150
-
+plot(x1)
 # Define x_t0 as x[-1]
-x_t0 <- x[-1]
+x_t0 <- x1[-1] 
 
 # Define x_t1 as x[-n]
-x_t1 <- x[-n]
+x_t1 <- x1[-n]
 
 # Confirm that x_t0 and x_t1 are (x[t], x[t-1]) pairs  
 head(cbind(x_t0, x_t1))
@@ -605,7 +608,7 @@ cor(x_t0, x_t1)
 # Use acf with x
 acf(x, lag.max = 1, plot = FALSE)
 
-# Confirm that difference factor is (n-1)/n
+# Confirm that difference factor is (n-1)/n 
 cor(x_t1, x_t0) * (n-1)/n
 
 ```

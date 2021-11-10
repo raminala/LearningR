@@ -39,7 +39,10 @@ DAX &lt;- ts(read.csv(&quot;DAX.csv&quot;), start = 1871 , end = 1970, frequency
 FTSE &lt;- ts(read.csv(&quot;FTSE.csv&quot;), start = 1871 , end = 1970, frequency = 1)
 
 DAX_logreturns &lt;- ts(read.csv(&quot;DAX_logreturns.csv&quot;), start = 1871 , end = 1970, frequency = 1)
+
 FTSE_logreturns &lt;- ts(read.csv(&quot;FTSE_logreturns.csv&quot;), start = 1871 , end = 1970, frequency = 1)
+
+x1 &lt;- ts(read.csv(&quot;x1.csv&quot;))
 
 str(eu_stocks)</code></pre>
 <pre><code>##  Time-Series [1:1860, 1:4] from 1 to 1860: 1629 1614 1607 1621 1618 ...
@@ -670,6 +673,40 @@ cor(logreturns)</code></pre>
 <p>to a series x automatically calculates the lag-1 autocorrelation.</p>
 <p>Finally, note that the two estimates differ slightly as they use slightly different scalings in their calculation of sample covariance, 1/(n-1) versus 1/n. Although the latter would provide a biased estimate, it is preferred in time series analysis, and the resulting autocorrelation estimates only differ by a factor of (n-1)/n.</p>
 <p>In this exercise, you’ll practice both the manual and automatic calculation of a lag-1 autocorrelation. The time series x and its length n (150) have already been loaded. The series is shown in the plot on the right.</p>
+<pre class="r"><code>n &lt;- 150
+plot(x1)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<pre class="r"><code># Define x_t0 as x[-1]
+x_t0 &lt;- x1[-1] 
+
+# Define x_t1 as x[-n]
+x_t1 &lt;- x1[-n]
+
+# Confirm that x_t0 and x_t1 are (x[t], x[t-1]) pairs  
+head(cbind(x_t0, x_t1))</code></pre>
+<pre><code>##            x_t0       x_t1
+## [1,]  1.2996380  2.0655438
+## [2,]  0.0335780  1.2996380
+## [3,] -0.3425807  0.0335780
+## [4,]  0.2325613 -0.3425807
+## [5,]  0.4681201  0.2325613
+## [6,]  4.3411156  0.4681201</code></pre>
+<pre class="r"><code># Plot x_t0 and x_t1
+plot(x_t0, x_t1)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
+<pre class="r"><code># View the correlation between x_t0 and x_t1
+cor(x_t0, x_t1)</code></pre>
+<pre><code>## [1] 0.7630314</code></pre>
+<pre class="r"><code># Use acf with x
+acf(x, lag.max = 1, plot = FALSE)</code></pre>
+<pre><code>## 
+## Autocorrelations of series &#39;x&#39;, by lag
+## 
+##      0      1 
+##  1.000 -0.035</code></pre>
+<pre class="r"><code># Confirm that difference factor is (n-1)/n 
+cor(x_t1, x_t0) * (n-1)/n</code></pre>
+<pre><code>## [1] 0.7579445</code></pre>
 </div>
 <div id="the-autocorrelation-function" class="section level2">
 <h2>3-10 The autocorrelation function</h2>
