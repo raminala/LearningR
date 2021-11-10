@@ -27,6 +27,10 @@ eu_percentreturns <- as.ts(read.csv("eu_percentreturns.csv"), start = c(1991, 13
 
 DAX <- ts(read.csv("DAX.csv"), start = 1871 , end = 1970, frequency = 1)
 FTSE <- ts(read.csv("FTSE.csv"), start = 1871 , end = 1970, frequency = 1)
+
+DAX_logreturns <- ts(read.csv("DAX_logreturns.csv"), start = 1871 , end = 1970, frequency = 1)
+FTSE_logreturns <- ts(read.csv("FTSE_logreturns.csv"), start = 1871 , end = 1970, frequency = 1)
+
 str(eu_stocks)
 ```
 
@@ -490,7 +494,7 @@ In this exercise, you'll work with the eu_percentreturns dataset, which is the p
 
 Notice that the average daily return is about 0, while the standard deviation is about 1 percentage point. Also apply the hist() and qqnorm() functions to make histograms and normal quantile plots, respectively, for each of the indices.
 
-```{r}
+```{r results = FALSE}
 # Generate means from eu_percentreturns
 colMeans(eu_percentreturns) 
 
@@ -546,11 +550,6 @@ Sample covariances measure the strength of the linear relationship between match
 Covariances are very important throughout finance, but they are not scale free and they can be difficult to directly interpret. Correlation is the standardized version of covariance that ranges in value from -1 to 1, where values close to 1 in magnitude indicate a strong linear relationship between pairs of variables. The cor() function can be applied to both pairs of variables as well as a matrix containing several variables, and the output is interpreted analogously.
 
 In this exercise, you'll use cov() and cor() to explore your logreturns data.
-
-```{r}
-DAX_logreturns <- diff(log(DAX))
-  FTSE_logreturns <- diff(log(FTSE))
-```
 
 
 ```{r}
