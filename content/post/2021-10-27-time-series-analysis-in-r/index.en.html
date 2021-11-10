@@ -612,24 +612,6 @@ plot(logreturns)</code></pre>
 <p>Daily financial asset returns typically share many characteristics. Returns over one day are typically small, and their average is close to zero. At the same time, their variances and standard deviations can be relatively large. Over the course of a few years, several very large returns (in magnitude) are typically observed. These relative outliers happen on only a handful of days, but they account for the most substantial movements in asset prices. Because of these extreme returns, the distribution of daily asset returns is not normal, but heavy-tailed, and sometimes skewed. In general, individual stock returns typically have even greater variability and more extreme observations than index returns.</p>
 <p>In this exercise, you’ll work with the eu_percentreturns dataset, which is the percentage returns calculated from your eu_stocks data. For each of the four indices contained in your data, you’ll calculate the sample mean, variance, and standard deviation.</p>
 <p>Notice that the average daily return is about 0, while the standard deviation is about 1 percentage point. Also apply the hist() and qqnorm() functions to make histograms and normal quantile plots, respectively, for each of the indices.</p>
-<pre class="r"><code># Generate means from eu_percentreturns
-colMeans(eu_percentreturns) 
-
-# Use apply to calculate sample variance from eu_percentreturns
-apply(eu_percentreturns, MARGIN = 2, FUN = var)
-
-# Use apply to calculate standard deviation from eu_percentreturns
-apply(eu_percentreturns, MARGIN = 2, FUN = sd)
-
-# Display a histogram of percent returns for each index
-par(mfrow = c(2,2))
-apply(eu_percentreturns, MARGIN = 2, FUN = hist, main = &quot;&quot;, xlab = &quot;Percentage Return&quot;)</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
-<pre class="r"><code># Display normal quantile plots of percent returns for each index
-par(mfrow = c(2,2))
-apply(eu_percentreturns, MARGIN = 2, FUN = qqnorm, main = &quot;&quot;)
-qqline(eu_percentreturns)</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-20-2.png" width="672" /></p>
 </div>
 <div id="plotting-pairs-of-data" class="section level2">
 <h2>3-4 Plotting pairs of data</h2>

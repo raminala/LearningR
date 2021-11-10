@@ -494,7 +494,8 @@ In this exercise, you'll work with the eu_percentreturns dataset, which is the p
 
 Notice that the average daily return is about 0, while the standard deviation is about 1 percentage point. Also apply the hist() and qqnorm() functions to make histograms and normal quantile plots, respectively, for each of the indices.
 
-```{r results = FALSE}
+```{r include=FALSE}
+
 # Generate means from eu_percentreturns
 colMeans(eu_percentreturns) 
 
