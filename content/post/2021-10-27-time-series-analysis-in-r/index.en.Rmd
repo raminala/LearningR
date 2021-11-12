@@ -741,6 +741,26 @@ In this exercise, you'll explore additional qualities of the AR model by practic
 Both xand the AirPassengers data are preloaded in your environment. The time series x is shown in the figure on the right.
 
 ```{r}
+# Fit the AR model to x
+arima(x, order = c(1, 0, 0))
+
+# Copy and paste the slope (ar1) estimate
+0.8575
+
+# Copy and paste the slope mean (intercept) estimate
+-0.0948
+
+# Copy and paste the innovation variance (sigma^2) estimate
+1.022
+
+# Fit the AR model to AirPassengers
+AR <- arima(AirPassengers, order = c(1, 0, 0))
+print(AR)
+
+# Run the following commands to plot the series and fitted values
+ts.plot(AirPassengers)
+AR_fitted <- AirPassengers - residuals(AR)
+points(AR_fitted, type = "l", col = 2, lty = 2)
 
 ```
 

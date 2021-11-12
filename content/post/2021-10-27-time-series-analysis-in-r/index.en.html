@@ -811,6 +811,45 @@ ts.plot(z)</code></pre>
 <p>For a given time series x we can fit the autoregressive (AR) model using the arima() command and setting order equal to c(1, 0, 0). Note for reference that an AR model is an ARIMA(1, 0, 0) model.</p>
 <p>In this exercise, you’ll explore additional qualities of the AR model by practicing the arima() command on a simulated time series x as well as the AirPassengers data. This command allows you to identify the estimated slope (ar1), mean (intercept), and innovation variance (sigma^2) of the model.</p>
 <p>Both xand the AirPassengers data are preloaded in your environment. The time series x is shown in the figure on the right.</p>
+<pre class="r"><code># Fit the AR model to x
+arima(x, order = c(1, 0, 0))</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = x, order = c(1, 0, 0))
+## 
+## Coefficients:
+##          ar1  intercept
+##       0.8095    -0.5264
+## s.e.  0.0412     0.3839
+## 
+## sigma^2 estimated as 1.112:  log likelihood = -294.97,  aic = 595.95</code></pre>
+<pre class="r"><code># Copy and paste the slope (ar1) estimate
+0.8575</code></pre>
+<pre><code>## [1] 0.8575</code></pre>
+<pre class="r"><code># Copy and paste the slope mean (intercept) estimate
+-0.0948</code></pre>
+<pre><code>## [1] -0.0948</code></pre>
+<pre class="r"><code># Copy and paste the innovation variance (sigma^2) estimate
+1.022</code></pre>
+<pre><code>## [1] 1.022</code></pre>
+<pre class="r"><code># Fit the AR model to AirPassengers
+AR &lt;- arima(AirPassengers, order = c(1, 0, 0))
+print(AR)</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = AirPassengers, order = c(1, 0, 0))
+## 
+## Coefficients:
+##          ar1  intercept
+##       0.9646   278.4649
+## s.e.  0.0214    67.1141
+## 
+## sigma^2 estimated as 1119:  log likelihood = -711.09,  aic = 1428.18</code></pre>
+<pre class="r"><code># Run the following commands to plot the series and fitted values
+ts.plot(AirPassengers)
+AR_fitted &lt;- AirPassengers - residuals(AR)
+points(AR_fitted, type = &quot;l&quot;, col = 2, lty = 2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 <div id="simple-forecasts-from-an-estimated-ar-model" class="section level2">
 <h2>4-8 Simple forecasts from an estimated AR model</h2>
