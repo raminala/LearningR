@@ -819,10 +819,10 @@ arima(x, order = c(1, 0, 0))</code></pre>
 ## 
 ## Coefficients:
 ##          ar1  intercept
-##       0.8771     0.3893
-## s.e.  0.0346     0.5487
+##       0.8978    -0.1339
+## s.e.  0.0311     0.6650
 ## 
-## sigma^2 estimated as 0.9694:  log likelihood = -281.41,  aic = 568.82</code></pre>
+## sigma^2 estimated as 0.9928:  log likelihood = -283.89,  aic = 573.78</code></pre>
 <pre class="r"><code># Copy and paste the slope (ar1) estimate
 0.8575</code></pre>
 <pre><code>## [1] 0.8575</code></pre>
@@ -904,6 +904,140 @@ points(AR_forecast + 2*AR_forecast_se, type = &quot;l&quot;, col = 2, lty = 2)</
 <div id="a-simple-moving-average" class="section level2">
 <h2>5- A simple moving average</h2>
 <p>In this chapter, you will learn the simple moving average (MA) model and several of its basic properties. You will also practice simulating and estimating the MA model in R, and compare the MA model with the autoregressive (AR) model.</p>
+</div>
+<div id="simulate-the-simple-moving-average-model" class="section level2">
+<h2>5-2 Simulate the simple moving average model</h2>
+<p>The simple moving average (MA) model is a parsimonious time series model used to account for very short-run autocorrelation. It does have a regression like form, but here each observation is regressed on the previous innovation, which is not actually observed. Like the autoregressive (AR) model, the MA model includes the white noise (WN) model as special case.</p>
+<p>As with previous models, the MA model can be simulated using the arima.sim() command by setting the model argument to list(ma = theta), where theta is a slope parameter from the interval (-1, 1). Once again, you also need to specifcy the series length using the n argument.</p>
+<p>In this exercise, you’ll simulate and plot three MA models with slope parameters 0.5, 0.9, and -0.5, respectively.</p>
+<pre class="r"><code># Generate MA model with slope 0.5
+x &lt;- arima.sim(model = list(ma = 0.5), n = 100)
+
+# Generate MA model with slope 0.9
+y &lt;- arima.sim(model = list(ma = 0.9), n = 100)
+
+# Generate MA model with slope -0.5
+z &lt;- arima.sim(model = list(ma = -0.5), n = 100)
+
+# Plot all three models together
+plot.ts(cbind(x, y, z))</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+</div>
+<div id="estimate-the-autocorrelation-function-acf-for-a-moving-average" class="section level2">
+<h2>5-3 Estimate the autocorrelation function (ACF) for a moving average</h2>
+<p>Now that you’ve simulated some MA data using the arima.sim() command, you may want to estimate the autocorrelation functions (ACF) for your data. As in the previous chapter, you can use the acf() command to generate plots of the autocorrelation in your MA data.</p>
+<p>In this exercise, you’ll use acf() to estimate the ACF for three simulated MA series, x, y, and z. These series have slope parameters of 0.4, 0.9, and -0.75, respectively, and are shown in the figure on the right.</p>
+<pre class="r"><code># Calculate ACF for x
+acf(x)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<pre class="r"><code># Calculate ACF for y
+acf(y)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-32-2.png" width="672" /></p>
+<pre class="r"><code># Calculate ACF for z
+acf(z)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-32-3.png" width="672" /></p>
+</div>
+<div id="estimate-the-simple-moving-average-model" class="section level2">
+<h2>5-5 Estimate the simple moving average model</h2>
+<p>Now that you’ve simulated some MA models and calculated the ACF from these models, your next step is to fit the simple moving average (MA) model to some data using the arima() command. For a given time series x we can fit the simple moving average (MA) model using arima(…, order = c(0, 0, 1)). Note for reference that an MA model is an ARIMA(0, 0, 1) model.</p>
+<p>In this exercise, you’ll practice using a preloaded time series (x, shown in the plot on the right) as well as the Nile dataset used in earlier chapters.</p>
+<pre class="r"><code># Fit the MA model to `x`
+arima(x, order = c(0, 0, 1))</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = x, order = c(0, 0, 1))
+## 
+## Coefficients:
+##          ma1  intercept
+##       0.4720    -0.1355
+## s.e.  0.0919     0.1421
+## 
+## sigma^2 estimated as 0.9383:  log likelihood = -138.83,  aic = 283.67</code></pre>
+<pre class="r"><code># Paste the slope (ma1) estimate below
+0.7928</code></pre>
+<pre><code>## [1] 0.7928</code></pre>
+<pre class="r"><code># Paste the slope mean (intercept) estimate below
+0.1589</code></pre>
+<pre><code>## [1] 0.1589</code></pre>
+<pre class="r"><code># Paste the innovation variance (sigma^2) estimate below
+0.9576</code></pre>
+<pre><code>## [1] 0.9576</code></pre>
+<pre class="r"><code># Fit the MA model to Nile
+MA &lt;- arima(Nile, order = c(0, 0, 1))
+print(MA)</code></pre>
+<pre><code>## 
+## Call:
+## arima(x = Nile, order = c(0, 0, 1))
+## 
+## Coefficients:
+##          ma1  intercept
+##       0.3783   919.2433
+## s.e.  0.0791    20.9685
+## 
+## sigma^2 estimated as 23272:  log likelihood = -644.72,  aic = 1295.44</code></pre>
+<pre class="r"><code># Plot Nile and MA_fit 
+ts.plot(Nile)
+MA_fit &lt;- Nile - resid(MA)
+points(MA_fit, type = &quot;l&quot;, col = 2, lty = 2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+</div>
+<div id="simple-forecasts-from-an-estimated-ma-model" class="section level2">
+<h2>5-6 Simple forecasts from an estimated MA model</h2>
+<p>Now that you’ve estimated a MA model with your Nile data, the next step is to do some simple forecasting with your model. As with other types of models, you can use the predict() function to make simple forecasts from your estimated MA model. Recall that the $pred value is the forecast, while the $se value is a standard error for that forecast, each of which is based on the fitted MA model.</p>
+<p>Once again, to make predictions for several periods beyond the last observation you can use the n.ahead = h argument in your call to predict(). The forecasts are made recursively from 1 to h-steps ahead from the end of the observed time series. However, note that except for the 1-step forecast, all forecasts from the MA model are equal to the estimated mean (intercept).</p>
+<p>In this exercise, you’ll use the MA model derived from your Nile data to make simple forecasts about future River Nile flow levels. Your MA model from the previous exercise is available in your environment.</p>
+<pre class="r"><code># Make a 1-step forecast based on MA
+predict_MA &lt;- predict(MA)
+
+# Obtain the 1-step forecast using $pred[1]
+predict_MA$pred[1] </code></pre>
+<pre><code>## [1] 868.8747</code></pre>
+<pre class="r"><code># Make a 1-step through 10-step forecast based on MA
+predict(MA, n.ahead = 10)</code></pre>
+<pre><code>## $pred
+## Time Series:
+## Start = 1971 
+## End = 1980 
+## Frequency = 1 
+##  [1] 868.8747 919.2433 919.2433 919.2433 919.2433 919.2433 919.2433 919.2433
+##  [9] 919.2433 919.2433
+## 
+## $se
+## Time Series:
+## Start = 1971 
+## End = 1980 
+## Frequency = 1 
+##  [1] 152.5508 163.1006 163.1006 163.1006 163.1006 163.1006 163.1006 163.1006
+##  [9] 163.1006 163.1006</code></pre>
+<pre class="r"><code># Plot the Nile series plus the forecast and 95% prediction intervals
+ts.plot(Nile, xlim = c(1871, 1980))
+MA_forecasts &lt;- predict(MA, n.ahead = 10)$pred
+MA_forecast_se &lt;- predict(MA, n.ahead = 10)$se
+points(MA_forecasts, type = &quot;l&quot;, col = 2)
+points(MA_forecasts - 2*MA_forecast_se, type = &quot;l&quot;, col = 2, lty = 2)
+points(MA_forecasts + 2*MA_forecast_se, type = &quot;l&quot;, col = 2, lty = 2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+</div>
+<div id="ar-vs-ma-models" class="section level2">
+<h2>5-8 AR vs MA models</h2>
+<p>As you’ve seen, autoregressive (AR) and simple moving average (MA) are two useful approaches to modeling time series. But how can you determine whether an AR or MA model is more appropriate in practice?</p>
+<p>To determine model fit, you can measure the Akaike information criterion (AIC) and Bayesian information criterion (BIC) for each model. While the math underlying the AIC and BIC is beyond the scope of this course, for your purposes the main idea is these these indicators penalize models with more estimated parameters, to avoid overfitting, and smaller values are preferred. All factors being equal, a model that produces a lower AIC or BIC than another model is considered a better fit.</p>
+<p>To estimate these indicators, you can use the AIC() and BIC() commands, both of which require a single argument to specify the model in question.</p>
+<p>In this exercise, you’ll return to the Nile data and the AR and MA models you fitted to this data. These models and their predictions for the 1970s (AR_fit) and (MA_fit) are depicted in the plot on the right.</p>
+<pre class="r"><code># Find correlation between AR_fit and MA_fit
+#cor(AR_fit, MA_fit)
+
+# Find AIC of AR
+#AIC(AR)
+
+# Find AIC of MA
+#AIC(MA)
+
+# Find BIC of AR
+#BIC(AR)
+
+# Find BIC of MA
+#BIC(MA)</code></pre>
 <pre class="r"><code>library(tidyverse)
 e &lt;- read.csv(&quot;e2.csv&quot;)
 names(e)</code></pre>
@@ -912,11 +1046,11 @@ names(e)</code></pre>
 <pre class="r"><code>e %&gt;%  pivot_longer(c(Lab.1...10,Lab.2...10)) %&gt;% 
   ggplot(aes(value,color=name))+geom_density()</code></pre>
 <pre><code>## Warning: Removed 13 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
 <pre class="r"><code>e %&gt;% mutate(q3=Quiz.3..15*20/15) %&gt;% pivot_longer(c(Quiz.1..20,Quiz.2..20,q3)) %&gt;% 
   ggplot(aes(value,color=name))+geom_density()</code></pre>
 <pre><code>## Warning: Removed 23 rows containing non-finite values (stat_density).</code></pre>
-<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 <pre class="r"><code>Q1_m &lt;- 5*mean(e$Quiz.1..20, na.rm=TRUE)
 print(paste(&quot;quiz 1: &quot;,Q1_m))</code></pre>
 <pre><code>## [1] &quot;quiz 1:  57.8483606557377&quot;</code></pre>
